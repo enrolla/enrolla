@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.prettierrc.js
+.eslintrc.js
+commitlint.config.js
+tsconfig.json
+src/@generated/
