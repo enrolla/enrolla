@@ -5,10 +5,12 @@ import { join } from 'path';
 @Injectable()
 export class SchemasService {
   findAll() {
-    return {
-      id: 'cjld2cyuq0000t3rmniod1foy',
-      name: 'customer',
-    };
+    return [
+      {
+        id: 'cjld2cyuq0000t3rmniod1foy',
+        name: 'customer',
+      },
+    ];
   }
 
   findOne(id: string) {
