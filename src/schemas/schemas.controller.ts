@@ -1,7 +1,9 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { SchemasService } from './schemas.service';
 
 @Controller({ path: 'management/schemas', version: '1' })
+@UseGuards(AuthGuard('jwt'))
 export class SchemasController {
   constructor(private schemasService: SchemasService) {}
   @Get()
@@ -12,5 +14,10 @@ export class SchemasController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.schemasService.findOne(id);
+  }
+
+  @Get('/items')
+  items() {
+    return this.schemasService.findAll();
   }
 }
