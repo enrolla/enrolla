@@ -18,7 +18,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       }),
 
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      audience: process.env.AUTH0_AUDIENCE,
+      // TODO: Enable audience check correctly
+      // audience: process.env.AUTH0_AUDIENCE,
       issuer: `${process.env.AUTH0_ISSUER_URL}`,
       algorithms: ['RS256'],
     });
