@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { SchemasService } from './schemas.service';
 
 @Controller({ path: 'management/schemas', version: '1' })
-@UseGuards(AuthGuard('the-jwt'))
+@UseGuards(AuthGuard('jwt'))
 export class SchemasController {
   constructor(private schemasService: SchemasService) {}
   @Get()
