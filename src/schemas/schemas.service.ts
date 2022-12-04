@@ -4,7 +4,7 @@ import { join } from 'path';
 
 @Injectable()
 export class SchemasService {
-  findAll() {
+  async findAll() {
     return [
       {
         id: 'cjld2cyuq0000t3rmniod1foy',
@@ -13,7 +13,7 @@ export class SchemasService {
     ];
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     const jsonschema = readFileSync(
       join(process.cwd(), './src/schemas/schema.example.json'),
       'utf8',
@@ -21,6 +21,19 @@ export class SchemasService {
 
     return {
       id: id,
+      name: 'customer',
+      schema: jsonschema,
+    };
+  }
+
+  async findOneByTenant(tenantId: string) {
+    const jsonschema = readFileSync(
+      join(process.cwd(), './src/schemas/schema.example.json'),
+      'utf8',
+    );
+
+    return {
+      id: 'cjld2cyuq0000t3rmniod1foy',
       name: 'customer',
       schema: jsonschema,
     };
