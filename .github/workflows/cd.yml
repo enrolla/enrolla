@@ -1,0 +1,43 @@
+name: Publish docker image to ECR and deploy to staging
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  publish-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          role-to-assume: ${{ secrets.AWS_DEFAULT_ROLE }}
+          role-session-name: GithubActions
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: customeric-server
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build . -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:latest
+      - name: Install Octopus CLI
+        uses: OctopusDeploy/install-octopus-cli-action@v1
+      - name: Create and deploy release
+        uses: OctopusDeploy/create-release-action@v1
+        with:
+          api_key: ${{ secrets.OCTOPUS_API_KEY }}
+          server: ${{ secrets.OCTOPUS_SERVER }}
+          space: ${{ secrets.OCTOPUS_SPACE }}
+          project: 'customeric-server'
+          deploy_to: 'Staging'
