@@ -4,6 +4,6 @@ import { SchemasService } from './schemas.service';
 
 @Module({
   controllers: [SchemasController],
-  providers: [SchemasService]
+  providers: [SchemasService],
 })
 export class SchemasModule {}
