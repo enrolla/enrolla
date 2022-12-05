@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { SchemasService } from 'src/schemas/schemas.service';
 import Ajv from 'ajv';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class CustomersService {
@@ -10,17 +11,17 @@ export class CustomersService {
     private schemasService: SchemasService,
   ) {}
 
-  async createConfigutation(tenantId: string, configuration: JSON) {
-    const tenantSchemaDoc = await this.schemasService.findOneByTenant(tenantId);
-    const validConfiguration = new Ajv().compile(
-      JSON.parse(tenantSchemaDoc.schema),
-    );
+  async create(tenantId: string, configuration: Record<string, unknown>) {
+    const tenantSchema = await this.schemasService.findOneByTenant(tenantId);
+    const compiledSchema = new Ajv().compile(JSON.parse(tenantSchema.schema));
+    const validConfiguration = compiledSchema(configuration);
 
     if (validConfiguration) {
-      return this.prismaService.configuration.create({
+      return this.prismaService.customer.create({
         data: {
+          configuration: configuration as Prisma.JsonObject,
           tenantId: tenantId,
-          configuration: JSON.parse(configuration),
+          schemaTag: 'v1.0.0',
         },
       });
     } else {

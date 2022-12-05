@@ -1,16 +1,15 @@
 -- CreateTable
-CREATE TABLE "configurations" (
+CREATE TABLE "customers" (
     "id" TEXT NOT NULL,
     "tenant_id" TEXT NOT NULL,
-    "customer_id" TEXT NOT NULL,
     "configuration" JSONB NOT NULL,
     "version" INTEGER NOT NULL DEFAULT 1,
-    "schema_id" TEXT NOT NULL,
+    "schema_id" TEXT,
     "schema_tag" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "configurations_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "customers_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -23,4 +22,4 @@ CREATE TABLE "schemas" (
 );
 
 -- AddForeignKey
-ALTER TABLE "configurations" ADD CONSTRAINT "configurations_schema_id_fkey" FOREIGN KEY ("schema_id") REFERENCES "schemas"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "customers" ADD CONSTRAINT "customers_schema_id_fkey" FOREIGN KEY ("schema_id") REFERENCES "schemas"("id") ON DELETE SET NULL ON UPDATE CASCADE;

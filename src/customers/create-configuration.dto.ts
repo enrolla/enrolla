@@ -2,5 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateConfigurationDto {
   @ApiProperty()
-  configuration: JSON;
+  configuration: Record<string, unknown>;
+;
 }
