@@ -29,15 +29,15 @@ export class CustomersService {
     }
   }
 
-  findAll(tenantId: string) {
-    return this.prismaService.customer.findMany({
+  async findAll(tenantId: string) {
+    return await this.prismaService.customer.findMany({
       where: { tenantId: tenantId },
     });
   }
 
-  findById(tenantId: string, customerId: string) {
+  async findById(tenantId: string, customerId: string) {
     // TODO: enforce tenantId
-    return this.prismaService.customer.findUnique({
+    return await this.prismaService.customer.findUnique({
       where: { id: customerId },
     });
   }

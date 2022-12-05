@@ -8,11 +8,11 @@ export class SchemasController {
   constructor(private schemasService: SchemasService) {}
   @Get()
   async findAll() {
-    return this.schemasService.findAll();
+    return await this.schemasService.findAll();
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return this.schemasService.findOne(id);
+    return await this.schemasService.findOne(id);
   }
 }
