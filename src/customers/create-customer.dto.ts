@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateConfigurationDto {
+export class CreateCustomerDto {
   @ApiProperty()
   configuration: Record<string, unknown>;
 ;
