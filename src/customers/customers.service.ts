@@ -28,4 +28,17 @@ export class CustomersService {
       return null;
     }
   }
+
+  findAll(tenantId: string) {
+    return this.prismaService.customer.findMany({
+      where: { tenantId: tenantId },
+    });
+  }
+
+  findById(tenantId: string, customerId: string) {
+    // TODO: enforce tenantId
+    return this.prismaService.customer.findUnique({
+      where: { id: customerId },
+    });
+  }
 }
