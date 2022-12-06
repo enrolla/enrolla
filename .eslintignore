@@ -4,3 +4,4 @@ dist/
 .eslintrc.js
 commitlint.config.js
 tsconfig.json
+src/@generated/
