@@ -41,4 +41,10 @@ export class CustomersService {
       where: { id: customerId },
     });
   }
+
+  async deleteById(tenantId: string, customerId: string) {
+    return await this.prismaService.customer.delete({
+      where: { id: customerId },
+    });
+  }
 }

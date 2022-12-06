@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -35,5 +36,10 @@ export class CustomersController {
   @Get(':id')
   async findById(@Request() request, @Param('id') id: string) {
     return await this.customersService.findById(request.user.org_id, id);
+  }
+
+  @Delete(':id')
+  async deleteById(@Request() request, @Param('id') id: string) {
+    return await this.customersService.deleteById(request.user.org_id, id);
   }
 }
