@@ -2,7 +2,7 @@
 # BUILD FOR LOCAL DEVELOPMENT
 ###################
 
-FROM node:18-alpine As development
+FROM node:18-slim As development
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -25,7 +25,9 @@ USER node
 # BUILD FOR PRODUCTION
 ###################
 
-FROM node:18-alpine As build
+FROM node:18-slim As build
+
+RUN apt-get update && apt-get install -y openssl
 
 WORKDIR /usr/src/app
 
@@ -36,6 +38,8 @@ COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modul
 
 COPY --chown=node:node . .
 
+RUN npx prisma generate
+
 # Run the build command which creates the production bundle
 RUN npm run build
 
@@ -43,7 +47,7 @@ RUN npm run build
 ENV NODE_ENV production
 
 # Running `npm ci` removes the existing node_modules directory and passing in --only=production ensures that only the production dependencies are installed. This ensures that the node_modules directory is as optimized as possible
-RUN npm ci --only=production && npm cache clean --force
+RUN npm ci --omit=dev && npm cache clean --force
 
 USER node
 
@@ -51,11 +55,14 @@ USER node
 # PRODUCTION
 ###################
 
-FROM node:18-alpine As production
+FROM node:18-slim As production
+
+RUN apt-get update && apt-get install -y openssl
 
 # Copy the bundled code from the build stage to the production image
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
+COPY --chown=node:node --from=build /usr/src/app/src/@generated/prisma-client ./dist/@generated/prisma-client
 
 # Start the server using the production build
 CMD [ "node", "dist/main.js" ]

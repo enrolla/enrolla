@@ -32,3 +32,6 @@ lerna-debug.log*
 
 # Environtment file
 .env
+
+# Generated code
+src/@generated/*
