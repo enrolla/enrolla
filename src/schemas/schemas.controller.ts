@@ -7,12 +7,12 @@ import { SchemasService } from './schemas.service';
 export class SchemasController {
   constructor(private schemasService: SchemasService) {}
   @Get()
-  findAll() {
-    return this.schemasService.findAll();
+  async findAll() {
+    return await this.schemasService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.schemasService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return await this.schemasService.findOne(id);
   }
 }
