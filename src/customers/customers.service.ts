@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { SchemasService } from 'src/schemas/schemas.service';
 import Ajv from 'ajv';
-import { Prisma } from 'src/@generated/prisma-client';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class CustomersService {

@@ -46,7 +46,9 @@ RUN npm run build
 # Set NODE_ENV environment variable
 ENV NODE_ENV production
 
-# Running `npm ci` removes the existing node_modules directory and passing in --only=production ensures that only the production dependencies are installed. This ensures that the node_modules directory is as optimized as possible
+RUN mv node_modules/.prisma/ .prisma/
+
+# Running `npm ci` removes the existing node_modules directory and passing in --omit=dev ensures that only the production dependencies are installed. This ensures that the node_modules directory is as optimized as possible
 RUN npm ci --omit=dev && npm cache clean --force
 
 USER node
@@ -62,7 +64,7 @@ RUN apt-get update && apt-get install -y openssl
 # Copy the bundled code from the build stage to the production image
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
-COPY --chown=node:node --from=build /usr/src/app/src/@generated/prisma-client ./dist/@generated/prisma-client
+COPY --chown=node:node --from=build /usr/src/app/.prisma ./node_modules/.prisma
 
 ENV SERVER_PORT 3000
 EXPOSE 3000
