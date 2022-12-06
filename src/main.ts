@@ -21,6 +21,7 @@ async function bootstrap() {
     .setDescription('Customer Configuration Management API')
     .setVersion('1.0')
     .addTag('customeric')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

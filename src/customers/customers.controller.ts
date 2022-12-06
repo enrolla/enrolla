@@ -9,11 +9,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { CreateCustomerDto } from './create-customer.dto';
 import { CustomersService } from './customers.service';
 
 @Controller({ path: 'management/customers', version: '1' })
 @UseGuards(AuthGuard('jwt'))
+@ApiBearerAuth()
 export class CustomersController {
   constructor(private customersService: CustomersService) {}
 
