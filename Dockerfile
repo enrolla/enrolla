@@ -64,5 +64,8 @@ COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 COPY --chown=node:node --from=build /usr/src/app/src/@generated/prisma-client ./dist/@generated/prisma-client
 
+ENV SERVER_PORT 3000
+EXPOSE 3000
+
 # Start the server using the production build
 CMD [ "node", "dist/main.js" ]
