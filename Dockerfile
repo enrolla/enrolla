@@ -65,6 +65,7 @@ RUN apt-get update && apt-get install -y openssl
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 COPY --chown=node:node --from=build /usr/src/app/.prisma ./node_modules/.prisma
+COPY --chown=node:node --from=build /usr/src/app/package*.json ./
 
 ENV SERVER_PORT 3000
 EXPOSE 3000
