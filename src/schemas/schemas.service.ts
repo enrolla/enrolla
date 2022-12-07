@@ -1,41 +1,43 @@
 import { Injectable } from '@nestjs/common';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class SchemasService {
-  async findAll() {
-    return [
-      {
-        id: 'cjld2cyuq0000t3rmniod1foy',
-        name: 'customer',
+  constructor(private prismaService: PrismaService) {}
+
+  async create(tenantId: string, schema: Record<string, unknown>) {
+    return await this.prismaService.schema.create({
+      data: {
+        schema: schema as Prisma.JsonObject,
+        tenantId: tenantId,
       },
-    ];
+    });
   }
 
-  async findOne(id: string) {
-    const jsonschema = readFileSync(
-      join(process.cwd(), './src/schemas/schema.example.json'),
-      'utf8',
-    );
+  async findAll(tenantId: string) {
+    return await this.prismaService.schema.findMany({
+      where: { tenantId: tenantId },
+    });
+  }
 
-    return {
-      id: id,
-      name: 'customer',
-      schema: jsonschema,
-    };
+  async findOne(tenantId: string, id: string) {
+    // TODO: enforce tenantId
+    return await this.prismaService.schema.findUnique({
+      where: { id: id },
+    });
   }
 
   async findOneByTenant(tenantId: string) {
-    const jsonschema = readFileSync(
-      join(process.cwd(), './src/schemas/schema.example.json'),
-      'utf8',
-    );
+    return await this.prismaService.schema.findFirst({
+      where: { tenantId: tenantId },
+    });
+  }
 
-    return {
-      id: 'cjld2cyuq0000t3rmniod1foy',
-      name: 'customer',
-      schema: jsonschema,
-    };
+  async deleteById(tenantId: string, id: string) {
+    // TODO: enforce tenantId
+    return await this.prismaService.schema.delete({
+      where: { id: id },
+    });
   }
 }

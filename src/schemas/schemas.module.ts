@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { SchemasController } from './schemas.controller';
+import SchemasController from './schemas.controller';
 import { SchemasService } from './schemas.service';
 
 @Module({
