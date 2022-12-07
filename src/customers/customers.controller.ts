@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Request,
   UseGuards,
@@ -43,5 +44,18 @@ export class CustomersController {
   @Delete(':id')
   async deleteById(@Request() request, @Param('id') id: string) {
     return await this.customersService.deleteById(request.user.org_id, id);
+  }
+
+  @Patch(':id')
+  async patchById(
+    @Request() request,
+    @Param('id') id: string,
+    @Body() patchCustomerDto: CreateCustomerDto,
+  ) {
+    return await this.customersService.patch(
+      request.user.org_id,
+      id,
+      patchCustomerDto.configuration,
+    );
   }
 }
