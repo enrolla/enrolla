@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { SchemasService } from 'src/schemas/schemas.service';
 import Ajv from 'ajv';
@@ -13,20 +13,28 @@ export class CustomersService {
 
   async create(tenantId: string, configuration: Record<string, unknown>) {
     const tenantSchema = await this.schemasService.findOneByTenant(tenantId);
-    const compiledSchema = new Ajv().compile(JSON.parse(tenantSchema.schema));
+    const compiledSchema = new Ajv().compile(
+      tenantSchema.schema as Prisma.JsonObject,
+    );
     const validConfiguration = compiledSchema(configuration);
 
-    if (validConfiguration) {
-      return this.prismaService.customer.create({
-        data: {
-          configuration: configuration as Prisma.JsonObject,
-          tenantId: tenantId,
-          schemaTag: 'v1.0.0',
-        },
-      });
-    } else {
-      return null;
+    if (!validConfiguration) {
+      // TODO: replace with dedicated exception and return BadRequest in controller level
+      throw new BadRequestException(
+        compiledSchema.errors.map((e) => {
+          return { path: e.instancePath, error: e.message };
+        }),
+      );
     }
+
+    return this.prismaService.customer.create({
+      data: {
+        configuration: configuration as Prisma.JsonObject,
+        tenantId: tenantId,
+        schemaId: tenantSchema.id,
+        schemaTag: 'v1.0.0',
+      },
+    });
   }
 
   async findAll(tenantId: string) {
