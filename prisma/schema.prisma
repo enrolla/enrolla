@@ -15,8 +15,9 @@ model Customer {
   tenantId         String     @map("tenant_id")
   configuration    Json       
   version          Int        @default(1)
-  schema           Schema     @relation(fields: [schemaId], references: [id])
-  schemaId         String     @map("schema_id")
+  schema           Schema?    @relation(fields: [schemaId], references: [id])
+  // TODO: Make schema required once we have a way to create a schema
+  schemaId         String?    @map("schema_id")
   schemaTag        String     @map("schema_tag")
   createdAt        DateTime   @map("created_at") @default(now())
   updatedAt        DateTime   @map("updated_at") @default(now())
