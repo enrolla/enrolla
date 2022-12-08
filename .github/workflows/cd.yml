@@ -44,8 +44,11 @@ jobs:
           docker push $REGISTRY/$REPOSITORY:$RELEASE_TAG
           docker push $REGISTRY/$REPOSITORY:latest
 
+      - name: Install Octopus CLI
+        uses: OctopusDeploy/install-octopus-cli-action@v1
+
       - name: Create and deploy release
-        uses: OctopusDeploy/create-release-action@v2
+        uses: OctopusDeploy/create-release-action@v1
         with:
           api_key: ${{ secrets.OCTOPUS_API_KEY }}
           server: ${{ secrets.OCTOPUS_SERVER }}
