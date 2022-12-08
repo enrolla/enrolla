@@ -19,6 +19,6 @@ import { GithubMiddleware } from './github/github.middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(GithubMiddleware).forRoutes('/api/github/*');
+    consumer.apply(GithubMiddleware).forRoutes('/');
   }
 }

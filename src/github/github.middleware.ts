@@ -18,7 +18,6 @@ export class GithubMiddleware implements NestMiddleware {
   octokitMiddleware = createNodeMiddleware(this.app);
 
   use(req: any, res: any, next: (error?: any) => void) {
-    console.log(this.octokitMiddleware);
     return this.octokitMiddleware(req, res, next);
   }
 
