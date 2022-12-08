@@ -37,4 +37,4 @@ lerna-debug.log*
 src/@generated/*
 
 # Key files
-*.pem
+certs/*

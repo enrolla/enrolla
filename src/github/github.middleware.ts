@@ -13,7 +13,7 @@ export class GithubMiddleware implements NestMiddleware {
 
   constructor() {
     this.privateKey = readFileSync(
-      join(process.cwd(), './github-app.private-key.pem'),
+      join(process.cwd(), './certs/github-app.private-key.pem'),
       'ascii',
     );
 
