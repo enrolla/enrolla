@@ -12,14 +12,9 @@ export class GithubMiddleware implements NestMiddleware {
   privateKey: string;
 
   constructor() {
-    this.privateKey = readFileSync(
-      join(process.cwd(), './certs/github-app.private-key.pem'),
-      'ascii',
-    );
-
     this.app = new App({
       appId: env.GITHUB_APP_ID,
-      privateKey: this.privateKey,
+      privateKey: env.GITHUB_APP_PRIVATE_KEY.replace(/\\n/g, '\n'),
       webhooks: { secret: env.GITHUB_APP_WEBHOOK_SECRET },
       oauth: {
         clientId: env.GITHUB_APP_CLIENT_ID,
