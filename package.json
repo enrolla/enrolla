@@ -10,7 +10,7 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "prisma generate; nest start --watch",
+    "start:dev": "nest start --watch",
     "start:debug": "prisma generate; nest start --debug --watch",
     "start:prod": "prisma migrate deploy; node dist/main",
     "prisma:generate": "prisma generate",
@@ -33,11 +33,13 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "jwks-rsa": "^3.0.0",
+    "nest-winston": "^1.8.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.5.7"
+    "rxjs": "^7.5.7",
+    "winston": "^3.8.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.3.0",
