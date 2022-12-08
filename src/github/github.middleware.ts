@@ -2,28 +2,36 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 import { App, createNodeMiddleware, Octokit } from 'octokit';
 import { env } from 'process';
 import { createAppAuth } from '@octokit/auth-app';
-import { EMPTY_SUBSCRIPTION } from 'rxjs/internal/Subscription';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 @Injectable()
 export class GithubMiddleware implements NestMiddleware {
-  app = new App({
-    appId: env.GITHUB_APP_ID,
-    privateKey: env.GITHUB_APP_PRIVATE_KEY.replace(/\\n/g, '\n'),
-    webhooks: { secret: env.GITHUB_APP_WEBHOOK_SECRET },
-    oauth: {
-      clientId: env.GITHUB_APP_CLIENT_ID,
-      clientSecret: env.GITHUB_APP_CLIENT_SECRET,
-    },
-  });
+  app;
+  octokitMiddleware;
+  privateKey: string;
 
-  octokitMiddleware = createNodeMiddleware(this.app);
+  constructor() {
+    this.privateKey = readFileSync(
+      join(process.cwd(), './github-app.private-key.pem'),
+      'ascii',
+    );
+
+    this.app = new App({
+      appId: env.GITHUB_APP_ID,
+      privateKey: this.privateKey,
+      webhooks: { secret: env.GITHUB_APP_WEBHOOK_SECRET },
+      oauth: {
+        clientId: env.GITHUB_APP_CLIENT_ID,
+        clientSecret: env.GITHUB_APP_CLIENT_SECRET,
+      },
+    });
+    this.octokitMiddleware = createNodeMiddleware(this.app);
+    this.app.webhooks.on('push', this.handlePushEvent.bind(this));
+  }
 
   use(req: any, res: any, next: (error?: any) => void) {
     return this.octokitMiddleware(req, res, next);
-  }
-
-  constructor() {
-    this.app.webhooks.on('push', this.handlePushEvent);
   }
 
   async handlePushEvent(event: any) {
@@ -46,28 +54,17 @@ export class GithubMiddleware implements NestMiddleware {
       return;
     }
 
-    const appOctokit = new Octokit({
-      authStrategy: createAppAuth,
-      auth: {
-        appId: env.GITHUB_APP_ID,
-        privateKey: env.GITHUB_APP_PRIVATE_KEY.replace(/\\n/g, '\n'),
-      },
-    });
+    const octokit = await this.app.getInstallationOctokit(
+      event.payload.installation.id,
+    );
 
-    const installationOctokit = appOctokit.auth({
-      type: 'installation',
-      installationId: event.payload.installation.id,
-      factory: ({ octokitOptions, ...auth }) =>
-        new Octokit({ ...octokitOptions, auth }),
-    });
-
-    const schema = await appOctokit.rest.repos.getContent({
+    const schema = await octokit.rest.repos.getContent({
       owner: event.payload.repository.owner.login,
       repo: event.payload.repository.name,
       path: 'schema.json',
       ref: 'refs/heads/main',
     });
 
-    console.log(schema);
+    console.log(Buffer.from(schema.data.content, 'base64').toString('utf-8'));
   }
 }
