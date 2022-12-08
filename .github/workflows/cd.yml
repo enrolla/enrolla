@@ -6,11 +6,10 @@ on:
       - 'main'
 
 jobs:
-  publish-deploy:
+  release:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: write
+    outputs:
+      tag: ${{ steps.change_log_create.outputs.tag }}
     steps:
       - uses: actions/checkout@v2
 
@@ -22,6 +21,13 @@ jobs:
           git-user-name: ${{ github.event.pusher.name }}
           github-token: ${{ secrets.github_token }}
           git-user-email: ${{ github.event.pusher.email }}
+
+  publish:
+    needs: release
+    if: ${{ needs.release.outputs.tag != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -38,12 +44,17 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: customeric-server
-          RELEASE_TAG: ${{ steps.change_log_create.outputs.tag }}
+          RELEASE_TAG: ${{ needs.release.outputs.tag }}
         run: |
           docker build . -t $REGISTRY/$REPOSITORY:$RELEASE_TAG -t $REGISTRY/$REPOSITORY:latest
           docker push $REGISTRY/$REPOSITORY:$RELEASE_TAG
           docker push $REGISTRY/$REPOSITORY:latest
 
+  deploy:
+    needs: [release, publish]
+    if: ${{ needs.release.outputs.tag != '' }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Install Octopus CLI
         uses: OctopusDeploy/install-octopus-cli-action@v1
 
@@ -55,4 +66,4 @@ jobs:
           space: ${{ secrets.OCTOPUS_SPACE }}
           project: 'customeric-server'
           deploy_to: 'Staging'
-          release_number: ${{ steps.change_log_create.outputs.tag }}
+          release_number: ${{ needs.release.outputs.tag }}
