@@ -1,4 +1,13 @@
-# 0.1.0 (2022-12-08)
+## [0.1.1](https://github.com/vecinity/customeric-server/compare/0.1.0...0.1.1) (2022-12-08)
+
+
+### Bug Fixes
+
+* winston logger for json-formatting in production ([2d4538c](https://github.com/vecinity/customeric-server/commit/2d4538c3afc7e37c801b679ad3df97fdd97f2d07))
+
+
+
+# [0.1.0](https://github.com/vecinity/customeric-server/compare/89084715f8b12f227bcc54c1685266feaa51644b...0.1.0) (2022-12-08)
 
 
 ### Bug Fixes
