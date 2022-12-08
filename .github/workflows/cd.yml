@@ -13,31 +13,43 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v2
+
+      - name: Conventional Changelog
+        id: change_log_create
+        uses: TriPSs/conventional-changelog-action@v3
+        with:
+          tag-prefix: ''
+          git-user-name: ${{ github.event.pusher.name }}
+          github-token: ${{ secrets.github_token }}
+          git-user-email: ${{ github.event.pusher.email }}
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           role-to-assume: ${{ secrets.AWS_DEFAULT_ROLE }}
           role-session-name: GithubActions
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+
       - name: Build, tag, and push docker image to Amazon ECR
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: customeric-server
-          IMAGE_TAG: ${{ github.sha }}
+          RELEASE_TAG: ${{ steps.change_log_create.outputs.tag }}
         run: |
-          docker build . -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker build . -t $REGISTRY/$REPOSITORY:$RELEASE_TAG -t $REGISTRY/$REPOSITORY:latest
+          docker push $REGISTRY/$REPOSITORY:$RELEASE_TAG
           docker push $REGISTRY/$REPOSITORY:latest
-      - name: Install Octopus CLI
-        uses: OctopusDeploy/install-octopus-cli-action@v1
+
       - name: Create and deploy release
-        uses: OctopusDeploy/create-release-action@v1
+        uses: OctopusDeploy/create-release-action@v2
         with:
           api_key: ${{ secrets.OCTOPUS_API_KEY }}
           server: ${{ secrets.OCTOPUS_SERVER }}
           space: ${{ secrets.OCTOPUS_SPACE }}
           project: 'customeric-server'
           deploy_to: 'Staging'
+          release_number: ${{ steps.change_log_create.outputs.tag }}
