@@ -1,7 +1,8 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
-import { App, createNodeMiddleware } from 'octokit';
+import { App, createNodeMiddleware, Octokit } from 'octokit';
 import { env } from 'process';
+import { createAppAuth } from '@octokit/auth-app';
+import { EMPTY_SUBSCRIPTION } from 'rxjs/internal/Subscription';
 
 @Injectable()
 export class GithubMiddleware implements NestMiddleware {
@@ -25,7 +26,48 @@ export class GithubMiddleware implements NestMiddleware {
     this.app.webhooks.on('push', this.handlePushEvent);
   }
 
-  handlePushEvent(event: any) {
-    console.log(event);
+  async handlePushEvent(event: any) {
+    if (event.payload.ref !== 'refs/heads/main') {
+      return;
+    }
+
+    if (event.payload.commits.length === 0) {
+      return;
+    }
+
+    if (
+      !event.payload.commits.some(
+        (commit: any) =>
+          commit.added.includes('schema.json') ||
+          commit.modified.includes('schema.json') ||
+          commit.removed.includes('schema.json'),
+      )
+    ) {
+      return;
+    }
+
+    const appOctokit = new Octokit({
+      authStrategy: createAppAuth,
+      auth: {
+        appId: env.GITHUB_APP_ID,
+        privateKey: env.GITHUB_APP_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      },
+    });
+
+    const installationOctokit = appOctokit.auth({
+      type: 'installation',
+      installationId: event.payload.installation.id,
+      factory: ({ octokitOptions, ...auth }) =>
+        new Octokit({ ...octokitOptions, auth }),
+    });
+
+    const schema = await appOctokit.rest.repos.getContent({
+      owner: event.payload.repository.owner.login,
+      repo: event.payload.repository.name,
+      path: 'schema.json',
+      ref: 'refs/heads/main',
+    });
+
+    console.log(schema);
   }
 }
