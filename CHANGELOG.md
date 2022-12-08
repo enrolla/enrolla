@@ -1,3 +1,12 @@
+## [0.1.2](https://github.com/vecinity/customeric-server/compare/0.1.1...0.1.2) (2022-12-08)
+
+
+### Bug Fixes
+
+* missing files for prisma migrate to work properly in Docker ([7e2443f](https://github.com/vecinity/customeric-server/commit/7e2443f4ff8cda137ca45ff75be11496e9b6efcf))
+
+
+
 ## [0.1.1](https://github.com/vecinity/customeric-server/compare/0.1.0...0.1.1) (2022-12-08)
 
 
