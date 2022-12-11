@@ -1,34 +1,30 @@
 name: CI
 on:
   pull_request:
-  push:
-    branches:
-      - 'main'
+
+env:
+  # Workaround since nrwl/nx-set-shas@v3 is currently buggy
+  NX_BASE: ${{ github.event.pull_request.base.sha }}
+  NX_HEAD: ${{ github.event.pull_request.head.sha }}
 
 jobs:
   build-and-test:
     name: Build and test
     runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      actions: 'read'
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
+
       - run: npm ci
-      - run: npm run lint
-      - run: npm run build
-  docker:
-    name: Test docker image build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          push: false
-          file: ./Dockerfile
+      - run: |
+          echo "BASE: ${{ env.NX_BASE }}"
+          echo "HEAD: ${{ env.NX_HEAD }}"
+      - run: npx nx workspace-lint
+      - run: npx nx format:check
+      - run: npx nx affected --target=lint --parallel=3
+      - run: npx nx affected --target=test --parallel=3 --ci --code-coverage
+      - run: npx nx affected --target=build --parallel=3
