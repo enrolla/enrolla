@@ -1,74 +1,25 @@
-###################
-# BUILD FOR LOCAL DEVELOPMENT
-###################
-
-FROM node:18-slim As development
-
-# Create app directory
+# Install dependencies only when needed
+FROM docker.io/node:lts-alpine as deps
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+RUN apk add --no-cache libc6-compat
 WORKDIR /usr/src/app
+COPY ./dist/apps/enrolla-server/package*.json ./
 
-# Copy application dependency manifests to the container image.
-# A wildcard is used to ensure copying both package.json AND package-lock.json (when available).
-# Copying this first prevents re-running npm install on every code change.
-COPY --chown=node:node package*.json ./
+RUN npm install --only=production
 
-# Install app dependencies using the `npm ci` command instead of `npm install`
-RUN npm ci
+# This is required to include the Prisma client in the image
+COPY ./node_modules/.prisma/client ./node_modules/.prisma/client
 
-# Bundle app source
-COPY --chown=node:node . .
-
-# Use the node user from the image (instead of the root user)
-USER node
-
-###################
-# BUILD FOR PRODUCTION
-###################
-
-FROM node:18-slim As build
-
-RUN apt-get update && apt-get install -y openssl
-
-WORKDIR /usr/src/app
-
-COPY --chown=node:node package*.json ./
-
-# In order to run `npm run build` we need access to the Nest CLI which is a dev dependency. In the previous development stage we ran `npm ci` which installed all dependencies, so we can copy over the node_modules directory from the development image
-COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
-
-COPY --chown=node:node . .
-
-RUN npx prisma generate
-
-# Run the build command which creates the production bundle
-RUN npm run build
-
-RUN mv node_modules/.prisma/ .prisma/
-
-# Running `npm ci` removes the existing node_modules directory and passing in --omit=dev ensures that only the production dependencies are installed. This ensures that the node_modules directory is as optimized as possible
-RUN npm ci --omit=dev && npm cache clean --force
-
-USER node
-
-###################
-# PRODUCTION
-###################
-
-FROM node:18-slim As production
-
-RUN apt-get update && apt-get install -y openssl
-
-# Copy the bundled code from the build stage to the production image
-COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
-COPY --chown=node:node --from=build /usr/src/app/dist ./dist
-COPY --chown=node:node --from=build /usr/src/app/.prisma ./node_modules/.prisma
-COPY --chown=node:node --from=build /usr/src/app/package*.json ./
-COPY --chown=node:node --from=build /usr/src/app/prisma ./prisma
-
+# Production image, copy all the files and run nest
+FROM docker.io/node:lts-alpine as runner
+RUN apk add --no-cache dumb-init
 ENV NODE_ENV production
-ENV SERVER_PORT 3000
-
+ENV PORT 3000
+WORKDIR /usr/src/app
+COPY --from=deps /usr/src/app/node_modules ./node_modules
+COPY --from=deps /usr/src/app/package.json ./package.json
+COPY dist/apps/enrolla-server .
+RUN chown -R node:node .
+USER node
 EXPOSE 3000
-
-# Start the server using the production build
-CMD ["npm", "run", "start:prod"]
+CMD ["dumb-init", "node", "main.js"]

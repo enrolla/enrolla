@@ -13,7 +13,8 @@
         "compiler": "tsc",
         "outputPath": "dist/apps/enrolla-server",
         "main": "apps/enrolla-server/src/main.ts",
-        "tsConfig": "apps/enrolla-server/tsconfig.app.json"
+        "tsConfig": "apps/enrolla-server/tsconfig.app.json",
+        "webpackConfig": "apps/enrolla-server/webpack.config.js"
       },
       "configurations": {
         "production": {
@@ -59,17 +60,8 @@
       "executor": "@nx-tools/nx-container:build",
       "options": {
         "engine": "docker",
-        "metadata": {
-          "images": ["enrolla/enrolla-server"],
-          "load": true,
-          "tags": [
-            "type=schedule",
-            "type=ref,event=branch",
-            "type=ref,event=tag",
-            "type=ref,event=pr",
-            "type=sha,prefix=sha-"
-          ]
-        }
+        "push": false,
+        "tags": ["enrolla/enrolla-server:latest"]
       }
     }
   },
