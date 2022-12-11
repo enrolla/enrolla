@@ -9,6 +9,7 @@ import {
 import { env } from 'process';
 import * as winston from 'winston';
 import { AppModule } from './app.module';
+import { App, createNodeMiddleware } from 'octokit';
 
 function createLogger(
   serviceName: string,
@@ -70,7 +71,7 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('swagger-ui', app, document);
 
   await app.listen(env.SERVER_PORT);
 }
