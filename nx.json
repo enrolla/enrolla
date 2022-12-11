@@ -11,7 +11,7 @@
   },
   "targetDefaults": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "prisma-generate"],
       "inputs": ["production", "^production"]
     },
     "test": {
@@ -19,6 +19,9 @@
     },
     "lint": {
       "inputs": ["default", "{workspaceRoot}/.eslintrc.json"]
+    },
+    "serve": {
+      "dependsOn": ["prisma-generate"]
     }
   },
   "namedInputs": {

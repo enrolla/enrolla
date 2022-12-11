@@ -3,6 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/enrolla-server/src",
   "projectType": "application",
+  "implicitDependencies": ["prisma-models"],
   "targets": {
     "build": {
       "executor": "@nrwl/webpack:webpack",
@@ -52,6 +53,23 @@
       "options": {
         "jestConfig": "apps/enrolla-server/jest.config.ts",
         "passWithNoTests": true
+      }
+    },
+    "container": {
+      "executor": "@nx-tools/nx-container:build",
+      "options": {
+        "engine": "docker",
+        "metadata": {
+          "images": ["enrolla/enrolla-server"],
+          "load": true,
+          "tags": [
+            "type=schedule",
+            "type=ref,event=branch",
+            "type=ref,event=tag",
+            "type=ref,event=pr",
+            "type=sha,prefix=sha-"
+          ]
+        }
       }
     }
   },
