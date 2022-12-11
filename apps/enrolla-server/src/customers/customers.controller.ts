@@ -23,11 +23,11 @@ export class CustomersController {
   @Post()
   async create(
     @Request() request,
-    @Body() createCustomerDto: CreateCustomerDto,
+    @Body() createCustomerDto: CreateCustomerDto
   ) {
     return await this.customersService.create(
       request.user.org_id,
-      createCustomerDto.configuration,
+      createCustomerDto.configuration
     );
   }
 
@@ -50,12 +50,12 @@ export class CustomersController {
   async patchById(
     @Request() request,
     @Param('id') id: string,
-    @Body() patchCustomerDto: CreateCustomerDto,
+    @Body() patchCustomerDto: CreateCustomerDto
   ) {
     return await this.customersService.patch(
       request.user.org_id,
       id,
-      patchCustomerDto.configuration,
+      patchCustomerDto.configuration
     );
   }
 }

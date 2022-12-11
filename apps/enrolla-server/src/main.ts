@@ -14,7 +14,7 @@ import { App, createNodeMiddleware } from 'octokit';
 function createLogger(
   serviceName: string,
   releaseVersion: string,
-  options?: WinstonModuleOptions,
+  options?: WinstonModuleOptions
 ): LoggerService {
   const isProduction = process.env.NODE_ENV === 'production';
   const formats = [winston.format.timestamp(), winston.format.ms()];
@@ -47,7 +47,7 @@ function createLogger(
 async function bootstrap() {
   const logger = createLogger(
     process.env.npm_package_name,
-    process.env.npm_package_version,
+    process.env.npm_package_version
   );
   const app = await NestFactory.create(AppModule, {
     logger,
@@ -60,7 +60,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       disableErrorMessages: true,
-    }),
+    })
   );
 
   const config = new DocumentBuilder()
