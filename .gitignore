@@ -35,6 +35,3 @@ lerna-debug.log*
 
 # Generated code
 src/@generated/*
-
-# Key files
-certs/*
