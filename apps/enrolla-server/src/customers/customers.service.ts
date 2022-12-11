@@ -1,20 +1,20 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
-import { SchemasService } from 'src/schemas/schemas.service';
 import Ajv from 'ajv';
 import { Prisma } from '@prisma/client';
+import { PrismaService } from '../prisma.service';
+import { SchemasService } from '../schemas/schemas.service';
 
 @Injectable()
 export class CustomersService {
   constructor(
     private prismaService: PrismaService,
-    private schemasService: SchemasService,
+    private schemasService: SchemasService
   ) {}
 
   async create(tenantId: string, configuration: Record<string, unknown>) {
     const tenantSchema = await this.schemasService.findOneByTenant(tenantId);
     const compiledSchema = new Ajv().compile(
-      tenantSchema.schema as Prisma.JsonObject,
+      tenantSchema.schema as Prisma.JsonObject
     );
     const validConfiguration = compiledSchema(configuration);
 
@@ -23,7 +23,7 @@ export class CustomersService {
       throw new BadRequestException(
         compiledSchema.errors.map((e) => {
           return { path: e.instancePath, error: e.message };
-        }),
+        })
       );
     }
 
@@ -59,11 +59,11 @@ export class CustomersService {
   async patch(
     tenantId: string,
     customerId: string,
-    configuration: Record<string, unknown>,
+    configuration: Record<string, unknown>
   ) {
     const tenantSchema = await this.schemasService.findOneByTenant(tenantId);
     const compiledSchema = new Ajv().compile(
-      tenantSchema.schema as Prisma.JsonObject,
+      tenantSchema.schema as Prisma.JsonObject
     );
     const validConfiguration = compiledSchema(configuration);
 
@@ -72,7 +72,7 @@ export class CustomersService {
       throw new BadRequestException(
         compiledSchema.errors.map((e) => {
           return { path: e.instancePath, error: e.message };
-        }),
+        })
       );
     }
 
