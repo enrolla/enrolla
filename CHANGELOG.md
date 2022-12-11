@@ -1,3 +1,12 @@
+# [0.2.0](https://github.com/vecinity/customeric-server/compare/0.1.2...0.2.0) (2022-12-11)
+
+
+### Features
+
+* **github:** integrate customeric github app webhooks ([#7](https://github.com/vecinity/customeric-server/issues/7)) ([d3bc8f0](https://github.com/vecinity/customeric-server/commit/d3bc8f08d8502fcac514c3dd19b9c3845b5f4845))
+
+
+
 ## [0.1.2](https://github.com/vecinity/customeric-server/compare/0.1.1...0.1.2) (2022-12-08)
 
 
