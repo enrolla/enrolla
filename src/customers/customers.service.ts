@@ -55,4 +55,35 @@ export class CustomersService {
       where: { id: customerId },
     });
   }
+
+  async patch(
+    tenantId: string,
+    customerId: string,
+    configuration: Record<string, unknown>,
+  ) {
+    const tenantSchema = await this.schemasService.findOneByTenant(tenantId);
+    const compiledSchema = new Ajv().compile(
+      tenantSchema.schema as Prisma.JsonObject,
+    );
+    const validConfiguration = compiledSchema(configuration);
+
+    if (!validConfiguration) {
+      // TODO: replace with dedicated exception and return BadRequest in controller level
+      throw new BadRequestException(
+        compiledSchema.errors.map((e) => {
+          return { path: e.instancePath, error: e.message };
+        }),
+      );
+    }
+
+    return this.prismaService.customer.update({
+      where: { id: customerId },
+      data: {
+        configuration: configuration as Prisma.JsonObject,
+        tenantId: tenantId,
+        schemaId: tenantSchema.id,
+        schemaTag: 'v1.0.0',
+      },
+    });
+  }
 }

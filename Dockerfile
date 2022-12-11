@@ -43,9 +43,6 @@ RUN npx prisma generate
 # Run the build command which creates the production bundle
 RUN npm run build
 
-# Set NODE_ENV environment variable
-ENV NODE_ENV production
-
 RUN mv node_modules/.prisma/ .prisma/
 
 # Running `npm ci` removes the existing node_modules directory and passing in --omit=dev ensures that only the production dependencies are installed. This ensures that the node_modules directory is as optimized as possible
@@ -66,8 +63,11 @@ COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 COPY --chown=node:node --from=build /usr/src/app/.prisma ./node_modules/.prisma
 COPY --chown=node:node --from=build /usr/src/app/package*.json ./
+COPY --chown=node:node --from=build /usr/src/app/prisma ./prisma
 
+ENV NODE_ENV production
 ENV SERVER_PORT 3000
+
 EXPOSE 3000
 
 # Start the server using the production build
