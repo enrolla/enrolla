@@ -43,14 +43,14 @@ export class GithubMiddleware implements NestMiddleware {
         (commit: any) =>
           commit.added.includes('schema.json') ||
           commit.modified.includes('schema.json') ||
-          commit.removed.includes('schema.json'),
+          commit.removed.includes('schema.json')
       )
     ) {
       return;
     }
 
     const octokit = await this.app.getInstallationOctokit(
-      event.payload.installation.id,
+      event.payload.installation.id
     );
 
     const schema = await octokit.rest.repos.getContent({

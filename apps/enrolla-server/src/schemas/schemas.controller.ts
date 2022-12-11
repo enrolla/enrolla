@@ -23,7 +23,7 @@ export default class SchemasController {
   async create(@Request() request, @Body() createSchemaDto: CreateSchemaDto) {
     return await this.schemasService.create(
       request.user.org_id,
-      createSchemaDto.schema,
+      createSchemaDto.schema
     );
   }
 
