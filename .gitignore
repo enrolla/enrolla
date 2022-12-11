@@ -4,6 +4,7 @@
 dist
 tmp
 /out-tsc
+.nx-container
 
 # dependencies
 node_modules

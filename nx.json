@@ -1,6 +1,13 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "npmScope": "enrolla",
+  "implicitDependencies": {
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    ".eslintrc.json": "*"
+  },
   "tasksRunnerOptions": {
     "default": {
       "runner": "nx/tasks-runners/default",
@@ -22,6 +29,9 @@
     },
     "serve": {
       "dependsOn": ["prisma-generate"]
+    },
+    "container": {
+      "dependsOn": ["build"]
     }
   },
   "namedInputs": {
