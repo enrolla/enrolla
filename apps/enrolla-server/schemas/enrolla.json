@@ -1,0 +1,14 @@
+{
+  "title": "Tenant",
+  "type": "object",
+  "properties": {
+    "orgId": {
+      "description": "Auth0 Organization ID",
+      "type": "string"
+    },
+    "schemaPath": {
+      "type": "string"
+    }
+  },
+  "required": ["orgId"]
+}
