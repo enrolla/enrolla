@@ -1,3 +1,12 @@
+## [0.3.2](https://github.com/vecinity/enrolla/compare/0.3.1...0.3.2) (2022-12-12)
+
+
+### Bug Fixes
+
+* missing openssl in Dockerfile required for prisma ([d1a4371](https://github.com/vecinity/enrolla/commit/d1a437148854be30d61354f4c89ddce35ac87941))
+
+
+
 ## [0.3.1](https://github.com/vecinity/enrolla/compare/0.3.0...0.3.1) (2022-12-12)
 
 
@@ -37,15 +46,6 @@
 ### Bug Fixes
 
 * missing files for prisma migrate to work properly in Docker ([7e2443f](https://github.com/vecinity/enrolla/commit/7e2443f4ff8cda137ca45ff75be11496e9b6efcf))
-
-
-
-## [0.1.1](https://github.com/vecinity/enrolla/compare/0.1.0...0.1.1) (2022-12-08)
-
-
-### Bug Fixes
-
-* winston logger for json-formatting in production ([2d4538c](https://github.com/vecinity/enrolla/commit/2d4538c3afc7e37c801b679ad3df97fdd97f2d07))
 
 
 
