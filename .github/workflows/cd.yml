@@ -55,9 +55,11 @@ jobs:
         id: meta
         with:
           images: ${{ steps.login-ecr.outputs.registry }}/customeric-server
+          flavor: |
+            latest=true
           tags: |
             type=sha,prefix=sha-
-            type=semver,pattern=${{ needs.release.outputs.tag }}
+            type=raw,value=${{ needs.release.outputs.tag }}
 
       - name: 'Build images'
         run: npx nx run-many --target=container --parallel=2
