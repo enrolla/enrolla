@@ -1,3 +1,12 @@
+## [0.3.3](https://github.com/vecinity/enrolla/compare/0.3.2...0.3.3) (2022-12-12)
+
+
+### Bug Fixes
+
+* re-added schema migration in dockerfile ([8623b8d](https://github.com/vecinity/enrolla/commit/8623b8d5537c6bb24cbcdfc05cc37a9333134f5a))
+
+
+
 ## [0.3.2](https://github.com/vecinity/enrolla/compare/0.3.1...0.3.2) (2022-12-12)
 
 
@@ -37,15 +46,6 @@
 ### Features
 
 * **github:** integrate customeric github app webhooks ([#7](https://github.com/vecinity/enrolla/issues/7)) ([d3bc8f0](https://github.com/vecinity/enrolla/commit/d3bc8f08d8502fcac514c3dd19b9c3845b5f4845))
-
-
-
-## [0.1.2](https://github.com/vecinity/enrolla/compare/0.1.1...0.1.2) (2022-12-08)
-
-
-### Bug Fixes
-
-* missing files for prisma migrate to work properly in Docker ([7e2443f](https://github.com/vecinity/enrolla/commit/7e2443f4ff8cda137ca45ff75be11496e9b6efcf))
 
 
 
