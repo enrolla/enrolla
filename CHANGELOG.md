@@ -1,3 +1,12 @@
+## [0.3.4](https://github.com/vecinity/enrolla/compare/0.3.3...0.3.4) (2022-12-12)
+
+
+### Bug Fixes
+
+* version tagging in docker ([bcae345](https://github.com/vecinity/enrolla/commit/bcae3457dd0c154727a595a73980207737373fee))
+
+
+
 ## [0.3.3](https://github.com/vecinity/enrolla/compare/0.3.2...0.3.3) (2022-12-12)
 
 
@@ -37,15 +46,6 @@
 ### Features
 
 * nx monorepo ([b37adf2](https://github.com/vecinity/enrolla/commit/b37adf28b832f97d68f6cf39c2cea8b48f4e6fa3))
-
-
-
-# [0.2.0](https://github.com/vecinity/enrolla/compare/0.1.2...0.2.0) (2022-12-11)
-
-
-### Features
-
-* **github:** integrate customeric github app webhooks ([#7](https://github.com/vecinity/enrolla/issues/7)) ([d3bc8f0](https://github.com/vecinity/enrolla/commit/d3bc8f08d8502fcac514c3dd19b9c3845b5f4845))
 
 
 
