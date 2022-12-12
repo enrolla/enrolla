@@ -6,6 +6,6 @@ import { SchemasService } from '../schemas/schemas.service';
 
 @Module({
   providers: [GithubService, PrismaService, SchemasService],
-  controllers: [GithubController]
+  controllers: [GithubController],
 })
 export class GithubModule {}

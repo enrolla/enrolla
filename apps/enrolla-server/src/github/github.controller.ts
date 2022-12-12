@@ -8,16 +8,16 @@ import { GithubService } from './github.service';
 @UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth()
 export class GithubController {
-    constructor(private githubService: GithubService) {}
+  constructor(private githubService: GithubService) {}
 
-    @Post('organizations')
-    async create(
-        @Request() request,
-        @Body() createOrganizationDto: CreateOrganizationDto
-    ) {
-        return await this.githubService.createOrganization(
-            createOrganizationDto.id,
-            request.user.org_id
-        );
-    }
+  @Post('organizations')
+  async create(
+    @Request() request,
+    @Body() createOrganizationDto: CreateOrganizationDto
+  ) {
+    return await this.githubService.createOrganization(
+      createOrganizationDto.id,
+      request.user.org_id
+    );
+  }
 }

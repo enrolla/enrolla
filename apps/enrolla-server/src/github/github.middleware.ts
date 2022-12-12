@@ -10,7 +10,10 @@ export class GithubMiddleware implements NestMiddleware {
   octokitMiddleware;
   privateKey: string;
 
-  constructor(private githubService: GithubService, private schemasService: SchemasService) {
+  constructor(
+    private githubService: GithubService,
+    private schemasService: SchemasService
+  ) {
     this.app = new App({
       appId: env.GITHUB_APP_ID,
       privateKey: env.GITHUB_APP_PRIVATE_KEY.replace(/\\n/g, '\n'),
@@ -67,7 +70,10 @@ export class GithubMiddleware implements NestMiddleware {
       ref: 'refs/heads/main',
     });
 
-    this.schemasService.create(githubOrganization.tenantId, JSON.parse(Buffer.from(schema.data.content, 'base64').toString()));
+    this.schemasService.create(
+      githubOrganization.tenantId,
+      JSON.parse(Buffer.from(schema.data.content, 'base64').toString())
+    );
 
     return;
   }
