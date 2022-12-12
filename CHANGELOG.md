@@ -1,3 +1,12 @@
+# [0.4.0](https://github.com/vecinity/enrolla/compare/0.3.5...0.4.0) (2022-12-12)
+
+
+### Features
+
+* **server:github:** add github organization to tenant association and persist schemas from github  ([#9](https://github.com/vecinity/enrolla/issues/9)) ([3a1a6df](https://github.com/vecinity/enrolla/commit/3a1a6dfa24828abef575ef6ceced703497383a35))
+
+
+
 ## [0.3.5](https://github.com/vecinity/enrolla/compare/0.3.4...0.3.5) (2022-12-12)
 
 
@@ -31,15 +40,6 @@
 ### Bug Fixes
 
 * missing openssl in Dockerfile required for prisma ([d1a4371](https://github.com/vecinity/enrolla/commit/d1a437148854be30d61354f4c89ddce35ac87941))
-
-
-
-## [0.3.1](https://github.com/vecinity/enrolla/compare/0.3.0...0.3.1) (2022-12-12)
-
-
-### Bug Fixes
-
-* docker deploy with NX ([b298652](https://github.com/vecinity/enrolla/commit/b2986525134cb94f400166edafd73fe45697541f))
 
 
 
