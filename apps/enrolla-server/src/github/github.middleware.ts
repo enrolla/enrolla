@@ -1,9 +1,8 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { App, createNodeMiddleware, Octokit } from 'octokit';
 import { env } from 'process';
-import { createAppAuth } from '@octokit/auth-app';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { SchemasService } from '../schemas/schemas.service';
+import { GithubService } from './github.service';
 
 @Injectable()
 export class GithubMiddleware implements NestMiddleware {
@@ -11,7 +10,10 @@ export class GithubMiddleware implements NestMiddleware {
   octokitMiddleware;
   privateKey: string;
 
-  constructor() {
+  constructor(
+    private githubService: GithubService,
+    private schemasService: SchemasService
+  ) {
     this.app = new App({
       appId: env.GITHUB_APP_ID,
       privateKey: env.GITHUB_APP_PRIVATE_KEY.replace(/\\n/g, '\n'),
@@ -49,6 +51,14 @@ export class GithubMiddleware implements NestMiddleware {
       return;
     }
 
+    const githubOrganization = await this.githubService.findByOrganizationId(
+      event.payload.organization.id
+    );
+
+    if (!githubOrganization) {
+      return;
+    }
+
     const octokit = await this.app.getInstallationOctokit(
       event.payload.installation.id
     );
@@ -60,6 +70,11 @@ export class GithubMiddleware implements NestMiddleware {
       ref: 'refs/heads/main',
     });
 
-    console.log(Buffer.from(schema.data.content, 'base64').toString('utf-8'));
+    this.schemasService.create(
+      githubOrganization.tenantId,
+      JSON.parse(Buffer.from(schema.data.content, 'base64').toString())
+    );
+
+    return;
   }
 }
