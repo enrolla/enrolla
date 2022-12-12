@@ -40,4 +40,4 @@ testem.log
 Thumbs.db
 
 # Environtment file
- .env
+*.env

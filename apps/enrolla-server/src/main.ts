@@ -9,7 +9,6 @@ import {
 import { env } from 'process';
 import * as winston from 'winston';
 import { AppModule } from './app.module';
-import { App, createNodeMiddleware } from 'octokit';
 
 function createLogger(
   serviceName: string,

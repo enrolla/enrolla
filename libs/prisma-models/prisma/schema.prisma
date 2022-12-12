@@ -33,3 +33,10 @@ model Schema {
 
   @@map("schemas")
 }
+
+model GithubOrganization {
+  id               Int           @unique
+  tenantId         String        @unique @map("tenant_id")
+
+  @@map("github_organizations")
+}
