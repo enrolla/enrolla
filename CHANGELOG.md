@@ -1,3 +1,12 @@
+# [0.5.0](https://github.com/vecinity/enrolla/compare/0.4.0...0.5.0) (2022-12-13)
+
+
+### Features
+
+* enrolla sdk ([6281ef7](https://github.com/vecinity/enrolla/commit/6281ef75cc6e768df8ac72e549d249f51c16ef55))
+
+
+
 # [0.4.0](https://github.com/vecinity/enrolla/compare/0.3.5...0.4.0) (2022-12-12)
 
 
@@ -31,15 +40,6 @@
 ### Bug Fixes
 
 * re-added schema migration in dockerfile ([8623b8d](https://github.com/vecinity/enrolla/commit/8623b8d5537c6bb24cbcdfc05cc37a9333134f5a))
-
-
-
-## [0.3.2](https://github.com/vecinity/enrolla/compare/0.3.1...0.3.2) (2022-12-12)
-
-
-### Bug Fixes
-
-* missing openssl in Dockerfile required for prisma ([d1a4371](https://github.com/vecinity/enrolla/commit/d1a437148854be30d61354f4c89ddce35ac87941))
 
 
 
