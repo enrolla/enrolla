@@ -14,14 +14,8 @@ export class GithubService {
   }
 
   async createOrganization(organizationId: number, tenantId: string) {
-    return await this.prismaService.githubOrganization.upsert({
-      where: {
-        id: organizationId,
-      },
-      update: {
-        tenantId,
-      },
-      create: {
+    return await this.prismaService.githubOrganization.create({
+      data: {
         id: organizationId,
         tenantId,
       },
