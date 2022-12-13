@@ -11,11 +11,14 @@ export class CustomersApiController {
 
   @Get()
   async findAll(@Request() request) {
-    return await this.customersService.findAll(request.user.org_id);
+    return (await this.customersService.findAll(request.user.org_id)).map(
+      (customer) => (customer.id, customer.configuration)
+    );
   }
 
   @Get(':id')
   async findById(@Request() request, @Param('id') id: string) {
-    return await this.customersService.findById(request.user.org_id, id);
+    return (await this.customersService.findById(request.user.org_id, id))
+      .configuration;
   }
 }
