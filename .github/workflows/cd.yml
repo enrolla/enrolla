@@ -35,7 +35,7 @@ jobs:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
-      - run: nx publish enrolla-ts-sdk --ver=${{ needs.release.outputs.tag }}
+      - run: npx nx publish enrolla-ts-sdk --ver=${{ needs.release.outputs.tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
