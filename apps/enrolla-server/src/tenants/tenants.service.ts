@@ -18,11 +18,19 @@ export class TenantsService {
     organizationName: string,
     githubInstallationId: number
   ) {
-    const organization = this.auth0ManagementClient.organizations.create({
+    const organization = await this.auth0ManagementClient.organizations.create({
       name: organizationName,
     });
 
-    this.auth0ManagementClient.organizations.addMembers(
+    await this.auth0ManagementClient.organizations.addEnabledConnection(
+      { id: organization.id },
+      {
+        connection_id: env.AUTH0_GOOGLE_OAUTH2_CONNECTION_ID,
+        assign_membership_on_login: false,
+      }
+    );
+
+    await this.auth0ManagementClient.organizations.addMembers(
       { id: organization.id },
       {
         members: [userId],
