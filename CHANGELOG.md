@@ -1,9 +1,13 @@
+# [0.6.0](https://github.com/vecinity/enrolla/compare/0.5.0...0.6.0) (2022-12-13)
+
+
+### Features
+
+* customer config api + tenant registration ([#11](https://github.com/vecinity/enrolla/issues/11)) ([5e8fbbe](https://github.com/vecinity/enrolla/commit/5e8fbbe62b0ec60ec96a5674b1e1dddc48286f36))
+
+
+
 # [0.5.0](https://github.com/vecinity/enrolla/compare/0.4.0...0.5.0) (2022-12-13)
-
-
-### Bug Fixes
-
-* typo on cd.yml ([e492ef8](https://github.com/vecinity/enrolla/commit/e492ef8e5e9b725ead1c7a674c5010846096abb1))
 
 
 ### Features
@@ -36,15 +40,6 @@
 ### Bug Fixes
 
 * version tagging in docker ([bcae345](https://github.com/vecinity/enrolla/commit/bcae3457dd0c154727a595a73980207737373fee))
-
-
-
-## [0.3.3](https://github.com/vecinity/enrolla/compare/0.3.2...0.3.3) (2022-12-12)
-
-
-### Bug Fixes
-
-* re-added schema migration in dockerfile ([8623b8d](https://github.com/vecinity/enrolla/commit/8623b8d5537c6bb24cbcdfc05cc37a9333134f5a))
 
 
 
