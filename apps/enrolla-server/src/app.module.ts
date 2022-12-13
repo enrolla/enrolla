@@ -9,6 +9,7 @@ import { GithubMiddleware } from './github/github.middleware';
 import { GithubService } from './github/github.service';
 import { PrismaService } from './prisma.service';
 import { SchemasService } from './schemas/schemas.service';
+import { TenantsModule } from './tenants/tenants.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { SchemasService } from './schemas/schemas.service';
     CustomersModule,
     AuthzModule,
     GithubModule,
+    TenantsModule,
   ],
   providers: [GithubService, PrismaService, SchemasService],
   controllers: [AppController],

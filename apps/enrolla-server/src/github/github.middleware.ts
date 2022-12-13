@@ -52,7 +52,7 @@ export class GithubMiddleware implements NestMiddleware {
     }
 
     const githubOrganization = await this.githubService.findByOrganizationId(
-      event.payload.organization.id
+      event.payload.installation.id
     );
 
     if (!githubOrganization) {

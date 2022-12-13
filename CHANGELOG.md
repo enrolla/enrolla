@@ -1,6 +1,11 @@
 # [0.5.0](https://github.com/vecinity/enrolla/compare/0.4.0...0.5.0) (2022-12-13)
 
 
+### Bug Fixes
+
+* typo on cd.yml ([e492ef8](https://github.com/vecinity/enrolla/commit/e492ef8e5e9b725ead1c7a674c5010846096abb1))
+
+
 ### Features
 
 * enrolla sdk ([6281ef7](https://github.com/vecinity/enrolla/commit/6281ef75cc6e768df8ac72e549d249f51c16ef55))

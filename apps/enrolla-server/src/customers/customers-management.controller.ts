@@ -17,7 +17,7 @@ import { CustomersService } from './customers.service';
 @Controller({ path: 'management/customers', version: '1' })
 @UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth()
-export class CustomersController {
+export class CustomersManagementController {
   constructor(private customersService: CustomersService) {}
 
   @Post()
