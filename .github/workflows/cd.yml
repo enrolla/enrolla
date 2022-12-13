@@ -87,7 +87,7 @@ jobs:
 
   deploy-docker:
     name: Deploy to staging
-    needs: [release, publish]
+    needs: [release, publish-docker]
     if: ${{ needs.release.outputs.tag != '' }}
     runs-on: ubuntu-latest
     steps:
