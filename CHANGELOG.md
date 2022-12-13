@@ -1,3 +1,12 @@
+## [0.6.1](https://github.com/vecinity/enrolla/compare/0.6.0...0.6.1) (2022-12-13)
+
+
+### Bug Fixes
+
+* **github:** replace github org upsert with create ([bbeb807](https://github.com/vecinity/enrolla/commit/bbeb807b99c7f069ec81e9856db80648decd9728))
+
+
+
 # [0.6.0](https://github.com/vecinity/enrolla/compare/0.5.0...0.6.0) (2022-12-13)
 
 
@@ -31,15 +40,6 @@
 ### Bug Fixes
 
 * prisma client generation for wrong arch ([af597cb](https://github.com/vecinity/enrolla/commit/af597cb5e6d53bfd7f08eb8d5ff6032c16175bf4))
-
-
-
-## [0.3.4](https://github.com/vecinity/enrolla/compare/0.3.3...0.3.4) (2022-12-12)
-
-
-### Bug Fixes
-
-* version tagging in docker ([bcae345](https://github.com/vecinity/enrolla/commit/bcae3457dd0c154727a595a73980207737373fee))
 
 
 
