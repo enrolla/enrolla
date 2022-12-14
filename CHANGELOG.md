@@ -1,3 +1,12 @@
+# [0.7.0](https://github.com/vecinity/enrolla/compare/0.6.2...0.7.0) (2022-12-14)
+
+
+### Features
+
+* **customer:** support environment declaration for customer config + filtering by env ([#15](https://github.com/vecinity/enrolla/issues/15)) ([f66739f](https://github.com/vecinity/enrolla/commit/f66739f9588c8c91e457eb3d0b5360e834525884))
+
+
+
 ## [0.6.2](https://github.com/vecinity/enrolla/compare/0.6.1...0.6.2) (2022-12-14)
 
 
@@ -31,15 +40,6 @@
 ### Features
 
 * enrolla sdk ([6281ef7](https://github.com/vecinity/enrolla/commit/6281ef75cc6e768df8ac72e549d249f51c16ef55))
-
-
-
-# [0.4.0](https://github.com/vecinity/enrolla/compare/0.3.5...0.4.0) (2022-12-12)
-
-
-### Features
-
-* **server:github:** add github organization to tenant association and persist schemas from github  ([#9](https://github.com/vecinity/enrolla/issues/9)) ([3a1a6df](https://github.com/vecinity/enrolla/commit/3a1a6dfa24828abef575ef6ceced703497383a35))
 
 
 
