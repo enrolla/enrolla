@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateOrganizationDto {
+export class RegisterInstallationDto {
   @ApiProperty()
   id: number;
 }

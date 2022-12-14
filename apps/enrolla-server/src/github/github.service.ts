@@ -5,18 +5,21 @@ import { PrismaService } from '../prisma.service';
 export class GithubService {
   constructor(private prismaService: PrismaService) {}
 
-  async findByOrganizationId(id: number) {
-    return await this.prismaService.githubOrganization.findUnique({
+  async findTenatByInstallationId(id: number) {
+    return await this.prismaService.githubInstallation.findUnique({
       where: {
         id,
+      },
+      select: {
+        tenantId: true,
       },
     });
   }
 
-  async createOrganization(organizationId: number, tenantId: string) {
-    return await this.prismaService.githubOrganization.create({
+  async registerInstallation(installationId: number, tenantId: string) {
+    return await this.prismaService.githubInstallation.create({
       data: {
-        id: organizationId,
+        id: installationId,
         tenantId,
       },
     });
