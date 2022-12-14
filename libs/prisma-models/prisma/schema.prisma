@@ -12,16 +12,17 @@ datasource db {
 }
 
 model Customer {
-  id            String   @id @default(cuid())
-  tenantId      String   @map("tenant_id")
+  id            String      @id @default(cuid())
+  tenantId      String      @map("tenant_id")
+  environment   Environment @default(STAGING)
   configuration Json
-  version       Int      @default(1)
-  schema        Schema?  @relation(fields: [schemaId], references: [id])
+  version       Int         @default(1)
+  schema        Schema?     @relation(fields: [schemaId], references: [id])
   // TODO: Make schema required once we have a way to create a schema
-  schemaId      String?  @map("schema_id")
-  schemaTag     String   @map("schema_tag")
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @default(now()) @map("updated_at")
+  schemaId      String?     @map("schema_id")
+  schemaTag     String      @map("schema_tag")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @default(now()) @map("updated_at")
 
   @@map("customers")
 }
@@ -42,4 +43,10 @@ model GithubInstallation {
   tenantId         String        @unique @map("tenant_id")
 
   @@map("github_installations")
+}
+
+enum Environment {
+  DEV
+  STAGING
+  PRODUCTION
 }

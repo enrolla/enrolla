@@ -6,11 +6,14 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { Environment } from '@prisma/client';
+import { env } from 'process';
 import { CreateCustomerDto } from './create-customer.dto';
 import { CustomersService } from './customers.service';
 
@@ -25,15 +28,19 @@ export class CustomersManagementController {
     @Request() request,
     @Body() createCustomerDto: CreateCustomerDto
   ) {
+    const { configuration, environment } = createCustomerDto;
+
     return await this.customersService.create(
       request.user.org_id,
-      createCustomerDto.configuration
+      environment,
+      configuration
     );
   }
 
   @Get()
-  async findAll(@Request() request) {
-    return await this.customersService.findAll(request.user.org_id);
+  @ApiQuery({ name: 'env', enum: Environment, required: false })
+  async findAll(@Request() request, @Query('env') env?: Environment) {
+    return await this.customersService.findAll(request.user.org_id, env);
   }
 
   @Get(':id')

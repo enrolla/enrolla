@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import Ajv from 'ajv';
-import { Prisma } from '@prisma/client';
+import { Environment, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
 import { SchemasService } from '../schemas/schemas.service';
 
@@ -11,7 +11,11 @@ export class CustomersService {
     private schemasService: SchemasService
   ) {}
 
-  async create(tenantId: string, configuration: Record<string, unknown>) {
+  async create(
+    tenantId: string,
+    env: Environment,
+    configuration: Record<string, unknown>
+  ) {
     const tenantSchema = await this.schemasService.findOneByTenant(tenantId);
     const compiledSchema = new Ajv().compile(
       tenantSchema.schema as Prisma.JsonObject
@@ -33,13 +37,16 @@ export class CustomersService {
         tenantId: tenantId,
         schemaId: tenantSchema.id,
         schemaTag: 'v1.0.0',
+        environment: env ? env : Environment.STAGING,
       },
     });
   }
 
-  async findAll(tenantId: string) {
+  async findAll(tenantId: string, env?: Environment) {
+    const whereClause = env ? { tenantId, environment: env } : { tenantId };
+
     return await this.prismaService.customer.findMany({
-      where: { tenantId: tenantId },
+      where: whereClause,
     });
   }
 
