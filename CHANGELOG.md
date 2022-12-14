@@ -1,3 +1,12 @@
+## [0.6.2](https://github.com/vecinity/enrolla/compare/0.6.1...0.6.2) (2022-12-14)
+
+
+### Bug Fixes
+
+* **github:** refactor webhook handling and fix schemas persistency ([#14](https://github.com/vecinity/enrolla/issues/14)) ([b90ac5d](https://github.com/vecinity/enrolla/commit/b90ac5df9b666655c65f9f3ac7089f049b877e23))
+
+
+
 ## [0.6.1](https://github.com/vecinity/enrolla/compare/0.6.0...0.6.1) (2022-12-13)
 
 
@@ -31,15 +40,6 @@
 ### Features
 
 * **server:github:** add github organization to tenant association and persist schemas from github  ([#9](https://github.com/vecinity/enrolla/issues/9)) ([3a1a6df](https://github.com/vecinity/enrolla/commit/3a1a6dfa24828abef575ef6ceced703497383a35))
-
-
-
-## [0.3.5](https://github.com/vecinity/enrolla/compare/0.3.4...0.3.5) (2022-12-12)
-
-
-### Bug Fixes
-
-* prisma client generation for wrong arch ([af597cb](https://github.com/vecinity/enrolla/commit/af597cb5e6d53bfd7f08eb8d5ff6032c16175bf4))
 
 
 
