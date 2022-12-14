@@ -6,11 +6,22 @@ import { PrismaService } from '../prisma.service';
 export class SchemasService {
   constructor(private prismaService: PrismaService) {}
 
-  async create(tenantId: string, schema: Record<string, unknown>) {
-    return await this.prismaService.schema.create({
-      data: {
-        schema: schema as Prisma.JsonObject,
-        tenantId: tenantId,
+  async upsert(
+    tenantId: string,
+    name: string,
+    configuration: Record<string, unknown>
+  ) {
+    return await this.prismaService.schema.upsert({
+      where: { tenantId_name: { tenantId, name } },
+      create: {
+        tenantId,
+        name,
+        schema: configuration as Prisma.JsonObject,
+      },
+      update: {
+        tenantId,
+        name,
+        schema: configuration as Prisma.JsonObject,
       },
     });
   }

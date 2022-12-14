@@ -51,11 +51,11 @@ export class GithubMiddleware implements NestMiddleware {
       return;
     }
 
-    const githubOrganization = await this.githubService.findByOrganizationId(
+    const { tenantId } = await this.githubService.findTenatByInstallationId(
       event.payload.installation.id
     );
 
-    if (!githubOrganization) {
+    if (!tenantId) {
       return;
     }
 
@@ -63,18 +63,54 @@ export class GithubMiddleware implements NestMiddleware {
       event.payload.installation.id
     );
 
-    const schema = await octokit.rest.repos.getContent({
-      owner: event.payload.repository.owner.login,
-      repo: event.payload.repository.name,
-      path: 'schema.json',
-      ref: 'refs/heads/main',
-    });
-
-    this.schemasService.create(
-      githubOrganization.tenantId,
-      JSON.parse(Buffer.from(schema.data.content, 'base64').toString())
+    this.handleSchemaChange(
+      octokit,
+      tenantId,
+      event.payload.repository.name,
+      event.payload.repository.owner.login,
+      'schema.json'
     );
 
     return;
+  }
+
+  async handleSchemaChange(
+    installationOctokit: any,
+    tenantId: string,
+    repository: string,
+    ownerLogin: string,
+    schemaPath: string
+  ) {
+    const schema = await this.retriveSchemaContent(
+      installationOctokit,
+      repository,
+      ownerLogin,
+      schemaPath
+    );
+    const schemaName = this.extractSchemaName(schema);
+
+    return await this.schemasService.upsert(tenantId, schemaName, schema);
+  }
+
+  async retriveSchemaContent(
+    installationOctokit: any,
+    repository: string,
+    ownerLogin: string,
+    schemaPath: string
+  ): Promise<any> {
+    const file = await installationOctokit.rest.repos.getContent({
+      owner: ownerLogin,
+      repo: repository,
+      path: schemaPath,
+      ref: 'refs/heads/main',
+    });
+
+    return JSON.parse(Buffer.from(file.data.content, 'base64').toString());
+  }
+
+  extractSchemaName(schema: any): string {
+    const schemaName: string = schema['type'] || 'customer';
+
+    return schemaName.toLowerCase();
   }
 }

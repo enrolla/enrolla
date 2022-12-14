@@ -37,7 +37,7 @@ export class TenantsService {
       }
     );
 
-    await this.githubService.createOrganization(
+    await this.githubService.registerInstallation(
       githubInstallationId,
       organization.id
     );
