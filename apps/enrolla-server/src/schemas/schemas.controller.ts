@@ -21,8 +21,9 @@ export default class SchemasController {
 
   @Post()
   async create(@Request() request, @Body() createSchemaDto: CreateSchemaDto) {
-    return await this.schemasService.create(
+    return await this.schemasService.upsert(
       request.user.org_id,
+      createSchemaDto.name,
       createSchemaDto.schema
     );
   }

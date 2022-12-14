@@ -1,7 +1,7 @@
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { CreateOrganizationDto } from './create-organization.dto';
+import { RegisterInstallationDto } from './register-installation.dto';
 import { GithubService } from './github.service';
 
 @Controller({ path: 'management/github', version: '1' })
@@ -10,12 +10,12 @@ import { GithubService } from './github.service';
 export class GithubController {
   constructor(private githubService: GithubService) {}
 
-  @Post('organizations')
-  async create(
+  @Post('installations')
+  async register(
     @Request() request,
-    @Body() createOrganizationDto: CreateOrganizationDto
+    @Body() createOrganizationDto: RegisterInstallationDto
   ) {
-    return await this.githubService.createOrganization(
+    return await this.githubService.registerInstallation(
       createOrganizationDto.id,
       request.user.org_id
     );
