@@ -20,8 +20,8 @@ export class GithubMiddleware implements NestMiddleware {
       webhooks: { secret: env.GITHUB_APP_WEBHOOK_SECRET },
       oauth: {
         clientId: env.GITHUB_APP_CLIENT_ID,
-        clientSecret: env.GITHUB_APP_CLIENT_SECRET
-      }
+        clientSecret: env.GITHUB_APP_CLIENT_SECRET,
+      },
     });
     this.octokitMiddleware = createNodeMiddleware(this.app);
     this.app.webhooks.on('push', this.handlePushEvent.bind(this));
@@ -102,7 +102,7 @@ export class GithubMiddleware implements NestMiddleware {
       owner: ownerLogin,
       repo: repository,
       path: schemaPath,
-      ref: 'refs/heads/main'
+      ref: 'refs/heads/main',
     });
 
     return JSON.parse(Buffer.from(file.data.content, 'base64').toString());

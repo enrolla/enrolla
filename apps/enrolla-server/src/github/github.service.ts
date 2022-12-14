@@ -8,11 +8,11 @@ export class GithubService {
   async findTenatByInstallationId(id: number) {
     return await this.prismaService.githubInstallation.findUnique({
       where: {
-        id
+        id,
       },
       select: {
-        tenantId: true
-      }
+        tenantId: true,
+      },
     });
   }
 
@@ -20,8 +20,8 @@ export class GithubService {
     return await this.prismaService.githubInstallation.create({
       data: {
         id: installationId,
-        tenantId
-      }
+        tenantId,
+      },
     });
   }
 }
