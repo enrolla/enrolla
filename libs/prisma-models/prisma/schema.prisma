@@ -17,6 +17,7 @@ model Customer {
   configuration Json
   version       Int      @default(1)
   schema        Schema?  @relation(fields: [schemaId], references: [id])
+  environment   String   @default("staging")
   // TODO: Make schema required once we have a way to create a schema
   schemaId      String?  @map("schema_id")
   schemaTag     String   @map("schema_tag")
@@ -36,8 +37,8 @@ model Schema {
 }
 
 model GithubOrganization {
-  id               Int           @unique
-  tenantId         String        @unique @map("tenant_id")
+  id       Int    @unique
+  tenantId String @unique @map("tenant_id")
 
   @@map("github_organizations")
 }
