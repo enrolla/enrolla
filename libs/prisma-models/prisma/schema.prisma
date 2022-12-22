@@ -10,3 +10,22 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum FeatureType {
+  INTEGER
+  FLOAT
+  STRING
+  BOOLEAN
+  JSON
+}
+
+model Feature {
+  id             String     @id @default(cuid())
+  tenantId       String     @map("tenant_id")
+  key            String
+  type           FeatureType
+  description    String?
+  createdAt      DateTime   @default(now()) @map("created_at")
+
+  @@map("features")
+}
