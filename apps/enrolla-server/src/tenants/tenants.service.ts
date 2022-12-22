@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ManagementClient } from 'auth0';
 import { env } from 'process';
-import { GithubService } from '../github/github.service';
 
 @Injectable()
 export class TenantsService {
@@ -11,12 +10,9 @@ export class TenantsService {
     clientSecret: env.AUTH0_CLIENT_SECRET,
   });
 
-  constructor(private githubService: GithubService) {}
-
   async register(
     userId: string,
-    organizationName: string,
-    githubInstallationId: number
+    organizationName: string
   ) {
     const organization = await this.auth0ManagementClient.organizations.create({
       name: organizationName,
@@ -35,11 +31,6 @@ export class TenantsService {
       {
         members: [userId],
       }
-    );
-
-    await this.githubService.registerInstallation(
-      githubInstallationId,
-      organization.id
     );
   }
 }

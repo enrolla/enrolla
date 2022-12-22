@@ -2,11 +2,7 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { SchemasModule } from './schemas/schemas.module';
-import { CustomersModule } from './customers/customers.module';
 import { AuthzModule } from './authz/authz.module';
-import { GithubModule } from './github/github.module';
-import { GithubMiddleware } from './github/github.middleware';
-import { GithubService } from './github/github.service';
 import { PrismaService } from './prisma.service';
 import { SchemasService } from './schemas/schemas.service';
 import { TenantsModule } from './tenants/tenants.module';
@@ -15,9 +11,7 @@ import { TenantsModule } from './tenants/tenants.module';
   imports: [
     ConfigModule.forRoot(),
     SchemasModule,
-    CustomersModule,
     AuthzModule,
-    GithubModule,
     TenantsModule,
   ],
   providers: [GithubService, PrismaService, SchemasService],
