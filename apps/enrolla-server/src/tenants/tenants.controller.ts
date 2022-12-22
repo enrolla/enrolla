@@ -14,7 +14,7 @@ export class TenantsController {
   async register(@Request() request, @Body() createTenantDto: CreateTenantDto) {
     return await this.tenantService.register(
       request.user.sub,
-      createTenantDto.organizationName,
+      createTenantDto.organizationName
     );
   }
 }

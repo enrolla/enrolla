@@ -10,10 +10,7 @@ export class TenantsService {
     clientSecret: env.AUTH0_CLIENT_SECRET,
   });
 
-  async register(
-    userId: string,
-    organizationName: string
-  ) {
+  async register(userId: string, organizationName: string) {
     const organization = await this.auth0ManagementClient.organizations.create({
       name: organizationName,
     });
