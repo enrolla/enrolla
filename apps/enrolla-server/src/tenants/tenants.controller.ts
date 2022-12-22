@@ -15,7 +15,6 @@ export class TenantsController {
     return await this.tenantService.register(
       request.user.sub,
       createTenantDto.organizationName,
-      createTenantDto.githubInstallationId
     );
   }
 }
