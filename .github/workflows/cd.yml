@@ -56,7 +56,7 @@ jobs:
         uses: docker/metadata-action@v4
         id: meta
         with:
-          images: ${{ steps.login-ecr.outputs.registry }}/customeric-server
+          images: ${{ steps.login-ecr.outputs.registry }}/enrolla-server
           flavor: |
             latest=true
           tags: |
