@@ -4,9 +4,9 @@ import { CreateFeatureDto } from './dto/create-feature.dto';
 import { PrismaService } from '../prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { FeatureCreatedEvent } from './events/feature-created.event';
-import { Events } from '../constants';
 import { FeatureUpdatedEvent } from './events/feature-updated.event';
 import { FeatureRemovedEvent } from './events/feature-removed.event';
+import { Events } from '../constants';
 
 @Injectable()
 export class FeaturesService {
@@ -16,7 +16,7 @@ export class FeaturesService {
   ) {}
 
   async create(createFeatureDto: CreateFeatureDto, tenantId: string) {
-    const feature = await this.prismaService.features.create({
+    const feature = await this.prismaService.feature.create({
       data: {
         ...createFeatureDto,
         tenantId: tenantId,
@@ -39,11 +39,11 @@ export class FeaturesService {
   }
 
   async findAll(tenantId: string) {
-    return await this.prismaService.features.findMany();
+    return await this.prismaService.feature.findMany();
   }
 
-  async findOne(id: number, tenantId: string) {
-    return await this.prismaService.features.findUnique({
+  async findOne(id: string, tenantId: string) {
+    return await this.prismaService.feature.findUnique({
       where: {
         id,
       },
@@ -51,11 +51,11 @@ export class FeaturesService {
   }
 
   async update(
-    id: number,
+    id: string,
     updateFeatureDto: UpdateFeatureDto,
     tenantId: string
   ) {
-    const feature = await this.prismaService.features.update({
+    const feature = await this.prismaService.feature.update({
       where: {
         id,
       },
@@ -68,8 +68,8 @@ export class FeaturesService {
     );
   }
 
-  async remove(id: number, tenantId: string) {
-    const feature = await this.prismaService.features.delete({
+  async remove(id: string, tenantId: string) {
+    const feature = await this.prismaService.feature.delete({
       where: {
         id,
       },

@@ -38,7 +38,7 @@ export class FeaturesController {
   @Get(':id')
   async findOne(@Request() request, @Param('id') id: string) {
     return await this.featuresService.findOne(
-      +id,
+      id,
       tenantIdFromRequest(request)
     );
   }
@@ -50,7 +50,7 @@ export class FeaturesController {
     @Body() updateFeatureDto: UpdateFeatureDto
   ) {
     return await this.featuresService.update(
-      +id,
+      id,
       updateFeatureDto,
       tenantIdFromRequest(request)
     );
@@ -58,6 +58,6 @@ export class FeaturesController {
 
   @Delete(':id')
   async remove(@Request() request, @Param('id') id: string) {
-    return await this.featuresService.remove(+id, tenantIdFromRequest(request));
+    return await this.featuresService.remove(id, tenantIdFromRequest(request));
   }
 }

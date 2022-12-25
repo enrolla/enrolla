@@ -1,3 +1,5 @@
+import { FeatureType } from "@prisma/client";
+
 export class FeatureCreatedEvent {
   constructor(
     public readonly featureId: string,
