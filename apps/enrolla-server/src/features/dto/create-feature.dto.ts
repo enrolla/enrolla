@@ -18,6 +18,10 @@ export class CreateFeatureDto {
   type: FeatureType;
 
   @ApiProperty()
+  // TODO: add validation the the type of defaultValue is of type attribute
+  defaultValue: unknown;
+
+  @ApiProperty()
   @IsOptional()
   @IsString()
   description?: string;

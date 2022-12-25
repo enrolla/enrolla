@@ -6,6 +6,7 @@ export class FeatureCreatedEvent {
     public readonly tenantId: string,
     public readonly key: string,
     public readonly type: FeatureType,
+    public readonly defaultValue: unknown,
     public readonly createdAt: Date,
     public readonly description?: string
   ) {}

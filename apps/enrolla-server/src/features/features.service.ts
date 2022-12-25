@@ -7,6 +7,7 @@ import { FeatureCreatedEvent } from './events/feature-created.event';
 import { FeatureUpdatedEvent } from './events/feature-updated.event';
 import { FeatureRemovedEvent } from './events/feature-removed.event';
 import { Events } from '../constants';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class FeaturesService {
@@ -16,9 +17,16 @@ export class FeaturesService {
   ) {}
 
   async create(createFeatureDto: CreateFeatureDto, tenantId: string) {
+    const defaultValueJson = {
+      value: createFeatureDto.defaultValue,
+    } as Prisma.JsonObject;
+
     const feature = await this.prismaService.feature.create({
       data: {
-        ...createFeatureDto,
+        key: createFeatureDto.key,
+        type: createFeatureDto.type,
+        description: createFeatureDto.description,
+        defaultValue: defaultValueJson,
         tenantId: tenantId,
       },
     });
@@ -30,6 +38,7 @@ export class FeaturesService {
         tenantId,
         feature.key,
         feature.type,
+        defaultValueJson,
         feature.createdAt,
         feature.description
       )
@@ -39,13 +48,20 @@ export class FeaturesService {
   }
 
   async findAll(tenantId: string) {
-    return await this.prismaService.feature.findMany();
+    return await this.prismaService.feature.findMany({
+      where: {
+        tenantId,
+      },
+    });
   }
 
   async findOne(id: string, tenantId: string) {
     return await this.prismaService.feature.findUnique({
       where: {
-        id,
+        id_tenantId: {
+          id,
+          tenantId,
+        },
       },
     });
   }
@@ -57,9 +73,12 @@ export class FeaturesService {
   ) {
     const feature = await this.prismaService.feature.update({
       where: {
-        id,
+        id_tenantId: {
+          id,
+          tenantId,
+        },
       },
-      data: updateFeatureDto,
+      data: {},
     });
 
     this.eventEmitter.emit(
@@ -71,7 +90,10 @@ export class FeaturesService {
   async remove(id: string, tenantId: string) {
     const feature = await this.prismaService.feature.delete({
       where: {
-        id,
+        id_tenantId: {
+          id,
+          tenantId,
+        },
       },
     });
 

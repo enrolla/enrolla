@@ -26,8 +26,13 @@ model Feature {
   tenantId       String     @map("tenant_id")
   key            String
   type           FeatureType
+  defaultValue   Json       @map("default_value")
   description    String?
   createdAt      DateTime   @default(now()) @map("created_at")
+
+  @@unique([id, tenantId])
+  @@unique([tenantId, key])
+  @@index([tenantId])
 
   @@map("features")
 }
