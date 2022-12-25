@@ -1,3 +1,12 @@
+## [0.2.2](https://github.com/vecinity/enrolla/compare/0.2.1...0.2.2) (2022-12-25)
+
+
+### Bug Fixes
+
+* **ui:** numeric default values for features weren't saved correctly ([65b5bbd](https://github.com/vecinity/enrolla/commit/65b5bbd9c26dafdd3eb802ff723e5ccaecdd7957))
+
+
+
 ## [0.2.1](https://github.com/vecinity/enrolla/compare/0.2.0...0.2.1) (2022-12-25)
 
 
