@@ -7,7 +7,12 @@ import { FeaturesModule } from './features/features.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
-  imports: [ConfigModule.forRoot(), EventEmitterModule.forRoot(), AuthzModule, FeaturesModule],
+  imports: [
+    ConfigModule.forRoot(),
+    EventEmitterModule.forRoot(),
+    AuthzModule,
+    FeaturesModule,
+  ],
   providers: [PrismaService],
   controllers: [AppController],
 })

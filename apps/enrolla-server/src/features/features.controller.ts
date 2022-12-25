@@ -37,10 +37,7 @@ export class FeaturesController {
 
   @Get(':id')
   async findOne(@Request() request, @Param('id') id: string) {
-    return await this.featuresService.findOne(
-      id,
-      tenantIdFromRequest(request)
-    );
+    return await this.featuresService.findOne(id, tenantIdFromRequest(request));
   }
 
   @Patch(':id')

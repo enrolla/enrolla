@@ -1,4 +1,4 @@
-import { FeatureType } from "@prisma/client";
+import { FeatureType } from '@prisma/client';
 
 export class FeatureCreatedEvent {
   constructor(
