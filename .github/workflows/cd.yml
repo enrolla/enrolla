@@ -1,4 +1,4 @@
-name: Deploy all assets
+name: Deploy Backend
 
 on:
   push:
@@ -6,27 +6,49 @@ on:
       - 'main'
 
 jobs:
-  release:
-    name: Create a release
+  changes:
+    name: Check which apps have changed
     runs-on: ubuntu-latest
     outputs:
-      tag: ${{ steps.change_log_create.outputs.tag }}
+      frontend: ${{ steps.filter.outputs.frontend }}
     steps:
       - uses: actions/checkout@v2
-
-      - name: Conventional Changelog
-        id: change_log_create
-        uses: TriPSs/conventional-changelog-action@v3
+      - uses: dorny/paths-filter@v2
+        id: filter
         with:
-          tag-prefix: ''
-          git-user-name: ${{ github.event.pusher.name }}
-          github-token: ${{ secrets.github_token }}
-          git-user-email: ${{ github.event.pusher.email }}
+          filters: |
+            frontend:
+              - 'apps/mgmt-ui**'
+
+  release:
+    name: Generate release number
+    runs-on: ubuntu-latest
+    outputs:
+      release-number: ${{ steps.release-number.outputs.release-number }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - run: git fetch --prune --unshallow --tags
+      - name: Get package version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@main
+
+      - name: Get RC number
+        id: rc-number
+        run: echo "TAG_NAME=$(git rev-list ${{steps.package-version.outputs.current-version}}..head --count)" >> $GITHUB_OUTPUT
+      - name: Generate release number
+        id: release-number
+        run: echo "::set-output name=release-number::${{ steps.package-version.outputs.current-version }}-beta.${{ steps.rc-number.TAG_NAME }}"
+
+      - id: output-repease-number
+        run: echo Release ${{ steps.release-number.outputs.release-number }}
 
   publish-docker:
     name: Publish docker image to ECR
-    needs: release
-    if: ${{ needs.release.outputs.tag != '' }}
+    needs: [changes, release]
+    if: ${{ needs.changes.outputs.frontend != 'true' }}
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -52,6 +74,10 @@ jobs:
       - name: 'Install Dependencies'
         run: npm install
 
+      - name: Get package version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@main
+
       - name: Docker Metadata
         uses: docker/metadata-action@v4
         id: meta
@@ -61,7 +87,7 @@ jobs:
             latest=true
           tags: |
             type=sha,prefix=sha-
-            type=raw,value=${{ needs.release.outputs.tag }}
+            type=raw,value=${{ needs.release.outputs.release-number }}
 
       - name: 'Build images'
         run: npx nx run-many --target=container --parallel=2
@@ -71,10 +97,14 @@ jobs:
 
   deploy-docker:
     name: Deploy to staging
-    needs: [release, publish-docker]
-    if: ${{ needs.release.outputs.tag != '' }}
+    needs: [changes, release, publish-docker]
+    if: ${{ needs.changes.outputs.frontend != 'true' }}
     runs-on: ubuntu-latest
     steps:
+      - name: Get package version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@main
+
       - name: Install Octopus CLI
         uses: OctopusDeploy/install-octopus-cli-action@v1
 
@@ -84,6 +114,6 @@ jobs:
           api_key: ${{ secrets.OCTOPUS_API_KEY }}
           server: ${{ secrets.OCTOPUS_SERVER }}
           space: ${{ secrets.OCTOPUS_SPACE }}
-          project: 'customeric-server'
+          project: 'enrolla-server'
           deploy_to: 'Staging'
-          release_number: ${{ needs.release.outputs.tag }}
+          release_number: ${{ needs.release.outputs.release-number }}

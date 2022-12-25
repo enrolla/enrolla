@@ -42,10 +42,9 @@ model Package {
   tenantId              String       @map("tenant_id")
   name                  String
   description           String?
-  version               String
-  parentPackage         Package?     @relation(name: "PackageInheritence", fields: [tenantId, parentPackageName, parentPackageVersion], references: [tenantId, name, version])
-  parentPackageName     String?      @map("parent_package_id")
-  parentPackageVersion  String?      @map("parent_package_version")
+  version               String       @default("1.0.0")
+  parentPackage         Package?     @relation(name: "PackageInheritence", fields: [parentPackageId], references: [id])
+  parentPackageId       String?      @map("parent_package_id")
   childPackages         Package[]    @relation(name: "PackageInheritence")
   appliedFeatures       Json         @map("applied_features")
   createdAt             DateTime     @default(now()) @map("created_at")
