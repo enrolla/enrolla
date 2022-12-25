@@ -5,10 +5,6 @@ import { IsEnum, IsOptional, IsString } from 'class-validator';
 export class CreateFeatureDto {
   @ApiProperty()
   @IsString()
-  tenantId: string;
-
-  @ApiProperty()
-  @IsString()
   key: string;
 
   @ApiProperty({
