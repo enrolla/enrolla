@@ -9,10 +9,12 @@ import {
   ShowButton,
   DeleteButton,
   DateField,
+  Text,
 } from '@pankod/refine-mantine';
 import { Prism } from '@mantine/prism';
-import { IFeature } from '../../interfaces';
+import { FeatureType, IFeature } from '../../interfaces';
 import { useMemo } from 'react';
+import { FEATURE_TYPE_NAMES } from './feature-type-translator';
 
 export const FeatureList: React.FC = () => {
   const columns = useMemo<ColumnDef<IFeature>[]>(
@@ -26,16 +28,29 @@ export const FeatureList: React.FC = () => {
         id: 'type',
         header: 'Type',
         accessorKey: 'type',
+        cell: ({ getValue }) => {
+          return FEATURE_TYPE_NAMES[getValue() as FeatureType];
+        },
       },
       {
         id: 'defaultValue',
         header: 'Default Value',
         accessorKey: 'defaultValue',
-        cell: ({ getValue }) => (
-          <Prism language="json" noCopy>
-            {JSON.stringify(getValue() as object)}
-          </Prism>
-        ),
+        cell: ({ getValue, row }) => {
+          if (row.getValue('type') === FEATURE_TYPE_NAMES.JSON) {
+            return (
+              <Prism language="json" noCopy>
+                {JSON.stringify((getValue() as IFeature['defaultValue']).value)}
+              </Prism>
+            );
+          } else {
+            return (
+              <Text>
+                {JSON.stringify((getValue() as IFeature['defaultValue']).value)}
+              </Text>
+            );
+          }
+        },
       },
       {
         id: 'description',

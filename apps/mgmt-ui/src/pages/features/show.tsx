@@ -27,9 +27,16 @@ export const FeatureShow: React.FC = () => {
       <Title mt="xs" order={5}>
         Default Value
       </Title>
-      <Prism language="json" noCopy>
-        {JSON.stringify(record?.defaultValue as object, null, 2)}
-      </Prism>
+      {record?.type === 'JSON' ? (
+        <Prism language="json" noCopy>
+          {record &&
+            JSON.stringify(record?.defaultValue.value as object, null, 2)}
+        </Prism>
+      ) : (
+        <Text mt="xs">
+          {record && JSON.stringify(record?.defaultValue.value)}
+        </Text>
+      )}
     </Show>
   );
 };
