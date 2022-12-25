@@ -32,6 +32,9 @@
     },
     "container": {
       "dependsOn": ["build"]
+    },
+    "e2e": {
+      "inputs": ["default", "^production"]
     }
   },
   "namedInputs": {
@@ -45,5 +48,22 @@
     ],
     "sharedGlobals": []
   },
-  "defaultProject": "enrolla-server"
+  "defaultProject": "enrolla-server",
+  "generators": {
+    "@nrwl/react": {
+      "application": {
+        "style": "@emotion/styled",
+        "linter": "eslint",
+        "bundler": "vite",
+        "babel": true
+      },
+      "component": {
+        "style": "@emotion/styled"
+      },
+      "library": {
+        "style": "@emotion/styled",
+        "linter": "eslint"
+      }
+    }
+  }
 }
