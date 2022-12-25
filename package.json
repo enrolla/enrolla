@@ -1,6 +1,6 @@
 {
   "name": "enrolla",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "scripts": {
     "start": "nx serve",
     "build": "nx build",
