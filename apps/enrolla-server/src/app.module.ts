@@ -3,9 +3,11 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AuthzModule } from './authz/authz.module';
 import { PrismaService } from './prisma.service';
+import { FeaturesModule } from './features/features.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
-  imports: [ConfigModule.forRoot(), AuthzModule],
+  imports: [ConfigModule.forRoot(), EventEmitterModule.forRoot(), AuthzModule, FeaturesModule],
   providers: [PrismaService],
   controllers: [AppController],
 })
