@@ -1,7 +1,7 @@
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { CreateTenantDto } from './create-tenant.dto';
+import { CreateTenantDto } from './dto/create-tenant.dto';
 import { TenantsService } from './tenants.service';
 
 @Controller()
