@@ -1,3 +1,12 @@
+## [0.2.1](https://github.com/vecinity/enrolla/compare/0.2.0...0.2.1) (2022-12-25)
+
+
+### Bug Fixes
+
+* proper formatting of default values and types ([183c7a1](https://github.com/vecinity/enrolla/commit/183c7a194e8863979b7fa59f98973f9c45e4ad0b))
+
+
+
 # [0.2.0](https://github.com/vecinity/enrolla/compare/0.1.0...0.2.0) (2022-12-25)
 
 
