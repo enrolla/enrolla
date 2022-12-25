@@ -3,6 +3,7 @@ import { useShow } from '@pankod/refine-core';
 import { Show, Title, Text } from '@pankod/refine-mantine';
 
 import { IFeature } from '../../interfaces';
+import { FEATURE_TYPE_NAMES } from './feature-type-translator';
 
 export const FeatureShow: React.FC = () => {
   const { queryResult } = useShow<IFeature>();
@@ -22,7 +23,7 @@ export const FeatureShow: React.FC = () => {
       <Title mt="xs" order={5}>
         Type
       </Title>
-      <Text mt="xs">{record?.type}</Text>
+      <Text mt="xs">{record && FEATURE_TYPE_NAMES[record?.type]}</Text>
 
       <Title mt="xs" order={5}>
         Default Value
