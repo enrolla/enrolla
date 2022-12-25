@@ -36,3 +36,23 @@ model Feature {
 
   @@map("features")
 }
+
+model Package {
+  id                    String       @id @default(cuid())
+  tenantId              String       @map("tenant_id")
+  name                  String
+  description           String?
+  version               String
+  parentPackage         Package?     @relation(name: "PackageInheritence", fields: [tenantId, parentPackageName, parentPackageVersion], references: [tenantId, name, version])
+  parentPackageName     String?      @map("parent_package_id")
+  parentPackageVersion  String?      @map("parent_package_version")
+  childPackages         Package[]    @relation(name: "PackageInheritence")
+  appliedFeatures       Json         @map("applied_features")
+  createdAt             DateTime     @default(now()) @map("created_at")
+
+  @@unique([id, tenantId])
+  @@unique([tenantId, name, version(sort: Desc)])
+  @@index([tenantId])
+
+  @@map("packages")
+}
