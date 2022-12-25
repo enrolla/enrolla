@@ -73,6 +73,7 @@ export const FeatureCreate: React.FC = () => {
             label="Default Value"
             hideControls
             noClampOnBlur={values['type'] === 'FLOAT'}
+            {...getInputProps('defaultValue')}
           />
         )}
         {values['type'] === 'STRING' && (
