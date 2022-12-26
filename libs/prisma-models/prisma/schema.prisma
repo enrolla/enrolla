@@ -22,17 +22,52 @@ enum FeatureType {
 }
 
 model Feature {
-  id             String     @id @default(cuid())
-  tenantId       String     @map("tenant_id")
-  key            String
-  type           FeatureType
-  defaultValue   Json       @map("default_value")
-  description    String?
-  createdAt      DateTime   @default(now()) @map("created_at")
+  id                  String     @id @default(cuid())
+  tenantId            String     @map("tenant_id")
+  key                 String
+  type                FeatureType
+  defaultValue        Json       @map("default_value")
+  description         String?
+  createdAt           DateTime   @default(now()) @map("created_at")
+  featuresInstances   FeaturesInstance[]
 
   @@unique([id, tenantId])
   @@unique([tenantId, key])
   @@index([tenantId])
 
   @@map("features")
+}
+
+model FeaturesInstance {
+  id             String     @id @default(cuid())
+  tenantId       String     @map("tenant_id")
+  feature        Feature    @relation(fields: [featureId], references: [id])
+  featureId      String     @map("feature_id")
+  package        Package    @relation(fields: [packageId], references: [id])
+  packageId      String     @map("package_id")
+  value          Json
+  createdAt      DateTime   @default(now()) @map("created_at")
+
+  @@unique([id, tenantId])
+
+  @@map("features_instances")
+}
+
+model Package {
+  id                    String              @id @default(cuid())
+  tenantId              String              @map("tenant_id")
+  name                  String
+  description           String?
+  version               String              @default("1.0.0")
+  parentPackage         Package?            @relation(name: "PackageInheritence", fields: [parentPackageId], references: [id])
+  parentPackageId       String?             @map("parent_package_id")
+  childPackages         Package[]           @relation(name: "PackageInheritence")
+  featuresInstances     FeaturesInstance[]
+  createdAt             DateTime            @default(now()) @map("created_at")
+
+  @@unique([id, tenantId])
+  @@unique([tenantId, name, version(sort: Desc)])
+  @@index([tenantId])
+
+  @@map("packages")
 }
