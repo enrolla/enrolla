@@ -5,14 +5,15 @@ import { PrismaService } from '../prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Events } from '../constants';
 import { Prisma } from '@prisma/client';
-import { FeaturesService } from '../features/features.service';
+import { PackageRemovedEvent } from './events/package-removed.event';
+import { PackageUpdatedEvent } from './events/package-updated.event';
+import { PackageCreatedEvent } from './events/package-created.event';
 
 @Injectable()
 export class PackagesService {
   constructor(
     private prismaService: PrismaService,
-    private eventEmitter: EventEmitter2,
-    private featuresService: FeaturesService
+    private eventEmitter: EventEmitter2
   ) {}
 
   async create(createPackageDto: CreatePackageDto, tenantId: string) {
@@ -32,9 +33,28 @@ export class PackagesService {
           }),
         },
       },
+      include: {
+        featuresInstances: {
+          select: {
+            id: true
+          }
+        }
+      }
     });
 
-    this.eventEmitter.emit(Events.PACKAGE_CREATED, packagez);
+    this.eventEmitter.emit(
+      Events.PACKAGE_CREATED,
+      new PackageCreatedEvent(
+        packagez.id,
+        packagez.tenantId,
+        packagez.name,
+        packagez.version,
+        packagez.featuresInstances.map((instance) => instance.id),
+        packagez.createdAt,
+        packagez.parentPackageId,
+        packagez.description,
+      )
+    );
 
     return packagez;
   }
@@ -115,7 +135,10 @@ export class PackagesService {
       data: {},
     });
 
-    this.eventEmitter.emit(Events.PACKAGE_UPDATED, packagez);
+    this.eventEmitter.emit(
+      Events.PACKAGE_UPDATED,
+      new PackageUpdatedEvent(packagez.id, packagez.tenantId)
+    );
 
     return packagez;
   }
@@ -130,7 +153,10 @@ export class PackagesService {
       },
     });
 
-    this.eventEmitter.emit(Events.PACKAGE_REMOVED, packagez);
+    this.eventEmitter.emit(
+      Events.PACKAGE_REMOVED,
+      new PackageRemovedEvent(packagez.id, packagez.tenantId)
+    );
 
     return packagez;
   }

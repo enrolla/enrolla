@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Optional } from '@nestjs/common';
 
-class FeatureInstanceDto {
+export class FeatureInstanceDto {
   @ApiProperty()
   featureId: string;
 
