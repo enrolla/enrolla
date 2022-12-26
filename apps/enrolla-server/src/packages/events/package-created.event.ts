@@ -1,5 +1,3 @@
-import { FeatureInstanceDto } from '../dto/create-package.dto';
-
 export class PackageCreatedEvent {
   constructor(
     public readonly id: string,
