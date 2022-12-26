@@ -36,10 +36,10 @@ export class PackagesService {
       include: {
         featuresInstances: {
           select: {
-            id: true
-          }
-        }
-      }
+            id: true,
+          },
+        },
+      },
     });
 
     this.eventEmitter.emit(
@@ -52,7 +52,7 @@ export class PackagesService {
         packagez.featuresInstances.map((instance) => instance.id),
         packagez.createdAt,
         packagez.parentPackageId,
-        packagez.description,
+        packagez.description
       )
     );
 
