@@ -22,10 +22,15 @@ export class PackagesService {
         description: createPackageDto.description,
         tenantId: tenantId,
         parentPackageId: createPackageDto.parentPackageId,
-        appliedFeatures: createPackageDto.features.map((feature) => ({
-          id: feature.featureId,
-          value: feature.value,
-        })) as Prisma.JsonArray,
+        featuresInstances: {
+          create: createPackageDto.features.map((feature) => {
+            return {
+              featureId: feature.featureId,
+              value: { value: feature.value } as Prisma.JsonObject,
+              tenantId: tenantId,
+            };
+          }),
+        },
       },
     });
 
@@ -39,6 +44,27 @@ export class PackagesService {
       where: {
         tenantId,
       },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        createdAt: true,
+        featuresInstances: {
+          select: {
+            feature: {
+              select: {
+                key: true,
+              },
+            },
+            value: true,
+          },
+        },
+        parentPackage: {
+          select: {
+            name: true,
+          },
+        },
+      },
     });
   }
 
@@ -48,6 +74,27 @@ export class PackagesService {
         id_tenantId: {
           id,
           tenantId,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        createdAt: true,
+        featuresInstances: {
+          select: {
+            feature: {
+              select: {
+                key: true,
+              },
+            },
+            value: true,
+          },
+        },
+        parentPackage: {
+          select: {
+            name: true,
+          },
         },
       },
     });

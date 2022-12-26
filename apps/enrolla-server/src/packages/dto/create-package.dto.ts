@@ -1,24 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { FeatureInstance } from '../../features/types/feature-instance';
-import { IsString } from 'class-validator';
 import { Optional } from '@nestjs/common';
+
+class FeatureInstanceDto {
+  @ApiProperty()
+  featureId: string;
+
+  @ApiProperty()
+  value: unknown;
+}
 
 export class CreatePackageDto {
   @ApiProperty()
-  @Optional()
-  @IsString()
   name: string;
 
   @ApiProperty()
   @Optional()
-  @IsString()
   description?: string;
 
   @ApiProperty()
   @Optional()
-  @IsString()
   parentPackageId?: string;
 
-  @ApiProperty()
-  features: FeatureInstance[];
+  @ApiProperty({ type: FeatureInstanceDto, isArray: true })
+  features: FeatureInstanceDto[];
 }

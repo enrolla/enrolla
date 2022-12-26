@@ -24,6 +24,7 @@ export class PackagesController {
 
   @Post()
   async create(@Request() request, @Body() createPackageDto: CreatePackageDto) {
+    console.log('passed validation');
     return await this.packagesService.create(
       createPackageDto,
       tenantIdFromRequest(request)
