@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { FeaturesService } from './features.service';
 import { FeaturesController } from './features.controller';
 import { PrismaService } from '../prisma.service';
+import { FeaturesResolver } from './features.resolver';
 
 @Module({
   controllers: [FeaturesController],
-  providers: [FeaturesService, PrismaService],
+  providers: [FeaturesResolver, FeaturesService, PrismaService],
 })
 export class FeaturesModule {}
