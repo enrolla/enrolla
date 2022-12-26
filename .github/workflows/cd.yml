@@ -24,23 +24,23 @@ jobs:
     name: Generate release number
     runs-on: ubuntu-latest
     outputs:
-      release-number: ${{ steps.release-number.outputs.release-number }}
+      release-number: ${{ steps.release-number.outputs.RELEASE_NUMBER }}
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-      - run: git fetch --prune --unshallow --tags
       - name: Get package version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@main
 
       - name: Get RC number
         id: rc-number
-        run: echo "TAG_NAME=$(git rev-list ${{steps.package-version.outputs.current-version}}..head --count)" >> $GITHUB_OUTPUT
+        run: |
+          COUNT_SINCE_RELEASE=$(git rev-list ${{steps.package-version.outputs.current-version}}..main --count)
+          printf "TAG_NAME=%04d" $COUNT_SINCE_RELEASE >> $GITHUB_OUTPUT
       - name: Generate release number
         id: release-number
-        run: echo "::set-output name=release-number::${{ steps.package-version.outputs.current-version }}-beta.${{ steps.rc-number.TAG_NAME }}"
+        run: echo "RELEASE_NUMBER=${{ steps.package-version.outputs.current-version }}-beta.${{ steps.rc-number.outputs.TAG_NAME }}" >> $GITHUB_OUTPUT
 
       - id: output-repease-number
         run: echo Release ${{ steps.release-number.outputs.release-number }}
