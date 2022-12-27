@@ -1,18 +1,28 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { PackagesService } from './packages.service';
 import { Package } from './entities/package.entity';
-// import { CreatePackageInput } from './dto/create-package.input';
-// import { UpdatePackageInput } from './dto/update-package.input';
 import { TenantId } from '../authz/tenant.decorator';
 import { UseGuards } from '@nestjs/common';
 import { GraphQLJWTAuthGuard } from '../authz/graphql-jwt-auth.guard';
 import { CreatePackageInput } from './dto/create-package.input';
 import { UpdatePackageInput } from './dto/update-package.input';
+import { FeatureInstance } from '../feature-instances/entities/feature-instance.entity';
+import { FeatureInstancesService } from '../feature-instances/feature-instances.service';
 
 @Resolver(() => Package)
 @UseGuards(GraphQLJWTAuthGuard)
 export class PackagesResolver {
-  constructor(private readonly packagesService: PackagesService) {}
+  constructor(
+    private readonly packagesService: PackagesService,
+    private readonly featuresInstancesService: FeatureInstancesService
+  ) {}
 
   @Mutation(() => Package)
   createPackage(
@@ -53,5 +63,21 @@ export class PackagesResolver {
     @Args('id', { type: () => String }) id: string
   ) {
     return this.packagesService.remove(id, tenantId);
+  }
+
+  @ResolveField(() => Package, { nullable: true })
+  async parentPackage(@Parent() packagez: Package) {
+    const { parentPackageId, tenantId } = packagez;
+
+    return (
+      parentPackageId && this.packagesService.findOne(parentPackageId, tenantId)
+    );
+  }
+
+  @ResolveField(() => [FeatureInstance])
+  async featuresInstances(@Parent() packagez: Package) {
+    const { id, tenantId } = packagez;
+
+    return this.featuresInstancesService.findByPackageId(id, tenantId);
   }
 }

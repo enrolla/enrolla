@@ -3,13 +3,19 @@
 # ------------------------------------------------------
 
 type Feature {
-  id: String!
+  id: Cuid!
+  tenantId: String!
   key: String!
   type: FeatureType!
   defaultValue: JSON!
   description: String!
   createdAt: DateTime!
 }
+
+"""
+A field whose value conforms to the standard cuid format as specified in https://github.com/ericelliott/cuid#broken-down
+"""
+scalar Cuid @specifiedBy(url: "https://github.com/ericelliott/cuid#broken-down")
 
 enum FeatureType {
   INTEGER
@@ -33,21 +39,32 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type FeatureInstance {
-  id: String!
+  id: Cuid!
+  tenantId: String!
+  featureId: Cuid!
   feature: Feature!
+  packageId: Cuid!
   package: Package!
   value: JSON!
   createdAt: DateTime!
 }
 
 type Package {
-  id: String!
-  name: String!
+  id: Cuid!
+  tenantId: String!
   parentPackage: Package
+  parentPackageId: Cuid
+  name: String!
+  version: SemVer!
   featuresInstances: [FeatureInstance!]!
   description: String
   createdAt: DateTime!
 }
+
+"""
+A field whose value is a Semantic Version: https://semver.org
+"""
+scalar SemVer
 
 type Query {
   features: [Feature!]!
@@ -75,21 +92,21 @@ input CreateFeatureInput {
 }
 
 input UpdateFeatureInput {
-  id: String!
+  id: Cuid!
 }
 
 input CreatePackageInput {
   name: String!
   description: String
-  parentPackageId: String
+  parentPackageId: Cuid
   features: [FeatureInstanceInput!]!
 }
 
 input FeatureInstanceInput {
-  featureId: String!
+  featureId: Cuid!
   value: JSON!
 }
 
 input UpdatePackageInput {
-  id: String!
+  id: Cuid!
 }

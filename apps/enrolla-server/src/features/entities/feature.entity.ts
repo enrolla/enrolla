@@ -1,6 +1,6 @@
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
 import { FeatureType } from '@prisma/client';
-import { GraphQLJSON } from 'graphql-scalars';
+import { GraphQLJSON, CuidResolver } from 'graphql-scalars';
 
 registerEnumType(FeatureType, {
   name: 'FeatureType',
@@ -8,8 +8,11 @@ registerEnumType(FeatureType, {
 
 @ObjectType()
 export class Feature {
-  @Field(() => String)
+  @Field(() => CuidResolver)
   id: string;
+
+  @Field(() => String)
+  tenantId: string;
 
   @Field(() => String)
   key: string;

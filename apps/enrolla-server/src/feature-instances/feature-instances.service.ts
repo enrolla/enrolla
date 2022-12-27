@@ -23,4 +23,13 @@ export class FeatureInstancesService {
       },
     });
   }
+
+  async findByPackageId(packageId: string, tenantId: string) {
+    return await this.prismaService.featuresInstance.findMany({
+      where: {
+        packageId,
+        tenantId,
+      },
+    });
+  }
 }
