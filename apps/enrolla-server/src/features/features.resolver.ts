@@ -2,7 +2,6 @@ import {
   Resolver,
   Query,
   Args,
-  registerEnumType,
   Mutation,
 } from '@nestjs/graphql';
 import { FeaturesService } from './features.service';

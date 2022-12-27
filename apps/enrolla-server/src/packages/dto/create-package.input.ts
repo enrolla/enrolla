@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Optional } from '@nestjs/common';
-import { InputType, ObjectType, Field } from '@nestjs/graphql';
+import { InputType, Field } from '@nestjs/graphql';
 import { CuidResolver, GraphQLJSON } from 'graphql-scalars';
 
 @InputType()
