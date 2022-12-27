@@ -14,10 +14,6 @@ import { FeatureType } from '@prisma/client';
 import { CreateFeatureInput } from './dto/create-feature.input';
 import { UpdateFeatureInput } from './dto/update-feature.input';
 
-registerEnumType(FeatureType, {
-  name: 'FeatureType',
-});
-
 @Resolver(() => Feature)
 @UseGuards(GraphQLJWTAuthGuard)
 export class FeaturesResolver {

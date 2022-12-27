@@ -10,6 +10,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { GraphQLJSON } from 'graphql-scalars';
+import { FeatureInstancesModule } from './feature-instances/feature-instances.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { GraphQLJSON } from 'graphql-scalars';
     AuthzModule,
     FeaturesModule,
     PackagesModule,
+    FeatureInstancesModule,
   ],
   providers: [PrismaService],
   controllers: [AppController],
