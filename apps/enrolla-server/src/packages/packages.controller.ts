@@ -9,8 +9,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { PackagesService } from './packages.service';
-import { CreatePackageDto } from './dto/create-package.dto';
-import { UpdatePackageDto } from './dto/update-package.dto';
+import { CreatePackageInput } from './dto/create-package.input';
+import { UpdatePackageInput } from './dto/update-package.input';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { TenantId } from '../authz/tenant.decorator';
@@ -24,7 +24,7 @@ export class PackagesController {
   @Post()
   async create(
     @TenantId() tenantId: string,
-    @Body() createPackageDto: CreatePackageDto
+    @Body() createPackageDto: CreatePackageInput
   ) {
     console.log('passed validation');
     return await this.packagesService.create(createPackageDto, tenantId);
@@ -44,7 +44,7 @@ export class PackagesController {
   async update(
     @TenantId() tenantId: string,
     @Param('id') id: string,
-    @Body() updatePackageDto: UpdatePackageDto
+    @Body() updatePackageDto: UpdatePackageInput
   ) {
     return await this.packagesService.update(id, updatePackageDto, tenantId);
   }

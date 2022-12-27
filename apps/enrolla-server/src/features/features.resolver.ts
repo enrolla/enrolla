@@ -10,7 +10,6 @@ import { Feature } from './entities/feature.entity';
 import { UseGuards } from '@nestjs/common';
 import { GraphQLJWTAuthGuard } from '../authz/graphql-jwt-auth.guard';
 import { TenantId } from '../authz/tenant.decorator';
-import { FeatureType } from '@prisma/client';
 import { CreateFeatureInput } from './dto/create-feature.input';
 import { UpdateFeatureInput } from './dto/update-feature.input';
 

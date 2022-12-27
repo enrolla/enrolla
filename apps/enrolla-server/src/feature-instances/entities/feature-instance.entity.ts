@@ -1,9 +1,7 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import {
-  Feature,
-  FeatureValueUnion,
-} from '../../features/entities/feature.entity';
+import { Feature } from '../../features/entities/feature.entity';
 import { Package } from '../../packages/entities/package.entity';
+import { GraphQLJSON } from 'graphql-scalars';
 
 @ObjectType()
 export class FeatureInstance {
@@ -16,8 +14,8 @@ export class FeatureInstance {
   @Field(() => Package)
   package: Package;
 
-  @Field(() => FeatureValueUnion)
-  value: typeof FeatureValueUnion;
+  @Field(() => GraphQLJSON)
+  value: object;
 
   @Field(() => Date)
   createdAt: Date;

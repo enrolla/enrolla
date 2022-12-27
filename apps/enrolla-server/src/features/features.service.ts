@@ -23,7 +23,7 @@ export class FeaturesService {
         key: createFeatureDto.key,
         type: createFeatureDto.type,
         description: createFeatureDto.description,
-        defaultValue: { value: 5 }, // createFeatureDto.defaultValue as Prisma.JsonObject,
+        defaultValue: createFeatureDto.defaultValue as Prisma.JsonObject,
         tenantId: tenantId,
       },
     });

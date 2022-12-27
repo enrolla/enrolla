@@ -18,7 +18,7 @@ export class CreateFeatureInput {
 
   @ApiProperty()
   @Field(() => GraphQLJSON)
-  defaultValue: JSON;
+  defaultValue: object;
 
   @ApiProperty()
   @IsOptional()
