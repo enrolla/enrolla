@@ -1,4 +1,10 @@
-import { ObjectType, Field, createUnionType, registerEnumType, Int } from '@nestjs/graphql';
+import {
+  ObjectType,
+  Field,
+  createUnionType,
+  registerEnumType,
+  Int,
+} from '@nestjs/graphql';
 import { FeatureType } from '@prisma/client';
 import { GraphQLJSON } from 'graphql-scalars';
 
@@ -61,7 +67,6 @@ export const FeatureValueUnion = createUnionType({
 registerEnumType(FeatureType, {
   name: 'FeatureType',
 });
-
 
 @ObjectType()
 export class Feature {
