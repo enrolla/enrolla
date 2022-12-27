@@ -49,6 +49,8 @@ model FeaturesInstance {
   createdAt      DateTime   @default(now()) @map("created_at")
 
   @@unique([id, tenantId])
+  @@index([tenantId, packageId])
+  @@index([tenantId, featureId])
 
   @@map("features_instances")
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePackageDto } from './dto/create-package.dto';
-import { UpdatePackageDto } from './dto/update-package.dto';
+import { CreatePackageInput } from './dto/create-package.input';
+import { UpdatePackageInput } from './dto/update-package.input';
 import { PrismaService } from '../prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Events } from '../constants';
@@ -16,7 +16,7 @@ export class PackagesService {
     private eventEmitter: EventEmitter2
   ) {}
 
-  async create(createPackageDto: CreatePackageDto, tenantId: string) {
+  async create(createPackageDto: CreatePackageInput, tenantId: string) {
     const packagez = await this.prismaService.package.create({
       data: {
         name: createPackageDto.name,
@@ -27,7 +27,7 @@ export class PackagesService {
           create: createPackageDto.features.map((feature) => {
             return {
               featureId: feature.featureId,
-              value: { value: feature.value } as Prisma.JsonObject,
+              value: feature.value as Prisma.JsonObject,
               tenantId: tenantId,
             };
           }),
@@ -64,27 +64,6 @@ export class PackagesService {
       where: {
         tenantId,
       },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        createdAt: true,
-        featuresInstances: {
-          select: {
-            feature: {
-              select: {
-                key: true,
-              },
-            },
-            value: true,
-          },
-        },
-        parentPackage: {
-          select: {
-            name: true,
-          },
-        },
-      },
     });
   }
 
@@ -96,33 +75,12 @@ export class PackagesService {
           tenantId,
         },
       },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        createdAt: true,
-        featuresInstances: {
-          select: {
-            feature: {
-              select: {
-                key: true,
-              },
-            },
-            value: true,
-          },
-        },
-        parentPackage: {
-          select: {
-            name: true,
-          },
-        },
-      },
     });
   }
 
   async update(
     id: string,
-    updatePackageDto: UpdatePackageDto,
+    updatePackageDto: UpdatePackageInput,
     tenantId: string
   ) {
     const packagez = await this.prismaService.package.update({

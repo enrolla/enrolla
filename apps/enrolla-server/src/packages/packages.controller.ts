@@ -6,15 +6,14 @@ import {
   Patch,
   Param,
   Delete,
-  Request,
   UseGuards,
 } from '@nestjs/common';
 import { PackagesService } from './packages.service';
-import { CreatePackageDto } from './dto/create-package.dto';
-import { UpdatePackageDto } from './dto/update-package.dto';
+import { CreatePackageInput } from './dto/create-package.input';
+import { UpdatePackageInput } from './dto/update-package.input';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { tenantIdFromRequest } from '../authz/utils';
+import { TenantId } from '../authz/tenant.decorator';
 
 @Controller({ path: 'management/packages', version: '1' })
 @UseGuards(AuthGuard('jwt'))
@@ -23,39 +22,35 @@ export class PackagesController {
   constructor(private readonly packagesService: PackagesService) {}
 
   @Post()
-  async create(@Request() request, @Body() createPackageDto: CreatePackageDto) {
+  async create(
+    @TenantId() tenantId: string,
+    @Body() createPackageDto: CreatePackageInput
+  ) {
     console.log('passed validation');
-    return await this.packagesService.create(
-      createPackageDto,
-      tenantIdFromRequest(request)
-    );
+    return await this.packagesService.create(createPackageDto, tenantId);
   }
 
   @Get()
-  async findAll(@Request() request) {
-    return await this.packagesService.findAll(tenantIdFromRequest(request));
+  async findAll(@TenantId() tenantId: string) {
+    return await this.packagesService.findAll(tenantId);
   }
 
   @Get(':id')
-  async findOne(@Request() request, @Param('id') id: string) {
-    return await this.packagesService.findOne(id, tenantIdFromRequest(request));
+  async findOne(@TenantId() tenantId: string, @Param('id') id: string) {
+    return await this.packagesService.findOne(id, tenantId);
   }
 
   @Patch(':id')
   async update(
-    @Request() request,
+    @TenantId() tenantId: string,
     @Param('id') id: string,
-    @Body() updatePackageDto: UpdatePackageDto
+    @Body() updatePackageDto: UpdatePackageInput
   ) {
-    return await this.packagesService.update(
-      id,
-      updatePackageDto,
-      tenantIdFromRequest(request)
-    );
+    return await this.packagesService.update(id, updatePackageDto, tenantId);
   }
 
   @Delete(':id')
-  async remove(@Request() request, @Param('id') id: string) {
-    return await this.packagesService.remove(id, tenantIdFromRequest(request));
+  async remove(@TenantId() tenantId: string, @Param('id') id: string) {
+    return await this.packagesService.remove(id, tenantId);
   }
 }

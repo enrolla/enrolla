@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { UpdateFeatureDto } from './dto/update-feature.dto';
-import { CreateFeatureDto } from './dto/create-feature.dto';
+import { UpdateFeatureInput } from './dto/update-feature.input';
+import { CreateFeatureInput } from './dto/create-feature.input';
 import { PrismaService } from '../prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { FeatureCreatedEvent } from './events/feature-created.event';
@@ -16,17 +16,14 @@ export class FeaturesService {
     private eventEmitter: EventEmitter2
   ) {}
 
-  async create(createFeatureDto: CreateFeatureDto, tenantId: string) {
-    const defaultValueJson = {
-      value: createFeatureDto.defaultValue,
-    } as Prisma.JsonObject;
-
+  async create(createFeatureDto: CreateFeatureInput, tenantId: string) {
+    console.log('createFeatureDto.defaultValue', createFeatureDto.defaultValue);
     const feature = await this.prismaService.feature.create({
       data: {
         key: createFeatureDto.key,
         type: createFeatureDto.type,
         description: createFeatureDto.description,
-        defaultValue: defaultValueJson,
+        defaultValue: createFeatureDto.defaultValue as Prisma.JsonObject,
         tenantId: tenantId,
       },
     });
@@ -38,7 +35,7 @@ export class FeaturesService {
         tenantId,
         feature.key,
         feature.type,
-        defaultValueJson,
+        feature.defaultValue,
         feature.createdAt,
         feature.description
       )
@@ -68,7 +65,7 @@ export class FeaturesService {
 
   async update(
     id: string,
-    updateFeatureDto: UpdateFeatureDto,
+    updateFeatureDto: UpdateFeatureInput,
     tenantId: string
   ) {
     const feature = await this.prismaService.feature.update({
