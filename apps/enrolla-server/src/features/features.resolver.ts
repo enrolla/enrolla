@@ -1,9 +1,4 @@
-import {
-  Resolver,
-  Query,
-  Args,
-  Mutation,
-} from '@nestjs/graphql';
+import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { FeaturesService } from './features.service';
 import { Feature } from './entities/feature.entity';
 import { UseGuards } from '@nestjs/common';
