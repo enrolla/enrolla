@@ -18,7 +18,7 @@ import { FeatureInstancesModule } from './feature-instances/feature-instances.mo
     EventEmitterModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      autoSchemaFile: join(process.cwd(), 'apps/enrolla-server/src/schema.gql'),
       resolvers: {
         JSON: GraphQLJSON,
       },
