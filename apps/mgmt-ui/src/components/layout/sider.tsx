@@ -37,6 +37,7 @@ const defaultNavIcon = <IconList size={18} />;
 
 export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
   const theme = useMantineTheme();
+  const collapsed = false;
   const [opened, setOpened] = useState(false);
 
   const { Link } = useRouterContext();
@@ -49,7 +50,10 @@ export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
 
   const RenderToTitle = Title ?? DefaultTitle;
 
-  const drawerWidth = 300;
+  const drawerWidth = () => {
+    if (collapsed) return 80;
+    return 300;
+  };
 
   const commonNavLinkStyles: Styles<NavLinkStylesNames, NavLinkStylesParams> = {
     root: {
@@ -77,18 +81,18 @@ export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
           }).color,
         },
       },
-      justifyContent: !opened ? 'center' : 'flex-start',
+      justifyContent: collapsed && !opened ? 'center' : 'flex-start',
     },
     icon: {
-      marginRight: !opened ? 0 : 12,
+      marginRight: collapsed && !opened ? 0 : 12,
     },
     body: {
-      display: !opened ? 'none' : 'flex',
+      display: collapsed && !opened ? 'none' : 'flex',
     },
   };
 
   const commonTooltipProps: Partial<TooltipProps> = {
-    disabled: opened,
+    disabled: !collapsed || opened,
     position: 'right',
     withinPortal: true,
     withArrow: true,
@@ -120,10 +124,10 @@ export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
           <Tooltip label={label} {...commonTooltipProps}>
             <NavLink
               key={route}
-              label={!opened ? null : label}
+              label={collapsed && !opened ? null : label}
               icon={icon ?? defaultNavIcon}
               active={isSelected}
-              childrenOffset={!opened ? 0 : 12}
+              childrenOffset={collapsed && !opened ? 0 : 12}
               defaultOpened={defaultOpenKeys.includes(route || '')}
               styles={commonNavLinkStyles}
               {...additionalLinkProps}
@@ -146,7 +150,9 @@ export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
       >
         <NavLink
           key="dashboard"
-          label={!opened ? null : t('dashboard.title', 'Dashboard')}
+          label={
+            collapsed && !opened ? null : t('dashboard.title', 'Dashboard')
+          }
           icon={<IconDashboard size={18} />}
           component={Link}
           to="/"
@@ -163,7 +169,7 @@ export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
     <Tooltip label={t('buttons.logout', 'Logout')} {...commonTooltipProps}>
       <NavLink
         key="logout"
-        label={!opened ? null : t('buttons.logout', 'Logout')}
+        label={collapsed && !opened ? null : t('buttons.logout', 'Logout')}
         icon={<IconLogout size={18} />}
         onClick={() => mutateLogout()}
         styles={commonNavLinkStyles}
@@ -177,7 +183,7 @@ export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
         dashboard,
         logout,
         items,
-        collapsed: false,
+        collapsed,
       });
     }
     return (
@@ -242,7 +248,7 @@ export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
       <MediaQuery smallerThan="md" styles={{ display: 'none' }}>
         <Box
           sx={{
-            width: drawerWidth,
+            width: drawerWidth(),
             transition: 'width 200ms ease, min-width 200ms ease',
             flexShrink: 0,
           }}
@@ -251,7 +257,7 @@ export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
 
       <MediaQuery smallerThan="md" styles={{ display: 'none' }}>
         <Navbar
-          width={{ base: drawerWidth }}
+          width={{ base: drawerWidth() }}
           sx={{
             overflow: 'hidden',
             transition: 'width 200ms ease, min-width 200ms ease',
@@ -261,7 +267,7 @@ export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
           }}
         >
           <Navbar.Section px="xs">
-            <RenderToTitle collapsed={false} />
+            <RenderToTitle collapsed={collapsed} />
           </Navbar.Section>
           <Navbar.Section grow mt="sm" component={ScrollArea} mx="-xs" px="xs">
             {renderSider()}
