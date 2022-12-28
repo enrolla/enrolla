@@ -47,6 +47,8 @@ function generatePackageJson() {
     'class-validator',
     '@nestjs/platform-express',
     'reflect-metadata',
+    'apollo-server-express',
+    'graphql',
   ];
   const dependencies = implicitDeps.reduce((acc, dep) => {
     acc[dep] = packageJson.dependencies[dep];
@@ -57,7 +59,6 @@ function generatePackageJson() {
   };
   const pathToPackageJson = path.join(__dirname, '../../', 'package.json');
   return new GeneratePackageJsonPlugin(basePackageJson, {
-    excludeDependencies: ['@amplication/prisma-clients'],
     sourcePackageFilenames: [pathToPackageJson],
   });
 }
