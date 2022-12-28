@@ -6,7 +6,6 @@ import {
   Global,
   NotificationsProvider,
   notificationProvider,
-  Layout,
   ReadyPage,
   ErrorComponent,
 } from '@pankod/refine-mantine';
@@ -14,6 +13,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import { Login } from './pages/login';
 import { FeatureCreate, FeatureList, FeatureShow } from './pages/features';
+import { Layout } from './components/layout';
 
 export default function App() {
   const { isLoading, isAuthenticated, user, logout, getIdTokenClaims } =
