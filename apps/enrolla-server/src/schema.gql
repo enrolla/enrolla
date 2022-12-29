@@ -28,10 +28,7 @@ enum FeatureType {
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
-scalar JSON
-  @specifiedBy(
-    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
-  )
+scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
 
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
@@ -61,10 +58,18 @@ type Package {
   createdAt: DateTime!
 }
 
-"""
-A field whose value is a Semantic Version: https://semver.org
-"""
+"""A field whose value is a Semantic Version: https://semver.org"""
 scalar SemVer
+
+type Customer {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Organization {
+  id: String!
+  name: String!
+}
 
 type Query {
   features: [Feature!]!
@@ -73,6 +78,10 @@ type Query {
   package(id: String!): Package!
   featureInstances: [FeatureInstance!]!
   featureInstance(id: String!): FeatureInstance!
+  customers: [Customer!]!
+  customer(id: Int!): Customer!
+  organizations: [Organization!]!
+  organization(id: String!): Organization!
 }
 
 type Mutation {
@@ -82,6 +91,12 @@ type Mutation {
   createPackage(createPackageInput: CreatePackageInput!): Package!
   updatePackage(updatePackageInput: UpdatePackageInput!): Package!
   removePackage(id: String!): Package!
+  createCustomer(createCustomerInput: CreateCustomerInput!): Customer!
+  updateCustomer(updateCustomerInput: UpdateCustomerInput!): Customer!
+  removeCustomer(id: Int!): Customer!
+  createOrganization(createOrganizationInput: CreateOrganizationInput!): Organization!
+  updateOrganization(updateOrganizationInput: UpdateOrganizationInput!): Organization!
+  removeOrganization(id: String!): Organization!
 }
 
 input CreateFeatureInput {
@@ -109,4 +124,24 @@ input FeatureInstanceInput {
 
 input UpdatePackageInput {
   id: Cuid!
+}
+
+input CreateCustomerInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateCustomerInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateOrganizationInput {
+  name: String!
+}
+
+input UpdateOrganizationInput {
+  name: String
+  id: String!
 }
