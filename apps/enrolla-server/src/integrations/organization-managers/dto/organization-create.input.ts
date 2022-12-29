@@ -1,0 +1,3 @@
+interface OrganizationCreateInput {
+  name: string;
+}
