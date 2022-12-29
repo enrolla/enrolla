@@ -4,23 +4,27 @@ import { UpdateCustomerInput } from './dto/update-customer.input';
 
 @Injectable()
 export class CustomersService {
-  create(createCustomerInput: CreateCustomerInput) {
+  async create(createCustomerInput: CreateCustomerInput, tenantId: string) {
     return 'This action adds a new customer';
   }
 
-  findAll() {
+  async findAll(tenantId: string) {
     return `This action returns all customers`;
   }
 
-  findOne(id: number) {
+  async findOne(id: string, tenantId: string) {
     return `This action returns a #${id} customer`;
   }
 
-  update(id: number, updateCustomerInput: UpdateCustomerInput) {
+  async update(
+    id: string,
+    updateCustomerInput: UpdateCustomerInput,
+    tenantId: string
+  ) {
     return `This action updates a #${id} customer`;
   }
 
-  remove(id: number) {
+  async remove(id: string, tenantId: string) {
     return `This action removes a #${id} customer`;
   }
 }

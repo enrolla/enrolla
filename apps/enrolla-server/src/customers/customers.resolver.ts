@@ -1,35 +1,55 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { CustomersService } from './customers.service';
 import { Customer } from './entities/customer.entity';
 import { CreateCustomerInput } from './dto/create-customer.input';
 import { UpdateCustomerInput } from './dto/update-customer.input';
+import { TenantId } from '../authz/tenant.decorator';
+import { GraphQLJWTAuthGuard } from '../authz/graphql-jwt-auth.guard';
+import { UseGuards } from '@nestjs/common';
 
 @Resolver(() => Customer)
+@UseGuards(GraphQLJWTAuthGuard)
 export class CustomersResolver {
   constructor(private readonly customersService: CustomersService) {}
 
   @Mutation(() => Customer)
-  createCustomer(@Args('createCustomerInput') createCustomerInput: CreateCustomerInput) {
-    return this.customersService.create(createCustomerInput);
+  async createCustomer(
+    @TenantId() tenantId: string,
+    @Args('createCustomerInput') createCustomerInput: CreateCustomerInput
+  ) {
+    return await this.customersService.create(createCustomerInput, tenantId);
   }
 
   @Query(() => [Customer], { name: 'customers' })
-  findAll() {
-    return this.customersService.findAll();
+  async findAll(@TenantId() tenantId: string) {
+    return await this.customersService.findAll(tenantId);
   }
 
   @Query(() => Customer, { name: 'customer' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.customersService.findOne(id);
+  async findOne(
+    @TenantId() tenantId: string,
+    @Args('id', { type: () => String }) id: string
+  ) {
+    return await this.customersService.findOne(id, tenantId);
   }
 
   @Mutation(() => Customer)
-  updateCustomer(@Args('updateCustomerInput') updateCustomerInput: UpdateCustomerInput) {
-    return this.customersService.update(updateCustomerInput.id, updateCustomerInput);
+  async updateCustomer(
+    @TenantId() tenantId: string,
+    @Args('updateCustomerInput') updateCustomerInput: UpdateCustomerInput
+  ) {
+    return await this.customersService.update(
+      updateCustomerInput.id,
+      updateCustomerInput,
+      tenantId
+    );
   }
 
   @Mutation(() => Customer)
-  removeCustomer(@Args('id', { type: () => Int }) id: number) {
-    return this.customersService.remove(id);
+  async removeCustomer(
+    @TenantId() tenantId: string,
+    @Args('id', { type: () => String }) id: string
+  ) {
+    return await this.customersService.remove(id, tenantId);
   }
 }
