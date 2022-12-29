@@ -1,9 +1,11 @@
-import { Prism } from '@mantine/prism';
 import { useShow } from '@pankod/refine-core';
 import { Show, Title, Text } from '@pankod/refine-mantine';
+import {
+  FeatureViewComponent,
+  FEATURE_TYPE_NAMES,
+} from '../../components/features/FeatureViewComponent';
 
 import { IFeature } from '../../interfaces';
-import { FEATURE_TYPE_NAMES } from './feature-type-translator';
 
 export const FeatureShow: React.FC = () => {
   const { queryResult } = useShow<IFeature>({
@@ -32,15 +34,11 @@ export const FeatureShow: React.FC = () => {
       <Title mt="xs" order={5}>
         Default Value
       </Title>
-      {record?.type === 'JSON' ? (
-        <Prism language="json" noCopy>
-          {record &&
-            JSON.stringify(record?.defaultValue.value as object, null, 2)}
-        </Prism>
-      ) : (
-        <Text mt="xs">
-          {record && JSON.stringify(record?.defaultValue.value)}
-        </Text>
+      {record && (
+        <FeatureViewComponent
+          value={record.defaultValue.value}
+          type={record.type}
+        />
       )}
     </Show>
   );

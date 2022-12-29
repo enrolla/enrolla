@@ -9,12 +9,14 @@ import {
   ShowButton,
   DeleteButton,
   DateField,
-  Text,
 } from '@pankod/refine-mantine';
-import { Prism } from '@mantine/prism';
-import { FeatureType, IFeature } from '../../interfaces';
+import { IFeature } from '../../interfaces';
 import { useMemo } from 'react';
-import { FEATURE_TYPE_NAMES } from './feature-type-translator';
+import { FeatureType } from '../../interfaces/features.interface';
+import {
+  FeatureViewComponent,
+  FEATURE_TYPE_NAMES,
+} from '../../components/features/FeatureViewComponent';
 
 export const FeatureList: React.FC = () => {
   const columns = useMemo<ColumnDef<IFeature>[]>(
@@ -36,21 +38,13 @@ export const FeatureList: React.FC = () => {
         id: 'defaultValue',
         header: 'Default Value',
         accessorKey: 'defaultValue',
-        cell: ({ getValue, row }) => {
-          if (row.getValue('type') === FEATURE_TYPE_NAMES.JSON) {
-            return (
-              <Prism language="json" noCopy>
-                {JSON.stringify((getValue() as IFeature['defaultValue']).value)}
-              </Prism>
-            );
-          } else {
-            return (
-              <Text>
-                {JSON.stringify((getValue() as IFeature['defaultValue']).value)}
-              </Text>
-            );
-          }
-        },
+        cell: ({ getValue, row }) => (
+          <FeatureViewComponent
+            value={(getValue() as IFeature['defaultValue']).value}
+            type={row.getValue('type') as FeatureType}
+            inline
+          />
+        ),
       },
       {
         id: 'description',
