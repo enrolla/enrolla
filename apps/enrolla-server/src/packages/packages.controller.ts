@@ -26,7 +26,6 @@ export class PackagesController {
     @TenantId() tenantId: string,
     @Body() createPackageDto: CreatePackageInput
   ) {
-    console.log('passed validation');
     return await this.packagesService.create(createPackageDto, tenantId);
   }
 

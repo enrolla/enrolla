@@ -29,8 +29,6 @@ export class OrganizationsService {
   }
 
   async findAll(tenantId: string) {
-    console.log('organizationManager', tenantId);
-
     const organizationManager = await this.tenantOrganizationManager(tenantId);
 
     return await organizationManager.getOrganizations(tenantId);
