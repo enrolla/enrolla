@@ -52,7 +52,7 @@ export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
 
   const drawerWidth = () => {
     if (collapsed) return 80;
-    return 300;
+    return 250;
   };
 
   const commonNavLinkStyles: Styles<NavLinkStylesNames, NavLinkStylesParams> = {
