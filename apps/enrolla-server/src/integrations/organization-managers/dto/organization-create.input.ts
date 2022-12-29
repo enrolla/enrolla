@@ -1,3 +1,3 @@
-interface OrganizationCreateInput {
+export interface OrganizationCreateInput {
   name: string;
 }
