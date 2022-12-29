@@ -3,6 +3,7 @@ import { CreateOrganizationInput } from './dto/create-organization.input';
 import { UpdateOrganizationInput } from './dto/update-organization.input';
 import { ConfigurationsService } from '../configurations/configurations.service';
 import { Auth0OrganizationManager } from '../integrations/organization-managers/impl/auth0.organization-manager';
+import { OrganizationManager } from '../integrations/organization-managers/organization-manager.interface';
 
 @Injectable()
 export class OrganizationsService {

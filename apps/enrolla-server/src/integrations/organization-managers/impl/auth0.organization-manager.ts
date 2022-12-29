@@ -1,5 +1,8 @@
 import { ConfigurationsService } from '../../../configurations/configurations.service';
 import { ManagementClient } from 'auth0';
+import { Organization } from '../entities/organization.entity';
+import { OrganizationManager } from '../organization-manager.interface';
+import { OrganizationCreateInput } from '../dto/organization-create.input';
 
 export class Auth0OrganizationManager implements OrganizationManager {
   static AUTH0_TOKEN_CONGIURATION_KEY = 'auth0_token';
