@@ -17,7 +17,6 @@ export class FeaturesService {
   ) {}
 
   async create(createFeatureDto: CreateFeatureInput, tenantId: string) {
-    console.log('createFeatureDto.defaultValue', createFeatureDto.defaultValue);
     const feature = await this.prismaService.feature.create({
       data: {
         key: createFeatureDto.key,

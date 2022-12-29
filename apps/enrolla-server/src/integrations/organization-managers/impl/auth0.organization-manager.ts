@@ -10,8 +10,8 @@ export class Auth0OrganizationManager implements OrganizationManager {
   constructor(private configurationsService: ConfigurationsService) {}
 
   async getOrganization(
-    organizationId: string,
-    tenantId: string
+    tenantId: string,
+    organizationId: string
   ): Promise<Organization> {
     const managementClient = await this.getAuth0Client(tenantId);
 
@@ -19,7 +19,6 @@ export class Auth0OrganizationManager implements OrganizationManager {
   }
 
   async getOrganizations(tenantId: string): Promise<Organization[]> {
-    console.log('getOrganizations', tenantId);
     const managementClient = await this.getAuth0Client(tenantId);
 
     return await managementClient.organizations.getAll();
@@ -39,7 +38,7 @@ export class Auth0OrganizationManager implements OrganizationManager {
   async removeOrganization(tenantId: string, organizationId: string) {
     const managementClient = await this.getAuth0Client(tenantId);
 
-    return await managementClient.organizations.delete(organizationId);
+    return await managementClient.organizations.delete({ id: organizationId });
   }
 
   private async getAuth0Client(tenantId: string): ManagementClient {
@@ -51,6 +50,7 @@ export class Auth0OrganizationManager implements OrganizationManager {
       tenantId,
       Auth0OrganizationManager.AUTH0_DOMAIN_CONGIURATION_KEY
     );
+
     const token = await this.configurationsService.getValue<string>(
       tenantId,
       Auth0OrganizationManager.AUTH0_TOKEN_CONGIURATION_KEY
