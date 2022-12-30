@@ -62,7 +62,7 @@ export default function App() {
     <MantineProvider
       theme={{
         colorScheme: 'light',
-        fontFamily: 'Inter',
+        fontFamily: 'Nunito',
         black: '#626262',
         components: {
           Table: {
