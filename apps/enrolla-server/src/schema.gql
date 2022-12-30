@@ -8,7 +8,7 @@ type Feature {
   key: String!
   type: FeatureType!
   defaultValue: JSON!
-  description: String!
+  description: String
   createdAt: DateTime!
 }
 
@@ -76,8 +76,8 @@ type Query {
 }
 
 type Mutation {
-  createFeature(createFeatureInput: CreateFeatureInput!): Feature!
-  updateFeature(updateFeatureInput: UpdateFeatureInput!): Feature!
+  createFeature(input: CreateFeatureInput!): Feature!
+  updateFeature(input: UpdateFeatureInput!): Feature!
   removeFeature(id: String!): Feature!
   createPackage(createPackageInput: CreatePackageInput!): Package!
   updatePackage(updatePackageInput: UpdatePackageInput!): Package!

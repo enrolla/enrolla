@@ -6,7 +6,11 @@ import { IFeature } from '../../interfaces';
 import { FEATURE_TYPE_NAMES } from './feature-type-translator';
 
 export const FeatureShow: React.FC = () => {
-  const { queryResult } = useShow<IFeature>();
+  const { queryResult } = useShow<IFeature>({
+    metaData: {
+      fields: ['key', 'type', 'defaultValue', 'description', 'createdAt'],
+    },
+  });
   const { data, isLoading } = queryResult;
   const record = data?.data;
 

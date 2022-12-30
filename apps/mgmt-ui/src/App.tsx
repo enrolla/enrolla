@@ -1,6 +1,5 @@
 import { AuthProvider, Refine } from '@pankod/refine-core';
 import routerProvider from '@pankod/refine-react-router-v6';
-import dataProvider from '@pankod/refine-simple-rest';
 import {
   MantineProvider,
   Global,
@@ -10,14 +9,19 @@ import {
   ErrorComponent,
 } from '@pankod/refine-mantine';
 import { useAuth0 } from '@auth0/auth0-react';
-import axios from 'axios';
 import { Login } from './pages/login';
 import { FeatureCreate, FeatureList, FeatureShow } from './pages/features';
 import { Layout } from './components/layout';
+import dataProvider from './providers/backendGraphQLProvider';
+import { GraphQLClient } from 'graphql-request';
 
 export default function App() {
   const { isLoading, isAuthenticated, user, logout, getIdTokenClaims } =
     useAuth0();
+
+  const gqlClient = new GraphQLClient(
+    `${import.meta.env.VITE_BACKEND_URL}/graphql`
+  );
 
   if (isLoading) {
     return <span>loading...</span>;
@@ -52,9 +56,7 @@ export default function App() {
 
   getIdTokenClaims().then((token) => {
     if (token) {
-      axios.defaults.headers.common = {
-        Authorization: `Bearer ${token.__raw}`,
-      };
+      gqlClient.setHeader('Authorization', `Bearer ${token.__raw}`);
     }
   });
 
@@ -97,10 +99,7 @@ export default function App() {
         <Refine
           routerProvider={routerProvider}
           authProvider={authProvider}
-          dataProvider={dataProvider(
-            `${import.meta.env.VITE_BACKEND_URL}/v1/management`,
-            axios
-          )}
+          dataProvider={dataProvider(gqlClient)}
           notificationProvider={notificationProvider}
           ReadyPage={ReadyPage}
           LoginPage={Login}

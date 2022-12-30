@@ -90,6 +90,18 @@ export const FeatureList: React.FC = () => {
     refineCore: { setCurrent, pageCount, current },
   } = useTable({
     columns,
+    refineCoreProps: {
+      metaData: {
+        fields: [
+          'id',
+          'key',
+          'type',
+          'defaultValue',
+          'description',
+          'createdAt',
+        ],
+      },
+    },
   });
 
   return (
