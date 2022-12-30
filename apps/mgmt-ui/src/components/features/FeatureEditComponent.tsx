@@ -9,7 +9,7 @@ import { GetInputPropsType } from '@mantine/form/lib/types';
 
 export interface FeatureEditComponentProps {
   type: FeatureType;
-  label: string;
+  label?: string;
   getInputProps: (props?: { type: GetInputPropsType }) => object;
 }
 

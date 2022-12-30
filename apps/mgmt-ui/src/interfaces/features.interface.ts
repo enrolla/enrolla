@@ -7,3 +7,8 @@ export enum FeatureType {
 }
 
 export type FeatureValue = string | number | boolean | JSON;
+
+export type CustomizedFeature = {
+  featureId: string;
+  value: FeatureValue;
+};
