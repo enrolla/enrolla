@@ -15,7 +15,7 @@ export class FeaturesResolver {
   @Mutation(() => Feature)
   createFeature(
     @TenantId() tenantId: string,
-    @Args('createFeatureInput') createFeatureInput: CreateFeatureInput
+    @Args('input') createFeatureInput: CreateFeatureInput
   ) {
     return this.featuresService.create(createFeatureInput, tenantId);
   }
@@ -36,7 +36,7 @@ export class FeaturesResolver {
   @Mutation(() => Feature)
   updateFeature(
     @TenantId() tenantId: string,
-    @Args('updateFeatureInput') updateFeatureInput: UpdateFeatureInput
+    @Args('input') updateFeatureInput: UpdateFeatureInput
   ) {
     return this.featuresService.update(
       updateFeatureInput.id,
