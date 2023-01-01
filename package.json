@@ -57,15 +57,15 @@
     "@emotion/babel-plugin": "11.10.5",
     "@nestjs/schematics": "^9.0.3",
     "@nestjs/testing": "^9.2.1",
-    "@nrwl/cypress": "15.4.1",
-    "@nrwl/eslint-plugin-nx": "15.4.1",
-    "@nrwl/jest": "15.4.1",
-    "@nrwl/linter": "15.4.1",
-    "@nrwl/nest": "15.4.1",
-    "@nrwl/node": "15.4.1",
-    "@nrwl/react": "15.4.1",
-    "@nrwl/vite": "15.4.1",
-    "@nrwl/workspace": "15.4.1",
+    "@nrwl/cypress": "15.4.2",
+    "@nrwl/eslint-plugin-nx": "15.4.2",
+    "@nrwl/jest": "15.4.2",
+    "@nrwl/linter": "15.4.2",
+    "@nrwl/nest": "15.4.2",
+    "@nrwl/node": "15.4.2",
+    "@nrwl/react": "15.4.2",
+    "@nrwl/vite": "15.4.2",
+    "@nrwl/workspace": "15.4.2",
     "@nx-tools/container-metadata": "^4.0.2",
     "@nx-tools/nx-container": "^4.0.2",
     "@nx-tools/nx-prisma": "^4.0.2",
@@ -94,7 +94,7 @@
     "jest": "28.1.1",
     "jest-environment-jsdom": "28.1.1",
     "jsdom": "~20.0.3",
-    "nx": "15.4.1",
+    "nx": "15.4.2",
     "prettier": "^2.8.0",
     "prisma": "^4.8.0",
     "react-test-renderer": "18.2.0",
@@ -108,3 +108,4 @@
     "vitest": "^0.25.8"
   }
 }
+
