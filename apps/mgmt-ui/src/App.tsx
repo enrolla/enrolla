@@ -1,6 +1,5 @@
 import { AuthProvider, Refine } from '@pankod/refine-core';
 import routerProvider from '@pankod/refine-react-router-v6';
-import dataProvider from '@pankod/refine-simple-rest';
 import {
   MantineProvider,
   Global,
@@ -8,16 +7,25 @@ import {
   notificationProvider,
   ReadyPage,
   ErrorComponent,
+  Image,
 } from '@pankod/refine-mantine';
+import imgUrl from './assets/enrolla-temp-logo.png';
 import { useAuth0 } from '@auth0/auth0-react';
-import axios from 'axios';
 import { Login } from './pages/login';
 import { FeatureCreate, FeatureList, FeatureShow } from './pages/features';
+import { PackageCreate, PackageList, PackageShow } from './pages/packages';
+import { IconPackage, IconLayoutList } from '@tabler/icons';
 import { Layout } from './components/layout';
+import dataProvider from './providers/backendGraphQLProvider';
+import { GraphQLClient } from 'graphql-request';
 
 export default function App() {
   const { isLoading, isAuthenticated, user, logout, getIdTokenClaims } =
     useAuth0();
+
+  const gqlClient = new GraphQLClient(
+    `${import.meta.env.VITE_BACKEND_URL}/graphql`
+  );
 
   if (isLoading) {
     return <span>loading...</span>;
@@ -52,9 +60,7 @@ export default function App() {
 
   getIdTokenClaims().then((token) => {
     if (token) {
-      axios.defaults.headers.common = {
-        Authorization: `Bearer ${token.__raw}`,
-      };
+      gqlClient.setHeader('Authorization', `Bearer ${token.__raw}`);
     }
   });
 
@@ -62,7 +68,7 @@ export default function App() {
     <MantineProvider
       theme={{
         colorScheme: 'light',
-        fontFamily: 'Inter',
+        fontFamily: 'Nunito',
         black: '#626262',
         components: {
           Table: {
@@ -97,24 +103,28 @@ export default function App() {
         <Refine
           routerProvider={routerProvider}
           authProvider={authProvider}
-          dataProvider={dataProvider(
-            `${import.meta.env.VITE_BACKEND_URL}/v1/management`,
-            axios
-          )}
+          dataProvider={dataProvider(gqlClient)}
           notificationProvider={notificationProvider}
           ReadyPage={ReadyPage}
           LoginPage={Login}
           catchAll={<ErrorComponent />}
           Layout={Layout}
-          Title={() => <div style={{ width: '20px', height: '80px' }} />}
+          Title={() => <Image my={20} height={40} fit="contain" src={imgUrl} />}
           resources={[
             {
               name: 'features',
               list: FeatureList,
               show: FeatureShow,
-
               create: FeatureCreate,
               canDelete: true,
+              icon: <IconLayoutList size="16" />,
+            },
+            {
+              name: 'packages',
+              list: PackageList,
+              show: PackageShow,
+              create: PackageCreate,
+              icon: <IconPackage size="16" />,
             },
           ]}
         />

@@ -23,7 +23,7 @@ export class Feature {
   @Field(() => GraphQLJSON)
   defaultValue: object;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   description?: string;
 
   @Field(() => Date)

@@ -1,14 +1,13 @@
 import {
-  Checkbox,
   Create,
-  JsonInput,
-  NumberInput,
   SegmentedControl,
   Textarea,
   TextInput,
   useForm,
 } from '@pankod/refine-mantine';
+import { FeatureEditComponent } from '../../components/features/FeatureEditComponent';
 import { IFeature } from '../../interfaces';
+import { FeatureType } from '../../interfaces/features.interface';
 
 export const FeatureCreate: React.FC = () => {
   const { saveButtonProps, getInputProps, values, setFieldValue } =
@@ -26,10 +25,12 @@ export const FeatureCreate: React.FC = () => {
       validateInputOnBlur: true,
       transformValues: (values) => ({
         ...values,
-        defaultValue:
-          values['type'] === 'JSON'
-            ? JSON.parse(values['defaultValue'] as string)
-            : values['defaultValue'],
+        defaultValue: {
+          value:
+            values['type'] === 'JSON'
+              ? JSON.parse(values['defaultValue'] as string)
+              : values['defaultValue'],
+        },
       }),
     });
 
@@ -60,40 +61,11 @@ export const FeatureCreate: React.FC = () => {
           withAsterisk
           {...getInputProps('key')}
         />
-        {values['type'] === 'BOOLEAN' && (
-          <Checkbox
-            mt={8}
-            label="Defaults to true"
-            {...getInputProps('defaultValue', { type: 'checkbox' })}
-          />
-        )}
-        {(values['type'] === 'INTEGER' || values['type'] === 'FLOAT') && (
-          <NumberInput
-            mt={8}
-            label="Default Value"
-            hideControls
-            noClampOnBlur={values['type'] === 'FLOAT'}
-            {...getInputProps('defaultValue')}
-          />
-        )}
-        {values['type'] === 'STRING' && (
-          <TextInput
-            mt={8}
-            label="Default Value"
-            {...getInputProps('defaultValue')}
-          />
-        )}
-        {values['type'] === 'JSON' && (
-          <JsonInput
-            mt={8}
-            label="Default Value"
-            validationError="Invalid json"
-            formatOnBlur
-            autosize
-            minRows={4}
-            {...getInputProps('defaultValue')}
-          />
-        )}
+        <FeatureEditComponent
+          type={values['type'] as FeatureType}
+          label="Default Value"
+          getInputProps={(options) => getInputProps('defaultValue', options)}
+        />
         <Textarea
           mt={8}
           label="Description"

@@ -9,47 +9,59 @@ import {
   ShowButton,
   DeleteButton,
   DateField,
+  Card,
+  Text,
+  createStyles,
+  SimpleGrid,
 } from '@pankod/refine-mantine';
-import { IFeature } from '../../interfaces';
 import { useMemo } from 'react';
-import { FeatureType } from '../../interfaces/features.interface';
-import {
-  FeatureViewComponent,
-  FEATURE_TYPE_NAMES,
-} from '../../components/features/FeatureViewComponent';
+import { IPackage } from '../../interfaces';
+import { IconRocket, IconCrown, IconBusinessplan } from '@tabler/icons';
 
-export const FeatureList: React.FC = () => {
-  const columns = useMemo<ColumnDef<IFeature>[]>(
+const useStyles = createStyles((theme) => ({
+  card: {
+    backgroundColor:
+      theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+  },
+
+  section: {
+    borderBottom: `1px solid ${
+      theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]
+    }`,
+    paddingLeft: theme.spacing.md,
+    paddingRight: theme.spacing.md,
+    paddingBottom: theme.spacing.md,
+  },
+}));
+
+export const PackageList: React.FC = () => {
+  const columns = useMemo<ColumnDef<IPackage>[]>(
     () => [
       {
-        id: 'key',
-        header: 'Key',
-        accessorKey: 'key',
+        id: 'id',
+        header: 'ID',
+        accessorKey: 'id',
       },
       {
-        id: 'type',
-        header: 'Type',
-        accessorKey: 'type',
-        cell: ({ getValue }) => {
-          return FEATURE_TYPE_NAMES[getValue() as FeatureType];
-        },
-      },
-      {
-        id: 'defaultValue',
-        header: 'Default Value',
-        accessorKey: 'defaultValue',
-        cell: ({ getValue, row }) => (
-          <FeatureViewComponent
-            value={(getValue() as IFeature['defaultValue']).value}
-            type={row.getValue('type') as FeatureType}
-            inline
-          />
-        ),
+        id: 'name',
+        header: 'Name',
+        accessorKey: 'name',
       },
       {
         id: 'description',
         header: 'Description',
         accessorKey: 'description',
+      },
+      {
+        id: 'parentPackageId',
+        header: 'Parent Package',
+        accessorKey: 'parentPackageId',
+        cell: function render({ getValue, table }) {
+          const parentPackage: IPackage | undefined = table.options.data.find(
+            (item) => item.id === getValue()
+          );
+          return parentPackage?.name ?? '-';
+        },
       },
       {
         id: 'createdAt',
@@ -86,17 +98,59 @@ export const FeatureList: React.FC = () => {
     columns,
     refineCoreProps: {
       metaData: {
-        fields: [
-          'id',
-          'key',
-          'type',
-          'defaultValue',
-          'description',
-          'createdAt',
-        ],
+        fields: ['id', 'name', 'description'],
       },
     },
   });
+
+  const { classes } = useStyles();
+
+  return (
+    <ScrollArea>
+      <List>
+        <SimpleGrid
+          cols={4}
+          breakpoints={[
+            { maxWidth: 'sm', cols: 1 },
+            { maxWidth: 'lg', cols: 2 },
+            { maxWidth: 'xl', cols: 3 },
+          ]}
+          my={10}
+        >
+          {getRowModel().rows.map((row, index) => {
+            return (
+              <Card
+                style={{ minHeight: 200 }}
+                shadow="sm"
+                p="lg"
+                radius="md"
+                withBorder
+                key={row.id}
+              >
+                <Card.Section className={classes.section}>
+                  <Group>
+                    {index % 3 === 0 && <IconRocket size="24" />}
+                    {index % 3 === 1 && <IconCrown size="24" />}
+                    {index % 3 === 2 && <IconBusinessplan size="24" />}
+                    <Text mt="md" mb="xs" size="xl" weight={500}>
+                      {row.getValue('name') as string}
+                    </Text>
+                  </Group>
+                  <Text size="sm" style={{ minHeight: 50 }} color="dimmed">
+                    {row.getValue('description') as string}
+                  </Text>
+                </Card.Section>
+                <Group mt="lg">
+                  <ShowButton recordItemId={row.getValue('id') as string} />
+                  <DeleteButton recordItemId={row.getValue('id') as string} />
+                </Group>
+              </Card>
+            );
+          })}
+        </SimpleGrid>
+      </List>
+    </ScrollArea>
+  );
 
   return (
     <ScrollArea>

@@ -81,6 +81,8 @@ export class FeaturesService {
       Events.FEATURE_UPDATED,
       new FeatureUpdatedEvent(feature.id, tenantId)
     );
+
+    return feature;
   }
 
   async remove(id: string, tenantId: string) {
@@ -97,5 +99,7 @@ export class FeaturesService {
       Events.FEATURE_REMOVED,
       new FeatureRemovedEvent(feature.id, tenantId)
     );
+
+    return feature;
   }
 }
