@@ -7,10 +7,14 @@ import {
   notificationProvider,
   ReadyPage,
   ErrorComponent,
+  Image,
 } from '@pankod/refine-mantine';
+import imgUrl from './assets/enrolla-temp-logo.png';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Login } from './pages/login';
 import { FeatureCreate, FeatureList, FeatureShow } from './pages/features';
+import { PackageCreate, PackageList, PackageShow } from './pages/packages';
+import { IconPackage, IconLayoutList } from '@tabler/icons';
 import { Layout } from './components/layout';
 import dataProvider from './providers/backendGraphQLProvider';
 import { GraphQLClient } from 'graphql-request';
@@ -105,15 +109,22 @@ export default function App() {
           LoginPage={Login}
           catchAll={<ErrorComponent />}
           Layout={Layout}
-          Title={() => <div style={{ width: '20px', height: '80px' }} />}
+          Title={() => <Image my={20} height={40} fit="contain" src={imgUrl} />}
           resources={[
             {
               name: 'features',
               list: FeatureList,
               show: FeatureShow,
-
               create: FeatureCreate,
               canDelete: true,
+              icon: <IconLayoutList size="16" />,
+            },
+            {
+              name: 'packages',
+              list: PackageList,
+              show: PackageShow,
+              create: PackageCreate,
+              icon: <IconPackage size="16" />,
             },
           ]}
         />

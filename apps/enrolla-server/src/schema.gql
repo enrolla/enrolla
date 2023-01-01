@@ -79,8 +79,8 @@ type Mutation {
   createFeature(input: CreateFeatureInput!): Feature!
   updateFeature(input: UpdateFeatureInput!): Feature!
   removeFeature(id: String!): Feature!
-  createPackage(createPackageInput: CreatePackageInput!): Package!
-  updatePackage(updatePackageInput: UpdatePackageInput!): Package!
+  createPackage(input: CreatePackageInput!): Package!
+  updatePackage(input: UpdatePackageInput!): Package!
   removePackage(id: String!): Package!
 }
 
