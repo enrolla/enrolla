@@ -38,13 +38,26 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Customer {
+  id: Cuid!
+  tenantId: String!
+  organizationId: String
+  name: String!
+  package: Package
+  packageId: String
+  features: [FeatureInstance!]!
+  createdAt: DateTime!
+}
+
 type FeatureInstance {
   id: Cuid!
   tenantId: String!
   featureId: Cuid!
   feature: Feature!
-  packageId: Cuid!
-  package: Package!
+  packageId: Cuid
+  package: Package
+  customerId: Cuid
+  customer: Customer
   value: JSON!
   createdAt: DateTime!
 }
@@ -66,13 +79,6 @@ A field whose value is a Semantic Version: https://semver.org
 """
 scalar SemVer
 
-type Customer {
-  """
-  Example field (placeholder)
-  """
-  exampleField: Int!
-}
-
 type Organization {
   id: String!
   name: String!
@@ -83,10 +89,8 @@ type Query {
   feature(id: String!): Feature!
   packages: [Package!]!
   package(id: String!): Package!
-  featureInstances: [FeatureInstance!]!
-  featureInstance(id: String!): FeatureInstance!
   customers: [Customer!]!
-  customer(id: Int!): Customer!
+  customer(id: String!): Customer!
   organizations: [Organization!]!
   organization(id: String!): Organization!
 }
@@ -100,7 +104,7 @@ type Mutation {
   removePackage(id: String!): Package!
   createCustomer(createCustomerInput: CreateCustomerInput!): Customer!
   updateCustomer(updateCustomerInput: UpdateCustomerInput!): Customer!
-  removeCustomer(id: Int!): Customer!
+  removeCustomer(id: String!): Customer!
   createOrganization(
     createOrganizationInput: CreateOrganizationInput!
   ): Organization!
@@ -138,18 +142,18 @@ input UpdatePackageInput {
 }
 
 input CreateCustomerInput {
-  """
-  Example field (placeholder)
-  """
-  exampleField: Int!
+  organizationId: String
+  name: String!
+  packageId: String
+  features: [FeatureInstanceInput!]!
 }
 
 input UpdateCustomerInput {
-  """
-  Example field (placeholder)
-  """
-  exampleField: Int
-  id: Int!
+  organizationId: String
+  name: String
+  packageId: String
+  features: [FeatureInstanceInput!]
+  id: String!
 }
 
 input CreateOrganizationInput {
