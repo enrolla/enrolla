@@ -22,3 +22,11 @@ export interface IPackage {
   parentPackageId: string;
   features: CustomizedFeature[];
 }
+
+export interface ICustomer {
+  id: string;
+  organizationId?: string;
+  name: string;
+  package: IPackage;
+  createdAt: string;
+}

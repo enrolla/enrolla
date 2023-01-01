@@ -102,8 +102,8 @@ type Mutation {
   createPackage(input: CreatePackageInput!): Package!
   updatePackage(input: UpdatePackageInput!): Package!
   removePackage(id: String!): Package!
-  createCustomer(createCustomerInput: CreateCustomerInput!): Customer!
-  updateCustomer(updateCustomerInput: UpdateCustomerInput!): Customer!
+  createCustomer(input: CreateCustomerInput!): Customer!
+  updateCustomer(input: UpdateCustomerInput!): Customer!
   removeCustomer(id: String!): Customer!
   createOrganization(
     createOrganizationInput: CreateOrganizationInput!

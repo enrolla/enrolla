@@ -22,7 +22,7 @@ export class CustomersService {
       );
     }
 
-    this.prismaService.customer.create({
+    return this.prismaService.customer.create({
       data: {
         name: createCustomerInput.name,
         organizationId: organization?.id,
