@@ -23,7 +23,7 @@ export class PackagesService {
         description: createPackageDto.description,
         tenantId: tenantId,
         parentPackageId: createPackageDto.parentPackageId,
-        featuresInstances: {
+        features: {
           create: createPackageDto.features.map((feature) => {
             return {
               featureId: feature.featureId,
@@ -34,7 +34,7 @@ export class PackagesService {
         },
       },
       include: {
-        featuresInstances: {
+        features: {
           select: {
             id: true,
           },
@@ -49,7 +49,7 @@ export class PackagesService {
         packagez.tenantId,
         packagez.name,
         packagez.version,
-        packagez.featuresInstances.map((instance) => instance.id),
+        packagez.features.map((instance) => instance.id),
         packagez.createdAt,
         packagez.parentPackageId,
         packagez.description
