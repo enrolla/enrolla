@@ -7,7 +7,8 @@ import { OrganizationManager } from '../integrations/organization-managers/organ
 
 @Injectable()
 export class OrganizationsService {
-  private static ORGNIATION_MANAGER_TYPE_CONFIG_KEY = 'ORGANIZATION_MANAGER_TYPE';
+  private static ORGANIZATION_MANAGER_TYPE_CONFIG_KEY =
+    'ORGANIZATION_MANAGER_TYPE';
 
   private auth0OrganizationManager: Auth0OrganizationManager;
 
@@ -61,7 +62,7 @@ export class OrganizationsService {
     const organizationManagerType =
       await this.configurationsService.getValue<string>(
         tenantId,
-        OrganizationsService.ORGNIATION_MANAGER_TYPE_CONFIG_KEY
+        OrganizationsService.ORGANIZATION_MANAGER_TYPE_CONFIG_KEY
       );
 
     switch (organizationManagerType) {
