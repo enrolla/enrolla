@@ -7,6 +7,9 @@ import { GraphQLJWTAuthGuard } from '../authz/graphql-jwt-auth.guard';
 import { Package } from '../packages/entities/package.entity';
 import { PackagesService } from '../packages/packages.service';
 import { FeaturesService } from '../features/features.service';
+import { Feature } from '../features/entities/feature.entity';
+import { Customer } from '../customers/entities/customer.entity';
+import { CustomersService } from '../customers/customers.service';
 
 @Resolver(() => FeatureInstance)
 @UseGuards(GraphQLJWTAuthGuard)
@@ -14,21 +17,9 @@ export class FeatureInstancesResolver {
   constructor(
     private readonly featureInstancesService: FeatureInstancesService,
     private readonly packagesService: PackagesService,
-    private readonly featuresService: FeaturesService
+    private readonly featuresService: FeaturesService,
+    private readonly customersService: CustomersService
   ) {}
-
-  @Query(() => [FeatureInstance], { name: 'featureInstances' })
-  async findAll(@TenantId() tenantId: string) {
-    return await this.featureInstancesService.findAll(tenantId);
-  }
-
-  @Query(() => FeatureInstance, { name: 'featureInstance' })
-  async findOne(
-    @TenantId() tenantId: string,
-    @Args('id', { type: () => String }) id: string
-  ) {
-    return await this.featureInstancesService.findOne(id, tenantId);
-  }
 
   @ResolveField(() => Package)
   async package(@Parent() featureInstance: FeatureInstance) {
@@ -37,10 +28,17 @@ export class FeatureInstancesResolver {
     return this.packagesService.findOne(packageId, tenantId);
   }
 
-  @ResolveField(() => Package)
+  @ResolveField(() => Feature)
   async feature(@Parent() featureInstance: FeatureInstance) {
     const { featureId, tenantId } = featureInstance;
 
     return this.featuresService.findOne(featureId, tenantId);
+  }
+
+  @ResolveField(() => Customer)
+  async customer(@Parent() featureInstance: FeatureInstance) {
+    const { featureId, tenantId } = featureInstance;
+
+    return this.customersService.findOne(featureId, tenantId);
   }
 }

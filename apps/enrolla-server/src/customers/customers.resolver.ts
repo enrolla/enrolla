@@ -1,4 +1,11 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Parent,
+  ResolveField,
+} from '@nestjs/graphql';
 import { CustomersService } from './customers.service';
 import { Customer } from './entities/customer.entity';
 import { CreateCustomerInput } from './dto/create-customer.input';
@@ -6,11 +13,16 @@ import { UpdateCustomerInput } from './dto/update-customer.input';
 import { TenantId } from '../authz/tenant.decorator';
 import { GraphQLJWTAuthGuard } from '../authz/graphql-jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
+import { Package } from '../packages/entities/package.entity';
+import { PackagesService } from '../packages/packages.service';
 
 @Resolver(() => Customer)
 @UseGuards(GraphQLJWTAuthGuard)
 export class CustomersResolver {
-  constructor(private readonly customersService: CustomersService) {}
+  constructor(
+    private readonly customersService: CustomersService,
+    private readonly packagesService: PackagesService
+  ) {}
 
   @Mutation(() => Customer)
   async createCustomer(
@@ -51,5 +63,12 @@ export class CustomersResolver {
     @Args('id', { type: () => String }) id: string
   ) {
     return await this.customersService.remove(id, tenantId);
+  }
+
+  @ResolveField(() => Package, { nullable: true })
+  async package(@Parent() customer: Customer) {
+    const { packageId, tenantId } = customer;
+
+    return packageId && this.packagesService.findOne(packageId, tenantId);
   }
 }
