@@ -32,4 +32,13 @@ export class FeatureInstancesService {
       },
     });
   }
+
+  async findByCustomerId(customerId: string, tenantId: string) {
+    return await this.prismaService.customerFeature.findMany({
+      where: {
+        customerId,
+        tenantId,
+      },
+    });
+  }
 }

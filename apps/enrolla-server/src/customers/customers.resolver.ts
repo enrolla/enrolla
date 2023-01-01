@@ -15,13 +15,16 @@ import { GraphQLJWTAuthGuard } from '../authz/graphql-jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { Package } from '../packages/entities/package.entity';
 import { PackagesService } from '../packages/packages.service';
+import { FeatureInstance } from '../feature-instances/entities/feature-instance.entity';
+import { FeatureInstancesService } from '../feature-instances/feature-instances.service';
 
 @Resolver(() => Customer)
 @UseGuards(GraphQLJWTAuthGuard)
 export class CustomersResolver {
   constructor(
     private readonly customersService: CustomersService,
-    private readonly packagesService: PackagesService
+    private readonly packagesService: PackagesService,
+    private readonly featuresInstancesService: FeatureInstancesService
   ) {}
 
   @Mutation(() => Customer)
@@ -70,5 +73,12 @@ export class CustomersResolver {
     const { packageId, tenantId } = customer;
 
     return packageId && this.packagesService.findOne(packageId, tenantId);
+  }
+
+  @ResolveField(() => [FeatureInstance])
+  async features(@Parent() customer: Customer) {
+    const { id, tenantId } = customer;
+
+    return this.featuresInstancesService.findByCustomerId(id, tenantId);
   }
 }
