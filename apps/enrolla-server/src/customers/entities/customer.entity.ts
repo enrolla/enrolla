@@ -1,4 +1,4 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field } from '@nestjs/graphql';
 import { CuidResolver } from 'graphql-scalars';
 import { FeatureInstance } from '../../feature-instances/entities/feature-instance.entity';
 import { Package } from '../../packages/entities/package.entity';

@@ -1,7 +1,6 @@
-import { Resolver, Query, Args, ResolveField, Parent } from '@nestjs/graphql';
+import { Resolver, ResolveField, Parent } from '@nestjs/graphql';
 import { FeatureInstancesService } from './feature-instances.service';
 import { FeatureInstance } from './entities/feature-instance.entity';
-import { TenantId } from '../authz/tenant.decorator';
 import { UseGuards } from '@nestjs/common';
 import { GraphQLJWTAuthGuard } from '../authz/graphql-jwt-auth.guard';
 import { Package } from '../packages/entities/package.entity';
