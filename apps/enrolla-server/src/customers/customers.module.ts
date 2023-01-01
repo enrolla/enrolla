@@ -5,6 +5,7 @@ import { OrganizationsService } from '../organizations/organizations.service';
 import { PrismaService } from '../prisma.service';
 import { ConfigurationsService } from '../configurations/configurations.service';
 import { PackagesService } from '../packages/packages.service';
+import { FeatureInstancesService } from '../feature-instances/feature-instances.service';
 
 @Module({
   providers: [
@@ -14,6 +15,7 @@ import { PackagesService } from '../packages/packages.service';
     ConfigurationsService,
     PrismaService,
     PackagesService,
+    FeatureInstancesService,
   ],
 })
 export class CustomersModule {}
