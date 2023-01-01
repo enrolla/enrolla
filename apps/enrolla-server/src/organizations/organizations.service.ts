@@ -7,7 +7,7 @@ import { OrganizationManager } from '../integrations/organization-managers/organ
 
 @Injectable()
 export class OrganizationsService {
-  private static ORGNIATION_MANAGER_TYPE_CONFIG_KEY = 'ORGNIATION_MANAGER_TYPE';
+  private static ORGNIATION_MANAGER_TYPE_CONFIG_KEY = 'ORGANIZATION_MANAGER_TYPE';
 
   private auth0OrganizationManager: Auth0OrganizationManager;
 
