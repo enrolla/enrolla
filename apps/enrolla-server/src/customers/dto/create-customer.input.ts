@@ -1,7 +1,19 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
+import { InputType, Field } from '@nestjs/graphql';
+import { FeatureInstanceInput } from '../../packages/dto/create-package.input';
+import { ApiProperty } from '@nestjs/swagger';
 
 @InputType()
 export class CreateCustomerInput {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+  @Field(() => String, { nullable: true })
+  organizationId?: string;
+
+  @Field(() => String)
+  name: string;
+
+  @Field(() => String, { nullable: true })
+  packageId?: string;
+
+  @ApiProperty({ type: FeatureInstanceInput, isArray: true })
+  @Field(() => [FeatureInstanceInput])
+  features: FeatureInstanceInput[];
 }
