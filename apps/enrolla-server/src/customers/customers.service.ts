@@ -32,7 +32,7 @@ export class CustomersService {
           create: createCustomerInput.features.map((feature) => ({
             featureId: feature.featureId,
             value: feature.value,
-            tenantId
+            tenantId,
           })),
         },
       },
