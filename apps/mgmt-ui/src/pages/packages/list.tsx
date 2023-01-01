@@ -9,13 +9,39 @@ import {
   ShowButton,
   DeleteButton,
   DateField,
+  Card,
+  Text,
+  createStyles,
+  SimpleGrid,
 } from '@pankod/refine-mantine';
 import { useMemo } from 'react';
 import { IPackage } from '../../interfaces';
+import { IconRocket, IconCrown, IconBusinessplan } from '@tabler/icons';
+
+const useStyles = createStyles((theme) => ({
+  card: {
+    backgroundColor:
+      theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+  },
+
+  section: {
+    borderBottom: `1px solid ${
+      theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]
+    }`,
+    paddingLeft: theme.spacing.md,
+    paddingRight: theme.spacing.md,
+    paddingBottom: theme.spacing.md,
+  },
+}));
 
 export const PackageList: React.FC = () => {
   const columns = useMemo<ColumnDef<IPackage>[]>(
     () => [
+      {
+        id: 'id',
+        header: 'ID',
+        accessorKey: 'id',
+      },
       {
         id: 'name',
         header: 'Name',
@@ -31,7 +57,7 @@ export const PackageList: React.FC = () => {
         header: 'Parent Package',
         accessorKey: 'parentPackageId',
         cell: function render({ getValue, table }) {
-          const parentPackage = table.options.data.find(
+          const parentPackage: IPackage | undefined = table.options.data.find(
             (item) => item.id === getValue()
           );
           return parentPackage?.name ?? '-';
@@ -70,7 +96,61 @@ export const PackageList: React.FC = () => {
     refineCore: { setCurrent, pageCount, current },
   } = useTable({
     columns,
+    refineCoreProps: {
+      metaData: {
+        fields: ['id', 'name', 'description'],
+      },
+    },
   });
+
+  const { classes } = useStyles();
+
+  return (
+    <ScrollArea>
+      <List>
+        <SimpleGrid
+          cols={4}
+          breakpoints={[
+            { maxWidth: 'sm', cols: 1 },
+            { maxWidth: 'lg', cols: 2 },
+            { maxWidth: 'xl', cols: 3 },
+          ]}
+          my={10}
+        >
+          {getRowModel().rows.map((row, index) => {
+            return (
+              <Card
+                style={{ minHeight: 200 }}
+                shadow="sm"
+                p="lg"
+                radius="md"
+                withBorder
+                key={row.id}
+              >
+                <Card.Section className={classes.section}>
+                  <Group>
+                    {index % 3 === 0 && <IconRocket size="24" />}
+                    {index % 3 === 1 && <IconCrown size="24" />}
+                    {index % 3 === 2 && <IconBusinessplan size="24" />}
+                    <Text mt="md" mb="xs" size="xl" weight={500}>
+                      {row.getValue('name') as string}
+                    </Text>
+                  </Group>
+                  <Text size="sm" style={{ minHeight: 50 }} color="dimmed">
+                    {row.getValue('description') as string}
+                  </Text>
+                </Card.Section>
+                <Group mt="lg">
+                  <ShowButton recordItemId={row.getValue('id') as string} />
+                  <DeleteButton recordItemId={row.getValue('id') as string} />
+                </Group>
+              </Card>
+            );
+          })}
+        </SimpleGrid>
+      </List>
+    </ScrollArea>
+  );
 
   return (
     <ScrollArea>

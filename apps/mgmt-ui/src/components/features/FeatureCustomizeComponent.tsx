@@ -18,7 +18,7 @@ import { FeatureViewComponent } from './FeatureViewComponent';
 import { FeatureEditComponent } from './FeatureEditComponent';
 
 type UiRowData = {
-  customizedValue?: FeatureValue;
+  customizedValue?: { value: FeatureValue };
 } & TransferListItem &
   Partial<IFeature>;
 
@@ -114,7 +114,7 @@ export const FeatureCustomizeComponent = ({
           })),
           newCustomized.map((feature) => ({
             ...feature,
-            customizedValue: feature.defaultValue?.value,
+            customizedValue: feature.defaultValue,
           })),
         ];
       }
@@ -124,7 +124,10 @@ export const FeatureCustomizeComponent = ({
           available,
           customized.map((feature) =>
             feature.id === action.payload.featureId
-              ? { ...feature, customizedValue: action.payload.customizedValue }
+              ? {
+                  ...feature,
+                  customizedValue: { value: action.payload.customizedValue },
+                }
               : { ...feature }
           ),
         ];
@@ -141,7 +144,7 @@ export const FeatureCustomizeComponent = ({
           }
           return {
             featureId: feature.id,
-            value: feature.customizedValue ?? feature.defaultValue?.value,
+            value: feature.customizedValue ?? feature.defaultValue,
           };
         })
       );
@@ -184,14 +187,18 @@ export const FeatureCustomizeComponent = ({
           <FeatureEditComponent
             type={data.type}
             getInputProps={() => ({
-              value: data.customizedValue,
-              onChange: (e: React.FormEvent<HTMLInputElement> | number) => {
+              value: data.customizedValue?.value,
+              onChange: (
+                e: React.FormEvent<HTMLInputElement> | number | string
+              ) => {
                 if (!data.id) {
                   throw new Error('feature id is not defined');
                 }
 
                 let customizedValue;
                 if (typeof e === 'number') {
+                  customizedValue = e;
+                } else if (typeof e === 'string') {
                   customizedValue = e;
                 } else {
                   customizedValue = e.currentTarget.value;
@@ -220,6 +227,9 @@ export const FeatureCustomizeComponent = ({
 
   useList<IFeature>({
     resource: 'features',
+    metaData: {
+      fields: ['id', 'key', 'defaultValue', 'type', 'description'],
+    },
     queryOptions: {
       onSuccess: ({ data: availableFeatures }) =>
         dispatch({

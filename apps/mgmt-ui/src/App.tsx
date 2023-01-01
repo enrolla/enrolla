@@ -13,7 +13,7 @@ import imgUrl from './assets/enrolla-temp-logo.png';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Login } from './pages/login';
 import { FeatureCreate, FeatureList, FeatureShow } from './pages/features';
-import { PackageCreate, PackageList } from './pages/packages';
+import { PackageCreate, PackageList, PackageShow } from './pages/packages';
 import { IconPackage, IconLayoutList } from '@tabler/icons';
 import { Layout } from './components/layout';
 import dataProvider from './providers/backendGraphQLProvider';
@@ -122,6 +122,7 @@ export default function App() {
             {
               name: 'packages',
               list: PackageList,
+              show: PackageShow,
               create: PackageCreate,
               icon: <IconPackage size="16" />,
             },

@@ -10,5 +10,5 @@ export type FeatureValue = string | number | boolean | JSON;
 
 export type CustomizedFeature = {
   featureId: string;
-  value: FeatureValue;
+  value: { value: FeatureValue };
 };

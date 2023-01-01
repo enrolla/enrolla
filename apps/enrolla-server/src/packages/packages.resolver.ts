@@ -27,7 +27,7 @@ export class PackagesResolver {
   @Mutation(() => Package)
   createPackage(
     @TenantId() tenantId: string,
-    @Args('createPackageInput') createPackageInput: CreatePackageInput
+    @Args('input') createPackageInput: CreatePackageInput
   ) {
     return this.packagesService.create(createPackageInput, tenantId);
   }
@@ -48,7 +48,7 @@ export class PackagesResolver {
   @Mutation(() => Package)
   updatePackage(
     @TenantId() tenantId: string,
-    @Args('updatePackageInput') updatePackageInput: UpdatePackageInput
+    @Args('input') updatePackageInput: UpdatePackageInput
   ) {
     return this.packagesService.update(
       updatePackageInput.id,

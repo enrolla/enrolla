@@ -13,10 +13,13 @@ import {
   useSelect,
   useStepsForm,
 } from '@pankod/refine-mantine';
-import { useState } from 'react';
+import { List } from '@mantine/core';
 import { FeatureCustomizeComponent } from '../../components/features/FeatureCustomizeComponent';
-import { IPackage } from '../../interfaces';
+import { IFeature, IPackage } from '../../interfaces';
 import { CustomizedFeature } from '../../interfaces/features.interface';
+import { IconEditCircle } from '@tabler/icons';
+import { useList } from '@pankod/refine-core';
+import { FeatureViewComponent } from '../../components/features/FeatureViewComponent';
 
 export const PackageCreate: React.FC = () => {
   const {
@@ -43,14 +46,21 @@ export const PackageCreate: React.FC = () => {
   const { selectProps } = useSelect({
     resource: 'packages',
     optionLabel: 'name',
+    metaData: {
+      fields: ['id', 'name'],
+    },
   });
 
-  const [customizedFeatures, setCustomizedFeatures] = useState(
-    values['features'] as CustomizedFeature[]
-  );
+  const { data: featureList } = useList<IFeature>({
+    resource: 'features',
+    metaData: {
+      fields: ['id', 'key', 'defaultValue', 'type', 'description'],
+    },
+  });
 
   return (
-    <Create // Next, previous and save buttons
+    <Create
+      // Next, previous and save buttons
       footerButtons={
         <Group position="right" mt="xl">
           {currentStep !== 0 && (
@@ -83,7 +93,7 @@ export const PackageCreate: React.FC = () => {
           />
           <Select
             mt={8}
-            label="Inherits from package"
+            label="Extends package"
             placeholder="Pick one"
             {...getInputProps('parentPackageId')}
             {...selectProps}
@@ -91,9 +101,8 @@ export const PackageCreate: React.FC = () => {
         </Stepper.Step>
         <Stepper.Step label="Customize Features">
           <FeatureCustomizeComponent
-            customizedFeatures={customizedFeatures}
+            customizedFeatures={values['features'] as CustomizedFeature[]}
             onCustomizedFeaturesChange={(newCustomizedFeatures) => {
-              setCustomizedFeatures(newCustomizedFeatures);
               setValues({ features: newCustomizedFeatures });
             }}
           />
@@ -103,6 +112,34 @@ export const PackageCreate: React.FC = () => {
             <>
               <Title>{values['name'] as string}</Title>
               <Text> {values['description'] as string}</Text>
+              <Title mt={8} order={3}>
+                Customized Features
+              </Title>
+              <List center icon={<IconEditCircle size={16} />}>
+                {featureList &&
+                  (values['features'] as CustomizedFeature[])?.map(
+                    (feature) => {
+                      const featureMetadata = featureList.data.find(
+                        (f) => f.id === feature.featureId
+                      );
+                      if (!featureMetadata) {
+                        return null;
+                      }
+
+                      return (
+                        <List.Item>
+                          <Group>
+                            <Text>{featureMetadata.key}:</Text>
+                            <FeatureViewComponent
+                              type={featureMetadata.type}
+                              value={feature.value.value}
+                            />
+                          </Group>
+                        </List.Item>
+                      );
+                    }
+                  )}
+              </List>
             </>
           </Stack>
         </Stepper.Step>
