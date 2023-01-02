@@ -5,16 +5,21 @@ import { FeaturesService } from '../features/features.service';
 import { Customer } from '../customers/entities/customer.entity';
 import { CustomersService } from '../customers/customers.service';
 import { CustomerFeature } from './entities/customer-feature.entity';
-import { FeatureInstancesResolver } from './feature-instances.resolver';
+import { Feature } from '../features/entities/feature.entity';
 
 @Resolver(() => CustomerFeature)
 @UseGuards(GraphQLJWTAuthGuard)
-export class PackageFeaturesResolver extends FeatureInstancesResolver {
+export class CustomerFeaturesResolver {
   constructor(
     private readonly customersService: CustomersService,
-    featuresService: FeaturesService
-  ) {
-    super(featuresService);
+    private readonly featuresService: FeaturesService
+  ) {}
+
+  @ResolveField(() => Feature)
+  async feature(@Parent() customerFeature: CustomerFeature) {
+    const { featureId, tenantId } = customerFeature;
+
+    return this.featuresService.findOne(featureId, tenantId);
   }
 
   @ResolveField(() => Customer)

@@ -35,15 +35,6 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type FeatureInstance {
-  id: Cuid!
-  tenantId: String!
-  featureId: Cuid!
-  feature: Feature!
-  value: JSON!
-  createdAt: DateTime!
-}
-
 type PackageFeature {
   id: Cuid!
   tenantId: String!
@@ -65,7 +56,6 @@ type Package {
   features: [PackageFeature!]!
   description: String
   createdAt: DateTime!
-  featuresInstances: [FeatureInstance!]!
 }
 
 """A field whose value is a Semantic Version: https://semver.org"""
