@@ -28,7 +28,7 @@
       "inputs": ["default", "{workspaceRoot}/.eslintrc.json"]
     },
     "serve": {
-      "dependsOn": ["prisma-generate"]
+      "dependsOn": ["^prisma-generate"]
     },
     "container": {
       "dependsOn": ["build"]
