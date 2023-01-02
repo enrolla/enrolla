@@ -27,6 +27,11 @@ export class CreatePackageInput {
 
   @ApiProperty()
   @Optional()
+  @Field(() => String, { nullable: true })
+  icon?: string;
+
+  @ApiProperty()
+  @Optional()
   @Field(() => CuidResolver, { nullable: true })
   parentPackageId?: string;
 

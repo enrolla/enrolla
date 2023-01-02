@@ -104,7 +104,7 @@ export const Integrations = () => {
   const { classes } = useStyles();
 
   const colors: { [key in IntegrationType]: string } = {
-    Authentication: 'red',
+    Authentication: 'violet',
     Database: 'pink',
     CRM: 'blue',
   };
@@ -124,12 +124,7 @@ export const Integrations = () => {
   return (
     <Authenticated>
       <Card>
-        <Group position="center">
-          <Badge variant="filled" size="lg">
-            Integrations
-          </Badge>
-        </Group>
-        <Title order={2} className={classes.title} align="center" mt="sm">
+        <Title order={2} className={classes.title} align="center" mt={80}>
           Integrate with your existing stack
         </Title>
         <Text
@@ -143,7 +138,7 @@ export const Integrations = () => {
           keeping other systems in sync. Connect to a platform by selecting it
           from the list and following the prompts.
         </Text>
-        <SimpleGrid mt={50} cols={4}>
+        <SimpleGrid mt={80} cols={4}>
           {cards}
         </SimpleGrid>
       </Card>

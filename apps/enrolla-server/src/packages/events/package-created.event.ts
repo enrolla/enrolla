@@ -7,6 +7,7 @@ export class PackageCreatedEvent {
     public readonly featureInstanceIds: string[],
     public readonly createdAt: Date,
     public readonly parentPackageId?: string,
-    public readonly description?: string
+    public readonly description?: string,
+    public readonly icon?: string
   ) {}
 }

@@ -42,7 +42,6 @@ export const FeatureList: React.FC = () => {
           <FeatureViewComponent
             value={(getValue() as IFeature['defaultValue']).value}
             type={row.getValue('type') as FeatureType}
-            inline
           />
         ),
       },

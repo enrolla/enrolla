@@ -21,6 +21,7 @@ export class PackagesService {
       data: {
         name: createPackageDto.name,
         description: createPackageDto.description,
+        icon: createPackageDto.icon,
         tenantId: tenantId,
         parentPackageId: createPackageDto.parentPackageId,
         features: {
@@ -52,7 +53,8 @@ export class PackagesService {
         packagez.features.map((instance) => instance.id),
         packagez.createdAt,
         packagez.parentPackageId,
-        packagez.description
+        packagez.description,
+        packagez.icon
       )
     );
 

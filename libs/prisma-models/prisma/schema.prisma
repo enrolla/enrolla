@@ -22,89 +22,85 @@ enum FeatureType {
 }
 
 model Feature {
-  id                  String     @id @default(cuid())
-  tenantId            String     @map("tenant_id")
-  key                 String
-  type                FeatureType
-  defaultValue        Json       @map("default_value")
-  description         String?
-  createdAt           DateTime   @default(now()) @map("created_at")
-  packageFeatures     PackageFeature[]
-  customerFeatures    CustomerFeature[]
+  id               String            @id @default(cuid())
+  tenantId         String            @map("tenant_id")
+  key              String
+  type             FeatureType
+  defaultValue     Json              @map("default_value")
+  description      String?
+  createdAt        DateTime          @default(now()) @map("created_at")
+  packageFeatures  PackageFeature[]
+  customerFeatures CustomerFeature[]
 
   @@unique([id, tenantId])
   @@unique([tenantId, key])
   @@index([tenantId])
-
   @@map("features")
 }
 
 model PackageFeature {
-  id             String     @id @default(cuid())
-  tenantId       String     @map("tenant_id")
-  feature        Feature    @relation(fields: [featureId], references: [id])
-  featureId      String     @map("feature_id")
-  package        Package    @relation(fields: [packageId], references: [id], onDelete: Cascade)
-  packageId      String     @map("package_id")
-  value          Json
-  createdAt      DateTime   @default(now()) @map("created_at")
+  id        String   @id @default(cuid())
+  tenantId  String   @map("tenant_id")
+  feature   Feature  @relation(fields: [featureId], references: [id])
+  featureId String   @map("feature_id")
+  package   Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  packageId String   @map("package_id")
+  value     Json
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@unique([id, tenantId])
   @@index([tenantId, packageId])
   @@index([tenantId, featureId])
-
   @@map("package_features")
 }
 
 model Package {
-  id                    String              @id @default(cuid())
-  tenantId              String              @map("tenant_id")
-  name                  String
-  description           String?
-  version               String              @default("1.0.0")
-  parentPackage         Package?            @relation(name: "PackageInheritence", fields: [parentPackageId], references: [id])
-  parentPackageId       String?             @map("parent_package_id")
-  childPackages         Package[]           @relation(name: "PackageInheritence")
-  features              PackageFeature[]
-  customers             Customer[]
-  createdAt             DateTime            @default(now()) @map("created_at")
+  id              String           @id @default(cuid())
+  tenantId        String           @map("tenant_id")
+  name            String
+  description     String?
+  icon            String?
+  version         String           @default("1.0.0")
+  parentPackage   Package?         @relation(name: "PackageInheritence", fields: [parentPackageId], references: [id])
+  parentPackageId String?          @map("parent_package_id")
+  childPackages   Package[]        @relation(name: "PackageInheritence")
+  features        PackageFeature[]
+  customers       Customer[]
+  createdAt       DateTime         @default(now()) @map("created_at")
 
   @@unique([id, tenantId])
   @@unique([tenantId, name, version(sort: Desc)])
   @@index([tenantId])
-
   @@map("packages")
 }
 
 model CustomerFeature {
-  id             String     @id @default(cuid())
-  tenantId       String     @map("tenant_id")
-  feature        Feature    @relation(fields: [featureId], references: [id])
-  featureId      String     @map("feature_id")
-  customer       Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  customerId     String     @map("package_id")
-  value          Json
-  createdAt      DateTime   @default(now()) @map("created_at")
+  id         String   @id @default(cuid())
+  tenantId   String   @map("tenant_id")
+  feature    Feature  @relation(fields: [featureId], references: [id])
+  featureId  String   @map("feature_id")
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId String   @map("package_id")
+  value      Json
+  createdAt  DateTime @default(now()) @map("created_at")
 
   @@unique([id, tenantId])
   @@index([tenantId, customerId])
   @@index([tenantId, featureId])
-
   @@map("customer_features")
 }
 
 model Customer {
-  id                    String              @id @default(cuid())
-  tenantId              String              @map("tenant_id")
-  organizationId        String?             @map("organization_id")
-  package               Package?            @relation(fields: [packageId], references: [id])
-  packageId             String?             @map("package_id")
-  name                  String
-  features              CustomerFeature[]
-  createdAt             DateTime            @default(now()) @map("created_at")
+  id             String            @id @default(cuid())
+  tenantId       String            @map("tenant_id")
+  organizationId String?           @map("organization_id")
+  package        Package?          @relation(fields: [packageId], references: [id])
+  packageId      String?           @map("package_id")
+  name           String
+  features       CustomerFeature[]
+  createdAt      DateTime          @default(now()) @map("created_at")
 
   @@unique([id, tenantId])
   @@index([tenantId])
-
   @@map("customers")
 }
