@@ -15,7 +15,7 @@ export class OrganizationsResolver {
   @Mutation(() => Organization)
   createOrganization(
     @TenantId() tenantId: string,
-    @Args('createOrganizationInput')
+    @Args('input')
     createOrganizationInput: CreateOrganizationInput
   ) {
     return this.organizationsService.create(createOrganizationInput, tenantId);
@@ -37,7 +37,7 @@ export class OrganizationsResolver {
   @Mutation(() => Organization)
   updateOrganization(
     @TenantId() tenantId: string,
-    @Args('updateOrganizationInput')
+    @Args('input')
     updateOrganizationInput: UpdateOrganizationInput
   ) {
     return this.organizationsService.update(

@@ -119,8 +119,8 @@ type Mutation {
   createCustomer(input: CreateCustomerInput!): Customer!
   updateCustomer(input: UpdateCustomerInput!): Customer!
   removeCustomer(id: String!): Customer!
-  createOrganization(createOrganizationInput: CreateOrganizationInput!): Organization!
-  updateOrganization(updateOrganizationInput: UpdateOrganizationInput!): Organization!
+  createOrganization(input: CreateOrganizationInput!): Organization!
+  updateOrganization(input: UpdateOrganizationInput!): Organization!
   removeOrganization(id: String!): Organization!
 }
 
