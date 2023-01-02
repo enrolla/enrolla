@@ -14,10 +14,17 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { Login } from './pages/login';
 import { FeatureCreate, FeatureList, FeatureShow } from './pages/features';
 import { PackageCreate, PackageList, PackageShow } from './pages/packages';
-import { IconPackage, IconLayoutList } from '@tabler/icons';
+import {
+  IconPackage,
+  IconLayoutList,
+  IconUsers,
+  IconBuildingStore,
+} from '@tabler/icons';
 import { Layout } from './components/layout';
 import dataProvider from './providers/backendGraphQLProvider';
 import { GraphQLClient } from 'graphql-request';
+import { CustomerCreate, CustomerList, CustomerShow } from './pages/customers';
+import { Integrations } from './pages/integrations';
 
 export default function App() {
   const { isLoading, isAuthenticated, user, logout, getIdTokenClaims } =
@@ -101,7 +108,16 @@ export default function App() {
       <Global styles={{ body: { WebkitFontSmoothing: 'auto' } }} />
       <NotificationsProvider position="bottom-right">
         <Refine
-          routerProvider={routerProvider}
+          routerProvider={{
+            ...routerProvider,
+            routes: [
+              {
+                element: <Integrations />,
+                path: 'integrations',
+                layout: true,
+              },
+            ],
+          }}
           authProvider={authProvider}
           dataProvider={dataProvider(gqlClient)}
           notificationProvider={notificationProvider}
@@ -111,6 +127,13 @@ export default function App() {
           Layout={Layout}
           Title={() => <Image my={20} height={40} fit="contain" src={imgUrl} />}
           resources={[
+            {
+              name: 'customers',
+              list: CustomerList,
+              show: CustomerShow,
+              create: CustomerCreate,
+              icon: <IconUsers size="16" />,
+            },
             {
               name: 'features',
               list: FeatureList,
@@ -125,6 +148,11 @@ export default function App() {
               show: PackageShow,
               create: PackageCreate,
               icon: <IconPackage size="16" />,
+            },
+            {
+              name: 'integrations',
+              list: () => null,
+              icon: <IconBuildingStore size="16" />,
             },
           ]}
         />

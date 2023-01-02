@@ -30,7 +30,7 @@ export class CustomersResolver {
   @Mutation(() => Customer)
   async createCustomer(
     @TenantId() tenantId: string,
-    @Args('createCustomerInput') createCustomerInput: CreateCustomerInput
+    @Args('input') createCustomerInput: CreateCustomerInput
   ) {
     return await this.customersService.create(createCustomerInput, tenantId);
   }
@@ -51,7 +51,7 @@ export class CustomersResolver {
   @Mutation(() => Customer)
   async updateCustomer(
     @TenantId() tenantId: string,
-    @Args('updateCustomerInput') updateCustomerInput: UpdateCustomerInput
+    @Args('input') updateCustomerInput: UpdateCustomerInput
   ) {
     return await this.customersService.update(
       updateCustomerInput.id,

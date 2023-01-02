@@ -16,11 +16,6 @@ export class CustomersService {
     let organization: Organization;
     let organizationId = createCustomerInput.organizationId;
 
-    console.log(
-      'createCustomerInput.organizationId',
-      createCustomerInput.organizationId
-    );
-
     if (createCustomerInput.organizationId == null) {
       organization = await this.organizationsService.create(
         { name: createCustomerInput.name },
@@ -29,8 +24,6 @@ export class CustomersService {
 
       organizationId = organization.id;
     }
-
-    console.log('organizationId', organizationId);
 
     return await this.prismaService.customer.create({
       data: {
