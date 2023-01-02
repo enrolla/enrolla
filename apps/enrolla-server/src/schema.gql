@@ -58,6 +58,7 @@ type Package {
   version: SemVer!
   features: [PackageFeature!]!
   description: String
+  icon: String
   createdAt: DateTime!
 }
 
@@ -133,6 +134,7 @@ input UpdateFeatureInput {
 input CreatePackageInput {
   name: String!
   description: String
+  icon: String
   parentPackageId: Cuid
   features: [FeatureInstanceInput!]!
 }

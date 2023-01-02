@@ -17,6 +17,7 @@ export interface IPackage {
   id: string;
   name: string;
   description: string?;
+  icon: string?;
   version: string;
   createdAt: string;
   parentPackageId: string;

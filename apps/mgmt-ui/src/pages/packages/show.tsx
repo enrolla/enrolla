@@ -8,7 +8,7 @@ import { FeatureValue } from '../../interfaces/features.interface';
 type IPackageShowQueryResult = {
   features: {
     feature: IFeature;
-    value: FeatureValue;
+    value: { value: FeatureValue };
   }[];
   parentPackage?: IPackage;
 } & IPackage;
@@ -65,7 +65,7 @@ export const PackageShow: React.FC = () => {
               <td>
                 <FeatureViewComponent
                   type={f.feature.type}
-                  value={f.value}
+                  value={f.value.value}
                   inline
                 />
               </td>

@@ -20,6 +20,32 @@ import { CustomizedFeature } from '../../interfaces/features.interface';
 import { IconEditCircle } from '@tabler/icons';
 import { useList } from '@pankod/refine-core';
 import { FeatureViewComponent } from '../../components/features/FeatureViewComponent';
+import {
+  PackageIcon,
+  PredefinedIcon,
+  ALL_PREDEFINED_ICONS,
+  PREDEFINED_ICONS_LABELS,
+} from '../../components/packages/PackageIcon';
+import { forwardRef } from 'react';
+
+interface PackageIconItemProps extends React.ComponentPropsWithoutRef<'div'> {
+  label: string;
+  value: PredefinedIcon;
+}
+
+const PackageIconItemComponent = forwardRef<
+  HTMLDivElement,
+  PackageIconItemProps
+>(({ label, value, ...props }: PackageIconItemProps, ref) => (
+  <div ref={ref} {...props}>
+    <Group noWrap>
+      <PackageIcon icon={value} />
+      <div>
+        <Text size="sm">{label}</Text>
+      </div>
+    </Group>
+  </div>
+));
 
 export const PackageCreate: React.FC = () => {
   const {
@@ -30,6 +56,7 @@ export const PackageCreate: React.FC = () => {
     steps: { currentStep, gotoStep },
   } = useStepsForm<IPackage>({
     initialValues: {
+      icon: PredefinedIcon.Rocket,
       features: [],
       parentPackageId: null,
     },
@@ -83,6 +110,17 @@ export const PackageCreate: React.FC = () => {
             placeholder="name"
             withAsterisk
             {...getInputProps('name')}
+          />
+          <Select
+            mt={8}
+            label="Icon"
+            placeholder="Pick one"
+            data={ALL_PREDEFINED_ICONS.map((icon) => ({
+              label: PREDEFINED_ICONS_LABELS[icon],
+              value: icon,
+            }))}
+            itemComponent={PackageIconItemComponent}
+            {...getInputProps('icon')}
           />
           <Textarea
             mt={8}

@@ -16,7 +16,10 @@ import {
 } from '@pankod/refine-mantine';
 import { useMemo } from 'react';
 import { IPackage } from '../../interfaces';
-import { IconRocket, IconCrown, IconBusinessplan } from '@tabler/icons';
+import {
+  PackageIcon,
+  PredefinedIcon,
+} from '../../components/packages/PackageIcon';
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -51,6 +54,11 @@ export const PackageList: React.FC = () => {
         id: 'description',
         header: 'Description',
         accessorKey: 'description',
+      },
+      {
+        id: 'icon',
+        header: 'Icon',
+        accessorKey: 'icon',
       },
       {
         id: 'parentPackageId',
@@ -98,7 +106,7 @@ export const PackageList: React.FC = () => {
     columns,
     refineCoreProps: {
       metaData: {
-        fields: ['id', 'name', 'description'],
+        fields: ['id', 'name', 'description', 'icon'],
       },
     },
   });
@@ -129,9 +137,9 @@ export const PackageList: React.FC = () => {
               >
                 <Card.Section className={classes.section}>
                   <Group>
-                    {index % 3 === 0 && <IconRocket size="24" />}
-                    {index % 3 === 1 && <IconCrown size="24" />}
-                    {index % 3 === 2 && <IconBusinessplan size="24" />}
+                    <PackageIcon
+                      icon={row.getValue('icon') ?? PredefinedIcon.Box}
+                    />
                     <Text mt="md" mb="xs" size="xl" weight={500}>
                       {row.getValue('name') as string}
                     </Text>

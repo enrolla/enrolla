@@ -25,6 +25,7 @@ import dataProvider from './providers/backendGraphQLProvider';
 import { GraphQLClient } from 'graphql-request';
 import { CustomerCreate, CustomerList, CustomerShow } from './pages/customers';
 import { Integrations } from './pages/integrations';
+import { Dashboard } from './pages/dashboard';
 
 export default function App() {
   const { isLoading, isAuthenticated, user, logout, getIdTokenClaims } =
@@ -121,11 +122,14 @@ export default function App() {
           authProvider={authProvider}
           dataProvider={dataProvider(gqlClient)}
           notificationProvider={notificationProvider}
+          DashboardPage={Dashboard}
           ReadyPage={ReadyPage}
           LoginPage={Login}
           catchAll={<ErrorComponent />}
           Layout={Layout}
-          Title={() => <Image my={20} height={40} fit="contain" src={imgUrl} />}
+          Title={() => (
+            <Image mt={20} mb={10} height={40} fit="contain" src={imgUrl} />
+          )}
           resources={[
             {
               name: 'customers',
