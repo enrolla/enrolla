@@ -17,7 +17,6 @@ export class PackageFeaturesResolver {
 
   @ResolveField(() => Feature)
   async feature(@Parent() packageFeature: PackageFeature) {
-    console.log('featureInstance', packageFeature);
     const { featureId, tenantId } = packageFeature;
 
     return this.featuresService.findOne(featureId, tenantId);
