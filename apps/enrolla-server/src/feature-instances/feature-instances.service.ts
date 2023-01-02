@@ -6,7 +6,7 @@ export class FeatureInstancesService {
   constructor(private prismaService: PrismaService) {}
 
   async findAll(tenantId: string) {
-    return await this.prismaService.featuresInstance.findMany({
+    return await this.prismaService.packageFeature.findMany({
       where: {
         tenantId,
       },
@@ -14,7 +14,7 @@ export class FeatureInstancesService {
   }
 
   async findOne(id: string, tenantId: string) {
-    return await this.prismaService.featuresInstance.findUnique({
+    return await this.prismaService.packageFeature.findUnique({
       where: {
         id_tenantId: {
           id,
@@ -25,9 +25,18 @@ export class FeatureInstancesService {
   }
 
   async findByPackageId(packageId: string, tenantId: string) {
-    return await this.prismaService.featuresInstance.findMany({
+    return await this.prismaService.packageFeature.findMany({
       where: {
         packageId,
+        tenantId,
+      },
+    });
+  }
+
+  async findByCustomerId(customerId: string, tenantId: string) {
+    return await this.prismaService.customerFeature.findMany({
+      where: {
+        customerId,
         tenantId,
       },
     });

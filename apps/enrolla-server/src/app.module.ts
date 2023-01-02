@@ -11,6 +11,10 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { GraphQLJSON } from 'graphql-scalars';
 import { FeatureInstancesModule } from './feature-instances/feature-instances.module';
+import { CustomersModule } from './customers/customers.module';
+import { IntegrationsModule } from './integrations/integrations.module';
+import { OrganizationsModule } from './organizations/organizations.module';
+import { ConfigurationsModule } from './configurations/configurations.module';
 
 @Module({
   imports: [
@@ -27,6 +31,10 @@ import { FeatureInstancesModule } from './feature-instances/feature-instances.mo
     FeaturesModule,
     PackagesModule,
     FeatureInstancesModule,
+    CustomersModule,
+    IntegrationsModule,
+    OrganizationsModule,
+    ConfigurationsModule,
   ],
   providers: [PrismaService],
   controllers: [AppController],

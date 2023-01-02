@@ -2,26 +2,26 @@ import { useShow } from '@pankod/refine-core';
 import { Show, Title, Text, Table } from '@pankod/refine-mantine';
 import { FeatureViewComponent } from '../../components/features/FeatureViewComponent';
 
-import { IFeature, IPackage } from '../../interfaces';
+import { ICustomer, IFeature, IPackage } from '../../interfaces';
 import { FeatureValue } from '../../interfaces/features.interface';
 
-type IPackageShowQueryResult = {
+type ICustomerShowQueryResult = {
   features: {
     feature: IFeature;
     value: FeatureValue;
   }[];
-  parentPackage?: IPackage;
-} & IPackage;
+  package?: IPackage;
+} & ICustomer;
 
-export const PackageShow: React.FC = () => {
-  const { queryResult } = useShow<IPackageShowQueryResult>({
+export const CustomerShow: React.FC = () => {
+  const { queryResult } = useShow<ICustomerShowQueryResult>({
     metaData: {
       fields: [
         'name',
-        'description',
+        'organizationId',
         {
           features: [{ feature: ['key', 'type'] }, 'value'],
-          parentPackage: ['name'],
+          package: ['name'],
         },
       ],
     },
@@ -35,16 +35,16 @@ export const PackageShow: React.FC = () => {
       <Text mt="xs">{record?.name}</Text>
 
       <Title mt="xs" order={5}>
-        Description
+        Internal Organization ID
       </Title>
-      <Text mt="xs">{record?.description}</Text>
+      <Text mt="xs">{record?.organizationId}</Text>
 
-      {record?.parentPackage && (
+      {record?.package && (
         <>
           <Title mt="xs" order={5}>
-            Extends:
+            Uses:
           </Title>
-          <Text mt="xs">{record?.parentPackage?.name}</Text>
+          <Text mt="xs">{record?.package?.name}</Text>
         </>
       )}
 
@@ -59,7 +59,7 @@ export const PackageShow: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {record?.features.map((f) => (
+          {record?.features?.map((f) => (
             <tr key={f.feature.key}>
               <td>{f.feature.key}</td>
               <td>

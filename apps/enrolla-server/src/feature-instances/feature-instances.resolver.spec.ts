@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FeatureInstancesResolver } from './feature-instances.resolver';
+import { FeatureInstancesResolver } from './package-features.resolver';
 import { FeatureInstancesService } from './feature-instances.service';
 
 describe('FeatureInstancesResolver', () => {
