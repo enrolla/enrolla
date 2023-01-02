@@ -13,7 +13,6 @@ import { UseGuards } from '@nestjs/common';
 import { GraphQLJWTAuthGuard } from '../authz/graphql-jwt-auth.guard';
 import { CreatePackageInput } from './dto/create-package.input';
 import { UpdatePackageInput } from './dto/update-package.input';
-import { FeatureInstance } from '../feature-instances/entities/feature-instance.entity';
 import { FeatureInstancesService } from '../feature-instances/feature-instances.service';
 import { PackageFeature } from '../feature-instances/entities/package-feature.entity';
 

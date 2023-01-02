@@ -15,7 +15,6 @@ import { GraphQLJWTAuthGuard } from '../authz/graphql-jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { Package } from '../packages/entities/package.entity';
 import { PackagesService } from '../packages/packages.service';
-import { FeatureInstance } from '../feature-instances/entities/feature-instance.entity';
 import { FeatureInstancesService } from '../feature-instances/feature-instances.service';
 import { CustomerFeature } from '../feature-instances/entities/customer-feature.entity';
 

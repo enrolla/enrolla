@@ -6,7 +6,6 @@ import { PackagesService } from '../packages/packages.service';
 import { FeaturesService } from '../features/features.service';
 import { PackageFeature } from './entities/package-feature.entity';
 import { Feature } from '../features/entities/feature.entity';
-import { FeatureInstance } from './entities/feature-instance.entity';
 
 @Resolver(() => PackageFeature)
 @UseGuards(GraphQLJWTAuthGuard)
