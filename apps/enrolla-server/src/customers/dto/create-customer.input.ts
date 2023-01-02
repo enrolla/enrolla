@@ -1,6 +1,7 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { FeatureInstanceInput } from '../../packages/dto/create-package.input';
 import { ApiProperty } from '@nestjs/swagger';
+import { NotContains } from 'class-validator';
 
 @InputType()
 export class CreateCustomerInput {
@@ -8,6 +9,7 @@ export class CreateCustomerInput {
   organizationId?: string;
 
   @Field(() => String)
+  @NotContains(' ')
   name: string;
 
   @Field(() => String, { nullable: true })

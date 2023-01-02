@@ -5,7 +5,8 @@ import { OrganizationManager } from '../organization-manager.interface';
 import { OrganizationCreateInput } from '../dto/organization-create.input';
 
 export class Auth0OrganizationManager implements OrganizationManager {
-  static AUTH0_TOKEN_CONGIURATION_KEY = 'auth0_token';
+  static AUTH0_CLIENT_ID_CONGIURATION_KEY = 'auth0_client_id';
+  static AUTH0_CLIENT_SECRET_CONGIURATION_KEY = 'auth0_client_secret';
   static AUTH0_DOMAIN_CONGIURATION_KEY = 'auth0_domain';
 
   private auth0Clients: Map<string, ManagementClient> = new Map();
@@ -54,14 +55,20 @@ export class Auth0OrganizationManager implements OrganizationManager {
       Auth0OrganizationManager.AUTH0_DOMAIN_CONGIURATION_KEY
     );
 
-    const token = await this.configurationsService.getValue<string>(
+    const clientId = await this.configurationsService.getValue<string>(
       tenantId,
-      Auth0OrganizationManager.AUTH0_TOKEN_CONGIURATION_KEY
+      Auth0OrganizationManager.AUTH0_CLIENT_ID_CONGIURATION_KEY
+    );
+
+    const clientSecret = await this.configurationsService.getValue<string>(
+      tenantId,
+      Auth0OrganizationManager.AUTH0_CLIENT_SECRET_CONGIURATION_KEY
     );
 
     const auth0Client = new ManagementClient({
       domain,
-      token,
+      clientId,
+      clientSecret,
     });
 
     this.auth0Clients.set(tenantId, auth0Client);

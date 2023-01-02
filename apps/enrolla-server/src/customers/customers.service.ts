@@ -14,18 +14,28 @@ export class CustomersService {
 
   async create(createCustomerInput: CreateCustomerInput, tenantId: string) {
     let organization: Organization;
+    let organizationId = createCustomerInput.organizationId;
 
-    if (!createCustomerInput.organizationId) {
+    console.log(
+      'createCustomerInput.organizationId',
+      createCustomerInput.organizationId
+    );
+
+    if (createCustomerInput.organizationId == null) {
       organization = await this.organizationsService.create(
         { name: createCustomerInput.name },
         tenantId
       );
+
+      organizationId = organization.id;
     }
 
-    this.prismaService.customer.create({
+    console.log('organizationId', organizationId);
+
+    return await this.prismaService.customer.create({
       data: {
         name: createCustomerInput.name,
-        organizationId: organization?.id,
+        organizationId,
         tenantId,
         packageId: createCustomerInput.packageId,
         features: {

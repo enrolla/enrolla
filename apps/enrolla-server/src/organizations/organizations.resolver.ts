@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { OrganizationsService } from './organizations.service';
 import { Organization } from './entities/organization.entity';
 import { CreateOrganizationInput } from './dto/create-organization.input';
