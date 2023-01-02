@@ -6,7 +6,7 @@ import { IFeature, IPackage } from '../../interfaces';
 import { FeatureValue } from '../../interfaces/features.interface';
 
 type IPackageShowQueryResult = {
-  featuresInstances: {
+  features: {
     feature: IFeature;
     value: FeatureValue;
   }[];
@@ -20,7 +20,7 @@ export const PackageShow: React.FC = () => {
         'name',
         'description',
         {
-          featuresInstances: [{ feature: ['key', 'type'] }, 'value'],
+          features: [{ feature: ['key', 'type'] }, 'value'],
           parentPackage: ['name'],
         },
       ],
@@ -59,13 +59,13 @@ export const PackageShow: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {record?.featuresInstances.map((featureInstance) => (
-            <tr key={featureInstance.feature.key}>
-              <td>{featureInstance.feature.key}</td>
+          {record?.features.map((f) => (
+            <tr key={f.feature.key}>
+              <td>{f.feature.key}</td>
               <td>
                 <FeatureViewComponent
-                  type={featureInstance.feature.type}
-                  value={featureInstance.value}
+                  type={f.feature.type}
+                  value={f.value}
                   inline
                 />
               </td>
