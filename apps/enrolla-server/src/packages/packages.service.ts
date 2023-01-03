@@ -4,16 +4,20 @@ import { UpdatePackageInput } from './dto/update-package.input';
 import { PrismaService } from '../prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Events } from '../constants';
-import { Prisma } from '@prisma/client';
 import { PackageRemovedEvent } from './events/package-removed.event';
 import { PackageUpdatedEvent } from './events/package-updated.event';
 import { PackageCreatedEvent } from './events/package-created.event';
+import { FeatureValue } from '../feature-instances/entities/feature-value.entity';
+import { FeatureInstancesService } from '../feature-instances/feature-instances.service';
+import { getConfigurationFromFeatures, mergeConfigurations } from '../utils/configuration.utils';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class PackagesService {
   constructor(
     private prismaService: PrismaService,
-    private eventEmitter: EventEmitter2
+    private eventEmitter: EventEmitter2,
+    private featureInstancesService: FeatureInstancesService
   ) {}
 
   async create(createPackageDto: CreatePackageInput, tenantId: string) {
@@ -117,5 +121,38 @@ export class PackagesService {
     );
 
     return packagez;
+  }
+
+  async getConfiguration(
+    packageId: string,
+    tenantId: string
+  ): Promise<FeatureValue[]> {
+    const packageFeatures = await this.featureInstancesService.findByPackageId(
+      packageId,
+      tenantId
+    );
+
+    return getConfigurationFromFeatures(
+      packageFeatures
+    );
+  }
+
+  async getEffectiveConfiguration(
+    packageId: string,
+    tenantId: string
+  ): Promise<FeatureValue[]> {
+    const packagez = await this.findOne(packageId, tenantId);
+    const packageConfig = await this.getConfiguration(packagez.id, tenantId);
+
+    if (packagez.parentPackageId == null) {
+      return packageConfig;
+    }
+
+    const parentPackageConfig = await this.getEffectiveConfiguration(
+      packagez.parentPackageId,
+      tenantId
+    );
+
+    return mergeConfigurations(packageConfig, parentPackageConfig);
   }
 }

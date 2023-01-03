@@ -6,8 +6,9 @@ import { PackagesService } from '../packages/packages.service';
 import { CustomersService } from '../customers/customers.service';
 import { OrganizationsService } from '../organizations/organizations.service';
 import { ConfigurationsService } from '../configurations/configurations.service';
-import { PackageFeaturesResolver } from './package-features.resolver';
-import { CustomerFeaturesResolver } from './customer-features.resolver';
+import { PackageFeaturesResolver } from './resolvers/package-features.resolver';
+import { CustomerFeaturesResolver } from './resolvers/customer-features.resolver';
+import { FeatureValuesResolver } from './resolvers/feature-values.resolver';
 
 @Module({
   providers: [
@@ -20,6 +21,7 @@ import { CustomerFeaturesResolver } from './customer-features.resolver';
     ConfigurationsService,
     PackageFeaturesResolver,
     CustomerFeaturesResolver,
+    FeatureValuesResolver,
   ],
 })
 export class FeatureInstancesModule {}

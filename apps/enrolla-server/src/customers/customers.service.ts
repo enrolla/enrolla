@@ -4,12 +4,22 @@ import { UpdateCustomerInput } from './dto/update-customer.input';
 import { OrganizationsService } from '../organizations/organizations.service';
 import { Organization } from '../organizations/entities/organization.entity';
 import { PrismaService } from '../prisma.service';
+import { Customer } from './entities/customer.entity';
+import { FeatureValue } from '../feature-instances/entities/feature-value.entity';
+import { FeatureInstancesService } from '../feature-instances/feature-instances.service';
+import { PackagesService } from '../packages/packages.service';
+import {
+  getConfigurationFromFeatures,
+  mergeConfigurations,
+} from '../utils/configuration.utils';
 
 @Injectable()
 export class CustomersService {
   constructor(
     private prismaService: PrismaService,
-    private organizationsService: OrganizationsService
+    private organizationsService: OrganizationsService,
+    private featureInstancesService: FeatureInstancesService,
+    private packagesService: PackagesService
   ) {}
 
   async create(createCustomerInput: CreateCustomerInput, tenantId: string) {
@@ -58,6 +68,9 @@ export class CustomersService {
           tenantId,
         },
       },
+      include: {
+        features: true,
+      },
     });
   }
 
@@ -86,5 +99,35 @@ export class CustomersService {
         },
       },
     });
+  }
+
+  async getConfiguration(
+    customerId: string,
+    tenantId: string
+  ): Promise<FeatureValue[]> {
+    const packageFeatures = await this.featureInstancesService.findByCustomerId(
+      customerId,
+      tenantId
+    );
+
+    return getConfigurationFromFeatures(packageFeatures);
+  }
+
+  async getEffectiveConfiguration(customer: Customer, tenantId: string) {
+    const customerConfig = await this.getConfiguration(customer.id, tenantId);
+
+    console.log('CustomerService_customerConfig', customerConfig);
+
+    if (customer.packageId == null) {
+      console.log('CustomerService_getEffectiveConfiguration: No package');
+      return customerConfig;
+    }
+
+    const packageConfig = await this.packagesService.getEffectiveConfiguration(
+      customer.packageId,
+      tenantId
+    );
+
+    return mergeConfigurations(customerConfig, packageConfig);
   }
 }

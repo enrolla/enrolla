@@ -1,23 +1,14 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import { Feature } from '../../features/entities/feature.entity';
-import { GraphQLJSON, CuidResolver } from 'graphql-scalars';
+import { CuidResolver } from 'graphql-scalars';
+import { FeatureValue } from './feature-value.entity';
 
 @ObjectType()
-export class FeatureInstance {
+export class FeatureInstance extends FeatureValue {
   @Field(() => CuidResolver)
   id: string;
 
   @Field(() => String)
   tenantId: string;
-
-  @Field(() => CuidResolver)
-  featureId: string;
-
-  @Field(() => Feature)
-  feature: Feature;
-
-  @Field(() => GraphQLJSON)
-  value: object;
 
   @Field(() => Date)
   createdAt: Date;
