@@ -15,6 +15,7 @@ import { CreatePackageInput } from './dto/create-package.input';
 import { UpdatePackageInput } from './dto/update-package.input';
 import { FeatureInstancesService } from '../feature-instances/feature-instances.service';
 import { PackageFeature } from '../feature-instances/entities/package-feature.entity';
+import { FeatureValue } from '../feature-instances/entities/feature-value.entity';
 
 @Resolver(() => Package)
 @UseGuards(GraphQLJWTAuthGuard)
@@ -79,5 +80,16 @@ export class PackagesResolver {
     const { id, tenantId } = packagez;
 
     return this.featuresInstancesService.findByPackageId(id, tenantId);
+  }
+
+  @ResolveField(() => [FeatureValue])
+  async effectiveConfiguration(
+    @TenantId() tenantId: string,
+    @Parent() packagez: Package
+  ) {
+    return await this.packagesService.getEffectiveConfiguration(
+      packagez.id,
+      tenantId
+    );
   }
 }

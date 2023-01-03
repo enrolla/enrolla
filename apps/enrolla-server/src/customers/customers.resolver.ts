@@ -17,6 +17,7 @@ import { Package } from '../packages/entities/package.entity';
 import { PackagesService } from '../packages/packages.service';
 import { FeatureInstancesService } from '../feature-instances/feature-instances.service';
 import { CustomerFeature } from '../feature-instances/entities/customer-feature.entity';
+import { FeatureValue } from '../feature-instances/entities/feature-value.entity';
 
 @Resolver(() => Customer)
 @UseGuards(GraphQLJWTAuthGuard)
@@ -80,5 +81,16 @@ export class CustomersResolver {
     const { id, tenantId } = customer;
 
     return this.featuresInstancesService.findByCustomerId(id, tenantId);
+  }
+
+  @ResolveField(() => [FeatureValue])
+  async effectiveConfiguration(
+    @TenantId() tenantId: string,
+    @Parent() customer: Customer
+  ) {
+    return await this.customersService.getEffectiveConfiguration(
+      customer,
+      tenantId
+    );
   }
 }

@@ -1,11 +1,11 @@
 import { Resolver, ResolveField, Parent } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
-import { GraphQLJWTAuthGuard } from '../authz/graphql-jwt-auth.guard';
-import { FeaturesService } from '../features/features.service';
-import { Customer } from '../customers/entities/customer.entity';
-import { CustomersService } from '../customers/customers.service';
-import { CustomerFeature } from './entities/customer-feature.entity';
-import { Feature } from '../features/entities/feature.entity';
+import { GraphQLJWTAuthGuard } from '../../authz/graphql-jwt-auth.guard';
+import { FeaturesService } from '../../features/features.service';
+import { Customer } from '../../customers/entities/customer.entity';
+import { CustomersService } from '../../customers/customers.service';
+import { CustomerFeature } from '../entities/customer-feature.entity';
+import { Feature } from '../../features/entities/feature.entity';
 
 @Resolver(() => CustomerFeature)
 @UseGuards(GraphQLJWTAuthGuard)

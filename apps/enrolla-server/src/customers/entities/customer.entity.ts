@@ -2,6 +2,7 @@ import { ObjectType, Field } from '@nestjs/graphql';
 import { CuidResolver } from 'graphql-scalars';
 import { Package } from '../../packages/entities/package.entity';
 import { CustomerFeature } from '../../feature-instances/entities/customer-feature.entity';
+import { FeatureValue } from '../../feature-instances/entities/feature-value.entity';
 
 @ObjectType()
 export class Customer {
@@ -25,6 +26,9 @@ export class Customer {
 
   @Field(() => [CustomerFeature])
   features: CustomerFeature[];
+
+  @Field(() => [FeatureValue])
+  effectiveConfiguration: FeatureValue[];
 
   @Field(() => Date)
   createdAt: Date;
