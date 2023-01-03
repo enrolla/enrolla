@@ -63,7 +63,7 @@ type Package {
   name: String!
   version: SemVer!
   features: [PackageFeature!]!
-  configuration: [FeatureValue!]!
+  effectiveConfiguration: [FeatureValue!]!
   description: String
   createdAt: DateTime!
 }
@@ -92,8 +92,8 @@ type Customer {
   package: Package
   packageId: String
   features: [CustomerFeature!]!
+  effectiveConfiguration: [FeatureValue!]!
   createdAt: DateTime!
-  configuration: [FeatureValue!]!
 }
 
 type Organization {

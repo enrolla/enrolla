@@ -83,7 +83,7 @@ export class PackagesResolver {
   }
 
   @ResolveField(() => [FeatureValue])
-  async configuration(
+  async effectiveConfiguration(
     @TenantId() tenantId: string,
     @Parent() packagez: Package
   ) {

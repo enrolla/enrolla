@@ -27,9 +27,9 @@ export class Customer {
   @Field(() => [CustomerFeature])
   features: CustomerFeature[];
 
+  @Field(() => [FeatureValue])
+  effectiveConfiguration: FeatureValue[];
+
   @Field(() => Date)
   createdAt: Date;
-
-  @Field(() => [FeatureValue])
-  configuration: FeatureValue[];
 }

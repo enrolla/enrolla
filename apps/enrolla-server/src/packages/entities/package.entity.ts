@@ -27,7 +27,7 @@ export class Package {
   features: PackageFeature[];
 
   @Field(() => [FeatureValue])
-  configuration: FeatureValue[];
+  effectiveConfiguration: FeatureValue[];
 
   @Field(() => String, { nullable: true })
   description?: string;
