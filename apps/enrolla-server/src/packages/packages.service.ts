@@ -9,7 +9,10 @@ import { PackageUpdatedEvent } from './events/package-updated.event';
 import { PackageCreatedEvent } from './events/package-created.event';
 import { FeatureValue } from '../feature-instances/entities/feature-value.entity';
 import { FeatureInstancesService } from '../feature-instances/feature-instances.service';
-import { getConfigurationFromFeatures, mergeConfigurations } from '../utils/configuration.utils';
+import {
+  getConfigurationFromFeatures,
+  mergeConfigurations,
+} from '../utils/configuration.utils';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -132,9 +135,7 @@ export class PackagesService {
       tenantId
     );
 
-    return getConfigurationFromFeatures(
-      packageFeatures
-    );
+    return getConfigurationFromFeatures(packageFeatures);
   }
 
   async getEffectiveConfiguration(

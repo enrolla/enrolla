@@ -84,7 +84,10 @@ export class CustomersResolver {
   }
 
   @ResolveField(() => [FeatureValue])
-  async configuration(@TenantId() tenantId: string, @Parent() customer: Customer) {
+  async configuration(
+    @TenantId() tenantId: string,
+    @Parent() customer: Customer
+  ) {
     return await this.customersService.getEffectiveConfiguration(
       customer,
       tenantId

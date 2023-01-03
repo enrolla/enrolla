@@ -68,9 +68,6 @@ export class CustomersService {
           tenantId,
         },
       },
-      include: {
-        features: true,
-      },
     });
   }
 
@@ -116,10 +113,7 @@ export class CustomersService {
   async getEffectiveConfiguration(customer: Customer, tenantId: string) {
     const customerConfig = await this.getConfiguration(customer.id, tenantId);
 
-    console.log('CustomerService_customerConfig', customerConfig);
-
     if (customer.packageId == null) {
-      console.log('CustomerService_getEffectiveConfiguration: No package');
       return customerConfig;
     }
 
