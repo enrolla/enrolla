@@ -63,6 +63,7 @@ type Package {
   name: String!
   version: SemVer!
   features: [PackageFeature!]!
+  configuration: [FeatureValue!]!
   description: String
   createdAt: DateTime!
 }

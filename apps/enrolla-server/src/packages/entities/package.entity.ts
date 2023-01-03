@@ -1,6 +1,7 @@
 import { ObjectType, Field } from '@nestjs/graphql';
 import { CuidResolver, SemVerResolver } from 'graphql-scalars';
 import { PackageFeature } from '../../feature-instances/entities/package-feature.entity';
+import { FeatureValue } from '../../feature-instances/entities/feature-value.entity';
 
 @ObjectType()
 export class Package {
@@ -24,6 +25,9 @@ export class Package {
 
   @Field(() => [PackageFeature])
   features: PackageFeature[];
+
+  @Field(() => [FeatureValue])
+  configuration: FeatureValue[];
 
   @Field(() => String, { nullable: true })
   description?: string;
