@@ -8,8 +8,12 @@ import {
   ReadyPage,
   ErrorComponent,
   Image,
+  useLocalStorage,
+  ColorScheme,
+  ColorSchemeProvider,
 } from '@pankod/refine-mantine';
-import imgUrl from './assets/enrolla-temp-logo.png';
+import logo from './assets/logo.svg';
+import logoDark from './assets/logo_dark.svg';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Login } from './pages/login';
 import { FeatureCreate, FeatureList, FeatureShow } from './pages/features';
@@ -30,6 +34,15 @@ import { Dashboard } from './pages/dashboard';
 export default function App() {
   const { isLoading, isAuthenticated, user, logout, getIdTokenClaims } =
     useAuth0();
+
+  const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
+    key: 'mantine-color-scheme',
+    defaultValue: 'light',
+    getInitialValueInEffect: true,
+  });
+
+  const toggleColorScheme = (value?: ColorScheme) =>
+    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
 
   const gqlClient = new GraphQLClient(
     `${import.meta.env.VITE_BACKEND_URL}/graphql`
@@ -73,94 +86,105 @@ export default function App() {
   });
 
   return (
-    <MantineProvider
-      theme={{
-        colorScheme: 'light',
-        fontFamily: 'Nunito',
-        black: '#626262',
-        components: {
-          Table: {
-            styles: (theme) =>
-              theme.colorScheme === 'light'
-                ? {
-                    root: {
-                      'thead>tr>th': {
-                        backgroundColor: '#fafafa',
-                        padding: '16px 4px',
-                      },
-                      'thead>tr>th:first-of-type': {
-                        borderTopLeftRadius: theme.defaultRadius,
-                      },
-                      'thead>tr>th:last-of-type': {
-                        borderTopRightRadius: theme.defaultRadius,
-                      },
-                      'tbody>tr>td': {
-                        borderBottom: '1px solid #f0f0f0',
-                      },
-                    },
-                  }
-                : { root: {} },
-          },
-        },
-      }}
-      withNormalizeCSS
-      withGlobalStyles
+    <ColorSchemeProvider
+      colorScheme={colorScheme}
+      toggleColorScheme={toggleColorScheme}
     >
-      <Global styles={{ body: { WebkitFontSmoothing: 'auto' } }} />
-      <NotificationsProvider position="bottom-right">
-        <Refine
-          routerProvider={{
-            ...routerProvider,
-            routes: [
+      <MantineProvider
+        theme={{
+          colorScheme,
+          fontFamily: 'Nunito',
+          black: '#626262',
+          components: {
+            Table: {
+              styles: (theme) =>
+                theme.colorScheme === 'light'
+                  ? {
+                      root: {
+                        'thead>tr>th': {
+                          backgroundColor: '#fafafa',
+                          padding: '16px 4px',
+                        },
+                        'thead>tr>th:first-of-type': {
+                          borderTopLeftRadius: theme.defaultRadius,
+                        },
+                        'thead>tr>th:last-of-type': {
+                          borderTopRightRadius: theme.defaultRadius,
+                        },
+                        'tbody>tr>td': {
+                          borderBottom: '1px solid #f0f0f0',
+                        },
+                      },
+                    }
+                  : { root: {} },
+            },
+          },
+        }}
+        withNormalizeCSS
+        withGlobalStyles
+      >
+        <Global styles={{ body: { WebkitFontSmoothing: 'auto' } }} />
+        <NotificationsProvider position="bottom-right">
+          <Refine
+            routerProvider={{
+              ...routerProvider,
+              routes: [
+                {
+                  element: <Integrations />,
+                  path: 'integrations',
+                  layout: true,
+                },
+              ],
+            }}
+            authProvider={authProvider}
+            dataProvider={dataProvider(gqlClient)}
+            notificationProvider={notificationProvider}
+            DashboardPage={Dashboard}
+            ReadyPage={ReadyPage}
+            LoginPage={Login}
+            catchAll={<ErrorComponent />}
+            Layout={Layout}
+            Title={() => (
+              <Image
+                mt={20}
+                mb={10}
+                height={40}
+                fit="contain"
+                src={colorScheme === 'dark' ? logoDark : logo}
+              />
+            )}
+            resources={[
               {
-                element: <Integrations />,
-                path: 'integrations',
-                layout: true,
+                name: 'customers',
+                list: CustomerList,
+                show: CustomerShow,
+                create: CustomerCreate,
+                icon: <IconUsers size="16" />,
               },
-            ],
-          }}
-          authProvider={authProvider}
-          dataProvider={dataProvider(gqlClient)}
-          notificationProvider={notificationProvider}
-          DashboardPage={Dashboard}
-          ReadyPage={ReadyPage}
-          LoginPage={Login}
-          catchAll={<ErrorComponent />}
-          Layout={Layout}
-          Title={() => (
-            <Image mt={20} mb={10} height={40} fit="contain" src={imgUrl} />
-          )}
-          resources={[
-            {
-              name: 'customers',
-              list: CustomerList,
-              show: CustomerShow,
-              create: CustomerCreate,
-              icon: <IconUsers size="16" />,
-            },
-            {
-              name: 'features',
-              list: FeatureList,
-              show: FeatureShow,
-              create: FeatureCreate,
-              canDelete: true,
-              icon: <IconLayoutList size="16" />,
-            },
-            {
-              name: 'packages',
-              list: PackageList,
-              show: PackageShow,
-              create: PackageCreate,
-              icon: <IconPackage size="16" />,
-            },
-            {
-              name: 'integrations',
-              list: () => null,
-              icon: <IconBuildingStore size="16" />,
-            },
-          ]}
-        />
-      </NotificationsProvider>
-    </MantineProvider>
+              {
+                name: 'features',
+                list: FeatureList,
+                show: FeatureShow,
+                create: FeatureCreate,
+                canDelete: true,
+                icon: <IconLayoutList size="16" />,
+              },
+              {
+                name: 'packages',
+                list: PackageList,
+                show: PackageShow,
+                create: PackageCreate,
+                icon: <IconPackage size="16" />,
+              },
+              {
+                name: 'integrations',
+                list: () => null,
+                icon: <IconBuildingStore size="16" />,
+              },
+            ]}
+          />
+        </NotificationsProvider>
+      </MantineProvider>
+    </ColorSchemeProvider>
   );
 }
