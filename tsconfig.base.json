@@ -15,9 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@enrolla/enrolla-ts": ["libs/enrolla-ts/src/index.ts"],
-      "@enrolla/prisma-models": ["libs/prisma-models/src/index.ts"],
-      "@enrolla/ts-sdk": ["libs/enrolla-ts-sdk/src/index.ts"]
+      "@enrolla/node-server-sdk": ["libs/node-server-sdk/src/index.ts"],
+      "@enrolla/prisma-models": ["libs/prisma-models/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
