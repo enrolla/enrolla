@@ -14,13 +14,15 @@ import {
   mergeConfigurations,
 } from '../utils/configuration.utils';
 import { Prisma } from '@prisma/client';
+import { FeaturesService } from '../features/features.service';
 
 @Injectable()
 export class PackagesService {
   constructor(
     private prismaService: PrismaService,
     private eventEmitter: EventEmitter2,
-    private featureInstancesService: FeatureInstancesService
+    private featureInstancesService: FeatureInstancesService,
+    private featuresService: FeaturesService
   ) {}
 
   async create(createPackageDto: CreatePackageInput, tenantId: string) {
@@ -144,12 +146,19 @@ export class PackagesService {
     packageId: string,
     tenantId: string
   ): Promise<FeatureValue[]> {
+    if (packageId === null) {
+      const allFeatures = await this.featuresService.findAll(tenantId);
+      const defaultConfig: FeatureValue[] = allFeatures.map((f) => ({
+        feature: { ...f, defaultValue: f.defaultValue as object },
+        featureId: f.id,
+        value: f.defaultValue as object,
+      }));
+
+      return defaultConfig;
+    }
+
     const packagez = await this.findOne(packageId, tenantId);
     const packageConfig = await this.getConfiguration(packagez.id, tenantId);
-
-    if (packagez.parentPackageId == null) {
-      return packageConfig;
-    }
 
     const parentPackageConfig = await this.getEffectiveConfiguration(
       packagez.parentPackageId,

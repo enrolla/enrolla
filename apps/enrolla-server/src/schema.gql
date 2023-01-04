@@ -39,13 +39,11 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type FeatureValue {
-  featureId: Cuid!
   feature: Feature!
   value: JSON!
 }
 
 type PackageFeature {
-  featureId: Cuid!
   feature: Feature!
   value: JSON!
   id: Cuid!
@@ -75,7 +73,6 @@ A field whose value is a Semantic Version: https://semver.org
 scalar SemVer
 
 type CustomerFeature {
-  featureId: Cuid!
   feature: Feature!
   value: JSON!
   id: Cuid!

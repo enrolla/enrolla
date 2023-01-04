@@ -6,7 +6,7 @@ import { IFeature, IPackage } from '../../interfaces';
 import { FeatureValue } from '../../interfaces/features.interface';
 
 type IPackageShowQueryResult = {
-  features: {
+  effectiveConfiguration: {
     feature: IFeature;
     value: { value: FeatureValue };
   }[];
@@ -20,7 +20,7 @@ export const PackageShow: React.FC = () => {
         'name',
         'description',
         {
-          features: [{ feature: ['key', 'type'] }, 'value'],
+          effectiveConfiguration: [{ feature: ['key', 'type'] }, 'value'],
           parentPackage: ['name'],
         },
       ],
@@ -49,7 +49,7 @@ export const PackageShow: React.FC = () => {
       )}
 
       <Title mt="xs" order={5}>
-        Customized Features
+        Configuration
       </Title>
       <Table mt="xs">
         <thead>
@@ -59,9 +59,11 @@ export const PackageShow: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {record?.features.map((f) => (
+          {record?.effectiveConfiguration?.map((f) => (
             <tr key={f.feature.key}>
-              <td>{f.feature.key}</td>
+              <td>
+                <Text>{f.feature.key}</Text>
+              </td>
               <td>
                 <FeatureViewComponent
                   type={f.feature.type}

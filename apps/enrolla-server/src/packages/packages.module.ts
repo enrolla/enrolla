@@ -4,6 +4,7 @@ import { PackagesController } from './packages.controller';
 import { PrismaService } from '../prisma.service';
 import { PackagesResolver } from './packages.resolver';
 import { FeatureInstancesService } from '../feature-instances/feature-instances.service';
+import { FeaturesModule } from '../features/features.module';
 
 @Module({
   controllers: [PackagesController],
@@ -13,5 +14,7 @@ import { FeatureInstancesService } from '../feature-instances/feature-instances.
     PrismaService,
     FeatureInstancesService,
   ],
+  imports: [FeaturesModule],
+  exports: [PackagesService],
 })
 export class PackagesModule {}

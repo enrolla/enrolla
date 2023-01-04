@@ -1,5 +1,13 @@
 import { useShow } from '@pankod/refine-core';
-import { Show, Title, Text, Table } from '@pankod/refine-mantine';
+import {
+  Show,
+  Title,
+  Text,
+  Table,
+  Group,
+  ThemeIcon,
+} from '@pankod/refine-mantine';
+import { IconAsterisk } from '@tabler/icons';
 import { FeatureViewComponent } from '../../components/features/FeatureViewComponent';
 
 import { ICustomer, IFeature, IPackage } from '../../interfaces';
@@ -8,7 +16,11 @@ import { FeatureValue } from '../../interfaces/features.interface';
 type ICustomerShowQueryResult = {
   features: {
     feature: IFeature;
-    value: FeatureValue;
+    value: { value: FeatureValue };
+  }[];
+  effectiveConfiguration: {
+    feature: IFeature;
+    value: { value: FeatureValue };
   }[];
   package?: IPackage;
 } & ICustomer;
@@ -21,6 +33,7 @@ export const CustomerShow: React.FC = () => {
         'organizationId',
         {
           features: [{ feature: ['key', 'type'] }, 'value'],
+          effectiveConfiguration: [{ feature: ['key', 'type'] }, 'value'],
           package: ['name'],
         },
       ],
@@ -39,18 +52,18 @@ export const CustomerShow: React.FC = () => {
       </Title>
       <Text mt="xs">{record?.organizationId}</Text>
 
-      {record?.package && (
-        <>
-          <Title mt="xs" order={5}>
-            Uses:
-          </Title>
-          <Text mt="xs">{record?.package?.name}</Text>
-        </>
-      )}
+      <Title mt="xs" order={5}>
+        Uses
+      </Title>
+      <Text mt="xs">{record?.package?.name ?? 'Default feature values'}</Text>
 
       <Title mt="xs" order={5}>
-        Customized Features
+        Configuration
       </Title>
+      <Text>
+        Marked features are customized specifically for this customer (different
+        from package / feature defaults).
+      </Text>
       <Table mt="xs">
         <thead>
           <tr>
@@ -59,15 +72,28 @@ export const CustomerShow: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {record?.features?.map((f) => (
+          {record?.effectiveConfiguration?.map((f) => (
             <tr key={f.feature.key}>
-              <td>{f.feature.key}</td>
               <td>
-                <FeatureViewComponent
-                  type={f.feature.type}
-                  value={f.value}
-                  inline
-                />
+                <Group>
+                  <Text>{f.feature.key}</Text>
+                  {record?.features.find(
+                    (cf) => cf.feature.key === f.feature.key
+                  ) && (
+                    <ThemeIcon radius="md" variant="light">
+                      <IconAsterisk size={16} />
+                    </ThemeIcon>
+                  )}
+                </Group>
+              </td>
+              <td>
+                <Group>
+                  <FeatureViewComponent
+                    type={f.feature.type}
+                    value={f.value.value}
+                    inline
+                  />
+                </Group>
               </td>
             </tr>
           ))}
