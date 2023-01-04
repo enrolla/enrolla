@@ -148,11 +148,14 @@ export class PackagesService {
   ): Promise<FeatureValue[]> {
     if (packageId === null) {
       const allFeatures = await this.featuresService.findAll(tenantId);
-      const defaultConfig: FeatureValue[] = allFeatures.map((f) => ({
-        feature: { ...f, defaultValue: f.defaultValue as object },
-        featureId: f.id,
-        value: f.defaultValue as object,
-      }));
+      const defaultConfig: FeatureValue[] = allFeatures.map(
+        (f) =>
+          ({
+            feature: f,
+            featureId: f.id,
+            value: f.defaultValue,
+          } as FeatureValue)
+      );
 
       return defaultConfig;
     }
