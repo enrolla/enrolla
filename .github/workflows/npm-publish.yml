@@ -1,0 +1,52 @@
+name: Publish Packages to NPM
+
+on:
+  push:
+    branches:
+      - 'publishable_package'
+
+jobs:
+  changes:
+    name: Check which packages have changed
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.filter.outputs.packages }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            packages:
+              - 'libs/**'
+
+  # this is a wip:
+  build-test-release:
+    name: Build, test and release
+    runs-on: ubuntu-latest
+    if: ${{ needs.changes.outputs.packages == 'true' }}
+    permissions:
+      contents: 'read'
+      actions: 'read'
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'npm'
+          node-version-file: '.nvmrc'
+          registry-url: 'https://registry.npmjs.org'
+          token: ${{ secrets.NPM_TOKEN }}
+
+      - uses: nrwl/nx-set-shas@v3
+      - run: npm i
+      - run: npx nx --version
+      - run: npx nx workspace-lint
+      - run: npx prettier --check .
+      - run: npx nx affected --target=lint --parallel=3
+      # Should be re-enabled once we have tests in place :)
+      # - run: npx nx affected --target=test --parallel=3 --ci --code-coverage
+      - run: npx nx affected --target=build --parallel=3
+      # Publish to npm
+      - run: npx nx affected --target=publish --parallel=3
