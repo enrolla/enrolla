@@ -27,6 +27,7 @@ Follow these instructions to set up a local developement environment.
    ```bash
    git clone https://github.com/enrolla/enrolla.git
    cd enrolla
+   nvm install
    npm install
    ```
 

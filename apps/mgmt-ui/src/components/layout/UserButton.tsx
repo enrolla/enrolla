@@ -5,7 +5,8 @@ import {
   Text,
   createStyles,
 } from '@mantine/core';
-import { Box } from '@pankod/refine-mantine';
+import { ActionIcon, Box, useMantineColorScheme } from '@pankod/refine-mantine';
+import { IconMoonStars, IconSun } from '@tabler/icons';
 
 const useStyles = createStyles((theme) => ({
   user: {
@@ -32,6 +33,9 @@ export function UserButton({
 }: UserButtonProps) {
   const { classes } = useStyles();
 
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+  const dark = colorScheme === 'dark';
+
   return (
     <Box className={classes.user} {...others}>
       <Group>
@@ -46,6 +50,16 @@ export function UserButton({
             {email}
           </Text>
         </div>
+        <Group position="right">
+          <ActionIcon
+            variant="outline"
+            color={dark ? 'yellow' : 'primary'}
+            onClick={() => toggleColorScheme()}
+            title="Toggle color scheme"
+          >
+            {dark ? <IconSun /> : <IconMoonStars />}
+          </ActionIcon>
+        </Group>
       </Group>
     </Box>
   );
