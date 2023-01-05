@@ -12,8 +12,8 @@ import {
   ColorScheme,
   ColorSchemeProvider,
 } from '@pankod/refine-mantine';
-import logo from './assets/logo.svg';
-import logoDark from './assets/logo_dark.svg';
+import logo from './assets/logo.png';
+import logoDark from './assets/logo_dark.png';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Login } from './pages/login';
 import { FeatureCreate, FeatureList, FeatureShow } from './pages/features';
