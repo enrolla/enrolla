@@ -6,9 +6,7 @@
   "targets": {
     "build": {
       "executor": "@nrwl/vite:build",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/mgmt-ui"
@@ -41,9 +39,7 @@
     },
     "test": {
       "executor": "@nrwl/vite:test",
-      "outputs": [
-        "coverage/apps/mgmt-ui"
-      ],
+      "outputs": ["coverage/apps/mgmt-ui"],
       "options": {
         "passWithNoTests": true,
         "reportsDirectory": "../../coverage/apps/mgmt-ui"
@@ -51,13 +47,9 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "apps/mgmt-ui/**/*.{ts,tsx,js,jsx}"
-        ]
+        "lintFilePatterns": ["apps/mgmt-ui/**/*.{ts,tsx,js,jsx}"]
       }
     }
   },
