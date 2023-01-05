@@ -7,5 +7,6 @@ import { FeaturesResolver } from './features.resolver';
 @Module({
   controllers: [FeaturesController],
   providers: [FeaturesResolver, FeaturesService, PrismaService],
+  exports: [FeaturesService],
 })
 export class FeaturesModule {}

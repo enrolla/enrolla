@@ -113,10 +113,6 @@ export class CustomersService {
   async getEffectiveConfiguration(customer: Customer, tenantId: string) {
     const customerConfig = await this.getConfiguration(customer.id, tenantId);
 
-    if (customer.packageId == null) {
-      return customerConfig;
-    }
-
     const packageConfig = await this.packagesService.getEffectiveConfiguration(
       customer.packageId,
       tenantId

@@ -4,8 +4,8 @@ import { CustomersResolver } from './customers.resolver';
 import { OrganizationsService } from '../organizations/organizations.service';
 import { PrismaService } from '../prisma.service';
 import { ConfigurationsService } from '../configurations/configurations.service';
-import { PackagesService } from '../packages/packages.service';
 import { FeatureInstancesService } from '../feature-instances/feature-instances.service';
+import { PackagesModule } from '../packages/packages.module';
 
 @Module({
   providers: [
@@ -14,8 +14,8 @@ import { FeatureInstancesService } from '../feature-instances/feature-instances.
     OrganizationsService,
     ConfigurationsService,
     PrismaService,
-    PackagesService,
     FeatureInstancesService,
   ],
+  imports: [PackagesModule],
 })
 export class CustomersModule {}
