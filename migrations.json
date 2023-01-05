@@ -1,0 +1,12 @@
+{
+  "migrations": [
+    {
+      "cli": "nx",
+      "version": "15.4.3-beta.0",
+      "description": "Update @nrwl/vite:test reportsDirectory and outputs properties to point to correct paths.",
+      "factory": "./src/migrations/update-15-4-3/update-report-directory",
+      "package": "@nrwl/vite",
+      "name": "update-test-path-placeholder-vars"
+    }
+  ]
+}
