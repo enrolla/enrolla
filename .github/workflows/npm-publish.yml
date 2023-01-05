@@ -24,26 +24,7 @@ jobs:
           cache: 'npm'
           node-version-file: '.nvmrc'
 
-      # see: https://github.com/actions/cache/blob/main/examples.md#node---npm
-      - name: Get npm cache directory
-        id: npm-cache-dir
-        shell: bash
-        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
-
-      - name: Cache NPM cache dir + node_modules
-        id: npm-cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ${{ steps.npm-cache-dir.outputs.dir }}
-            node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Install (on cache miss)
-        if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: npm ci
+      - uses: ./.github/actions/npm-install-with-cache
 
       - name: Set Affected
         id: set-affected
@@ -69,25 +50,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Get npm cache directory
-        id: npm-cache-dir
-        shell: bash
-        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
-
-      - name: Cache NPM cache dir + node_modules
-        id: npm-cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ${{ steps.npm-cache-dir.outputs.dir }}
-            node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Install (on cache miss)
-        if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: npm ci
+      - uses: ./.github/actions/npm-install-with-cache
 
       - name: Test
         id: test
@@ -95,6 +58,4 @@ jobs:
 
       - name: Publish
         id: publish
-        run: |
-          echo publishing ${{ matrix.project }} to NPM
-          npx nx run-many --target=publish --projects=${{ matrix.project }}
+        run: npx nx run-many --target=publish --projects=${{ matrix.project }}
