@@ -1,9 +1,9 @@
 <p align="center">
 <a href="https://enrolla.io/#gh-light-mode-only">
-<img width="300" src="https://raw.githubusercontent.com/enrolla/enrolla/main/logo-light.svg#gh-light-mode-only">
+<img width="300" src="https://raw.githubusercontent.com/enrolla/enrolla/main/logo-light.png#gh-light-mode-only">
 </a>
 <a href="https://enrolla.io/#gh-dark-mode-only">
-<img width="300" src="https://raw.githubusercontent.com/enrolla/enrolla/main/logo-dark.svg#gh-dark-mode-only">
+<img width="300" src="https://raw.githubusercontent.com/enrolla/enrolla/main/logo-dark.png#gh-dark-mode-only">
 </a>
 </p>
 
