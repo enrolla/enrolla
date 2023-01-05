@@ -13,6 +13,8 @@ jobs:
       affected: ${{ steps.set-affected.outputs.affected }}
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v3
         with:
@@ -43,6 +45,8 @@ jobs:
         project: ${{ fromJson(needs.affected-packages.outputs.affected) }}
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v3
         with:
