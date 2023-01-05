@@ -40,6 +40,10 @@ export class DataLoaderInterceptor implements NestInterceptor {
    * @inheritdoc
    */
   intercept(context: ExecutionContext, next: CallHandler) {
+    if (context.getType().toString() !== 'graphql') {
+      return next.handle();
+    }
+
     const graphqlExecutionContext = GqlExecutionContext.create(context);
     const ctx = graphqlExecutionContext.getContext();
 
