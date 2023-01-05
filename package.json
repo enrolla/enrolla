@@ -93,7 +93,7 @@
     "generate-package-json-webpack-plugin": "^2.6.0",
     "husky": "^8.0.2",
     "jest": "28.1.1",
-    "jest-environment-jsdom": "28.1.1",
+    "jest-environment-jsdom": "29.3.1",
     "jsdom": "~20.0.3",
     "ngx-deploy-npm": "^4.3.10",
     "nx": "15.4.2",
