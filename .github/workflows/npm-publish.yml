@@ -35,7 +35,7 @@ jobs:
       - name: Set Affected
         id: set-affected
         run: |
-          echo ::set-output name=affected::"$(npx nx print-affected --target=publish --type=lib | jq -c .projects)"
+          echo ::set-output name=affected::"$(npx nx print-affected --base=origin/main --head=HEAD --with-deps --target=publish --type=lib | jq -c .projects)"
 
   npm-publish:
     runs-on: ubuntu-latest
