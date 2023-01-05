@@ -23,6 +23,7 @@ jobs:
   # this is a wip:
   build-test-release:
     name: Build, test and release
+    needs: [changes]
     runs-on: ubuntu-latest
     if: ${{ needs.changes.outputs.packages == 'true' }}
     permissions:
