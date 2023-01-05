@@ -39,10 +39,10 @@
     },
     "test": {
       "executor": "@nrwl/vite:test",
-      "outputs": ["{projectRoot}/coverage"],
+      "outputs": ["coverage/apps/mgmt-ui"],
       "options": {
         "passWithNoTests": true,
-        "reportsDirectory": "{workspaceRoot}/coverage/{projectRoot}"
+        "reportsDirectory": "../../coverage/apps/mgmt-ui"
       }
     },
     "lint": {
