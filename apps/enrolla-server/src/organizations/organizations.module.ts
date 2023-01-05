@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
 import { OrganizationsService } from './organizations.service';
 import { OrganizationsResolver } from './organizations.resolver';
-import { ConfigurationsService } from '../configurations/configurations.service';
+import { ConfigurationsModule } from '../configurations/configurations.module';
 
 @Module({
-  providers: [
-    OrganizationsResolver,
-    OrganizationsService,
-    ConfigurationsService,
-  ],
+  providers: [OrganizationsResolver, OrganizationsService],
+  imports: [ConfigurationsModule],
+  exports: [OrganizationsService],
 })
 export class OrganizationsModule {}
