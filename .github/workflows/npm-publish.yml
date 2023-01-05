@@ -24,15 +24,25 @@ jobs:
           cache: 'npm'
           node-version-file: '.nvmrc'
 
-      - name: Cache node_modules
-        id: cache
+      # see: https://github.com/actions/cache/blob/main/examples.md#node---npm
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        shell: bash
+        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+
+      - name: Cache NPM cache dir + node_modules
+        id: npm-cache
         uses: actions/cache@v3
         with:
-          path: node_modules
-          key: cache-node-modules-${{ hashFiles('**/package-lock.json') }}
+          path: |
+            ${{ steps.npm-cache-dir.outputs.dir }}
+            node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install (on cache miss)
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Set Affected
@@ -41,6 +51,21 @@ jobs:
           export AFFECTED_PROJECTS=$(npx nx print-affected --target=publish --type=lib | jq -c .projects)
           echo affected projects: $AFFECTED_PROJECTS
           echo "affected=$AFFECTED_PROJECTS" >> $GITHUB_OUTPUT
+
+      - name: Test
+        id: test
+        run: npx nx run-many --target=test --projects=${{ matrix.project }}
+
+      - name: Publish
+        id: publish
+        run: |
+          echo token:  ${{ secrets.NPM_TOKEN }}
+          npx nx run-many --target=publish --projects=${{ matrix.project }}
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+
+
 
   npm-publish:
     runs-on: ubuntu-latest
@@ -55,16 +80,28 @@ jobs:
         with:
           cache: 'npm'
           node-version-file: '.nvmrc'
+          registry-url: 'https://registry.npmjs.org'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Cache node_modules
-        id: cache
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        shell: bash
+        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+
+      - name: Cache NPM cache dir + node_modules
+        id: npm-cache
         uses: actions/cache@v3
         with:
-          path: node_modules
-          key: cache-node-modules-${{ hashFiles('**/package-lock.json') }}
+          path: |
+            ${{ steps.npm-cache-dir.outputs.dir }}
+            node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install (on cache miss)
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Test
@@ -73,6 +110,6 @@ jobs:
 
       - name: Publish
         id: publish
-        run: npx nx run-many --target=publish --projects=${{ matrix.project }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo publishing ${{ matrix.project }} to NPM
+          npx nx run-many --target=publish --projects=${{ matrix.project }}
