@@ -1,0 +1,43 @@
+{
+  "name": "node-server-sdk",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/node-server-sdk/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/node-server-sdk/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/node-server-sdk/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/node-server-sdk",
+        "tsConfig": "libs/node-server-sdk/tsconfig.lib.json",
+        "packageJson": "libs/node-server-sdk/package.json",
+        "main": "libs/node-server-sdk/src/index.ts",
+        "assets": ["libs/node-server-sdk/*.md"]
+      }
+    },
+    "publish": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "restricted",
+        "tag": "alpha",
+        "distFolderPath": "dist/libs/node-server-sdk"
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,0 +1,61 @@
+name: NPM Publish
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  affected-packages:
+    name: List affected publishable packages
+    runs-on: ubuntu-latest
+    outputs:
+      affected: ${{ steps.set-affected.outputs.affected }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'npm'
+          node-version-file: '.nvmrc'
+
+      - uses: ./.github/actions/npm-install-with-cache
+
+      - name: Set Affected
+        id: set-affected
+        run: |
+          export AFFECTED_PROJECTS=$(npx nx print-affected --target=publish --type=lib | jq -c .projects)
+          echo affected projects: $AFFECTED_PROJECTS
+          echo "affected=$AFFECTED_PROJECTS" >> $GITHUB_OUTPUT
+
+  npm-publish:
+    runs-on: ubuntu-latest
+    needs: affected-packages
+    strategy:
+      matrix:
+        project: ${{ fromJson(needs.affected-packages.outputs.affected) }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'npm'
+          node-version-file: '.nvmrc'
+          registry-url: 'https://registry.npmjs.org'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - uses: ./.github/actions/npm-install-with-cache
+
+      - name: Test
+        id: test
+        run: npx nx run-many --target=test --projects=${{ matrix.project }}
+
+      - name: Publish
+        id: publish
+        run: npx nx run-many --target=publish --projects=${{ matrix.project }}

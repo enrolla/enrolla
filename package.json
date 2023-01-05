@@ -49,6 +49,7 @@
     "react-dom": "18.2.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.5.7",
+    "tslib": "^2.3.0",
     "winston": "^3.8.2"
   },
   "devDependencies": {
@@ -71,7 +72,7 @@
     "@nx-tools/nx-prisma": "^4.0.2",
     "@testing-library/react": "13.4.0",
     "@types/jest": "28.1.1",
-    "@types/node": "18.11.9",
+    "@types/node": "16.11.7",
     "@types/pluralize": "^0.0.29",
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.9",
@@ -94,6 +95,7 @@
     "jest": "28.1.1",
     "jest-environment-jsdom": "28.1.1",
     "jsdom": "~20.0.3",
+    "ngx-deploy-npm": "^4.3.10",
     "nx": "15.4.2",
     "prettier": "^2.8.0",
     "prisma": "^4.8.0",
