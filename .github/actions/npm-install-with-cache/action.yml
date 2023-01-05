@@ -1,6 +1,6 @@
-name: "NPM install (with cache)"
+name: 'NPM install (with cache)'
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     # see: https://github.com/actions/cache/blob/main/examples.md#node---npm
     - name: Get npm cache directory
