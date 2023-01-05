@@ -12,9 +12,12 @@ jobs:
     outputs:
       affected: ${{ steps.set-affected.outputs.affected }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v3
 
       - uses: actions/setup-node@v3
         with:
@@ -35,7 +38,9 @@ jobs:
       - name: Set Affected
         id: set-affected
         run: |
-          echo ::set-output name=affected::"$(npx nx print-affected --base=origin/main --head=HEAD --with-deps --target=publish --type=lib | jq -c .projects)"
+          export AFFECTED_PROJECTS=$(npx nx print-affected --target=publish --type=lib | jq -c .projects)
+          echo affected projects: $AFFECTED_PROJECTS
+          echo "affected=$AFFECTED_PROJECTS" >> $GITHUB_OUTPUT
 
   npm-publish:
     runs-on: ubuntu-latest
@@ -44,9 +49,7 @@ jobs:
       matrix:
         project: ${{ fromJson(needs.affected-packages.outputs.affected) }}
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
         with:
