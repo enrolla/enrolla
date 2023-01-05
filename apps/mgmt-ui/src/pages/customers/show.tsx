@@ -6,6 +6,7 @@ import {
   Table,
   Group,
   ThemeIcon,
+  Tooltip,
 } from '@pankod/refine-mantine';
 import { IconAsterisk } from '@tabler/icons';
 import { FeatureViewComponent } from '../../components/features/FeatureViewComponent';
@@ -60,10 +61,6 @@ export const CustomerShow: React.FC = () => {
       <Title mt="xs" order={5}>
         Configuration
       </Title>
-      <Text>
-        Marked features are customized specifically for this customer (different
-        from package / feature defaults).
-      </Text>
       <Table mt="xs">
         <thead>
           <tr>
@@ -80,9 +77,14 @@ export const CustomerShow: React.FC = () => {
                   {record?.features.find(
                     (cf) => cf.feature.key === f.feature.key
                   ) && (
-                    <ThemeIcon radius="md" variant="light">
-                      <IconAsterisk size={16} />
-                    </ThemeIcon>
+                    <Tooltip
+                      withArrow
+                      label="Customized for this customer (different from package / feature defaults)"
+                    >
+                      <ThemeIcon radius="md" variant="light">
+                        <IconAsterisk size={16} />
+                      </ThemeIcon>
+                    </Tooltip>
                   )}
                 </Group>
               </td>
