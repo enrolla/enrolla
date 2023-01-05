@@ -14,7 +14,6 @@ import { GraphQLJWTAuthGuard } from '../authz/graphql-jwt-auth.guard';
 import { CreatePackageInput } from './dto/create-package.input';
 import { UpdatePackageInput } from './dto/update-package.input';
 import { FeatureInstancesService } from '../feature-instances/feature-instances.service';
-import { PackageFeature } from '../feature-instances/entities/package-feature.entity';
 import { FeatureValue } from '../feature-instances/entities/feature-value.entity';
 
 @Resolver(() => Package)
@@ -75,11 +74,16 @@ export class PackagesResolver {
     );
   }
 
-  @ResolveField(() => [PackageFeature])
+  @ResolveField(() => [FeatureValue])
   async features(@Parent() packagez: Package) {
     const { id, tenantId } = packagez;
+    const featureInstances =
+      await this.featuresInstancesService.findByPackageId(id, tenantId);
 
-    return this.featuresInstancesService.findByPackageId(id, tenantId);
+    return featureInstances.map((f) => ({
+      value: f.value,
+      featureId: f.featureId,
+    }));
   }
 
   @ResolveField(() => [FeatureValue])
