@@ -62,6 +62,17 @@ export class FeaturesService {
     });
   }
 
+  async findMany(ids: string[], tenantId: string) {
+    return await this.prismaService.feature.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+        tenantId,
+      },
+    });
+  }
+
   async update(
     id: string,
     updateFeatureDto: UpdateFeatureInput,
