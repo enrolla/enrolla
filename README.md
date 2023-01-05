@@ -1,6 +1,11 @@
-<div align="center">
-<h1>Enrolla</h1>
-</div>
+<p align="center">
+<a href="https://enrolla.io/#gh-light-mode-only">
+<img width="300" src="https://raw.githubusercontent.com/enrolla/enrolla/main/logo-light.svg#gh-light-mode-only">
+</a>
+<a href="https://enrolla.io/#gh-dark-mode-only">
+<img width="300" src="https://raw.githubusercontent.com/enrolla/enrolla/main/logo-dark.svg#gh-dark-mode-only">
+</a>
+</p>
 
 <p align="center">
   <img src="https://github.com/enrolla/enrolla/actions/workflows/ci.yml/badge.svg" alt="CI">
