@@ -59,6 +59,8 @@
     "@emotion/babel-plugin": "11.10.5",
     "@graphql-codegen/cli": "2.16.3",
     "@graphql-codegen/client-preset": "1.2.5",
+    "@graphql-codegen/introspection": "2.2.3",
+    "@graphql-codegen/typescript-graphql-request": "^4.5.8",
     "@nestjs/schematics": "^9.0.3",
     "@nestjs/testing": "^9.2.1",
     "@nrwl/cypress": "15.4.4",
@@ -110,7 +112,6 @@
     "vite": "^4.0.1",
     "vite-plugin-eslint": "^1.8.1",
     "vite-tsconfig-paths": "^4.0.2",
-    "vitest": "^0.25.8",
-    "@graphql-codegen/introspection": "2.2.3"
+    "vitest": "^0.25.8"
   }
 }
