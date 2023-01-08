@@ -14,7 +14,7 @@ import {
 } from '@pankod/refine-mantine';
 import logo from './assets/logo.png';
 import logoDark from './assets/logo_dark.png';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAuthInfo, useLogoutFunction } from '@propelauth/react';
 import { Login } from './pages/login';
 import { FeatureCreate, FeatureList, FeatureShow } from './pages/features';
 import { PackageCreate, PackageList, PackageShow } from './pages/packages';
@@ -30,10 +30,11 @@ import { GraphQLClient } from 'graphql-request';
 import { CustomerCreate, CustomerList, CustomerShow } from './pages/customers';
 import { Integrations } from './pages/integrations';
 import { Dashboard } from './pages/dashboard';
+import { useEffect, useMemo } from 'react';
 
 export default function App() {
-  const { isLoading, isAuthenticated, user, logout, getIdTokenClaims } =
-    useAuth0();
+  const authInfo = useAuthInfo();
+  const logoutFn = useLogoutFunction();
 
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: 'mantine-color-scheme',
@@ -44,11 +45,18 @@ export default function App() {
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
 
-  const gqlClient = new GraphQLClient(
-    `${import.meta.env.VITE_BACKEND_URL}/graphql`
+  const gqlClient = useMemo(
+    () => new GraphQLClient(`${import.meta.env.VITE_BACKEND_URL}/graphql`),
+    []
   );
 
-  if (isLoading) {
+  useEffect(() => {
+    if (!authInfo.loading && authInfo.isLoggedIn) {
+      gqlClient.setHeader('Authorization', `Bearer ${authInfo.accessToken}`);
+    }
+  }, [authInfo, gqlClient]);
+
+  if (authInfo.loading) {
     return <span>loading...</span>;
   }
 
@@ -57,12 +65,12 @@ export default function App() {
       return Promise.resolve();
     },
     logout: () => {
-      logout({ returnTo: window.location.origin });
+      logoutFn(true);
       return Promise.resolve('/');
     },
     checkError: () => Promise.resolve(),
     checkAuth: () => {
-      if (isAuthenticated) {
+      if (authInfo.isLoggedIn) {
         return Promise.resolve();
       }
 
@@ -70,20 +78,14 @@ export default function App() {
     },
     getPermissions: () => Promise.resolve(),
     getUserIdentity: async () => {
-      if (user) {
+      if (authInfo.user) {
         return {
-          ...user,
-          avatar: user.picture,
+          ...authInfo.user,
+          avatar: authInfo.user.pictureUrl,
         };
       }
     },
   };
-
-  getIdTokenClaims().then((token) => {
-    if (token) {
-      gqlClient.setHeader('Authorization', `Bearer ${token.__raw}`);
-    }
-  });
 
   return (
     <ColorSchemeProvider

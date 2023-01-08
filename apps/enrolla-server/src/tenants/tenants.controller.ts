@@ -9,7 +9,7 @@ export class TenantsController {
   constructor(private readonly tenantService: TenantsService) {}
 
   @Post('/register')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('PropelAuth'))
   @ApiBearerAuth()
   async register(@Request() request, @Body() createTenantDto: CreateTenantDto) {
     return await this.tenantService.register(
