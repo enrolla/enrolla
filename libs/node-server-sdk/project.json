@@ -29,14 +29,6 @@
         "main": "libs/node-server-sdk/src/index.ts",
         "assets": ["libs/node-server-sdk/*.md"]
       }
-    },
-    "publish": {
-      "executor": "ngx-deploy-npm:deploy",
-      "options": {
-        "access": "restricted",
-        "tag": "alpha",
-        "distFolderPath": "dist/libs/node-server-sdk"
-      }
     }
   },
   "tags": []
