@@ -1,0 +1,14 @@
+# NOTE: requires actions/checkout@v3 (with fetch depth 0) and nrwl/nx-set-shas@v3 before running
+
+name: 'Add comment with NX affected'
+runs:
+  using: 'composite'
+  steps:
+    - name: Comment PR with NX Affected
+      uses: thollander/actions-comment-pull-request@v2
+      with:
+        message: |
+          NX Affected: $(npx nx print-affected | jq -c .projects)
+        comment_tag: nx_affected
+        mode: upsert
+        create_if_not_exists: true
