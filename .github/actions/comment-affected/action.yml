@@ -10,7 +10,7 @@ runs:
         export AFFECTED_PROJECTS=$(npx nx print-affected | jq -c .projects)
         echo affected projects: $AFFECTED_PROJECTS
         echo "all_affected=$AFFECTED_PROJECTS" >> $GITHUB_OUTPUT
-          
+
     - name: Comment PR with NX Affected
       uses: thollander/actions-comment-pull-request@v2
       with:
