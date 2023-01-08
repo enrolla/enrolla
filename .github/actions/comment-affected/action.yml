@@ -6,6 +6,7 @@ runs:
   steps:
     - name: Set Affected
       id: all-affected
+      shell: bash
       run: |
         export AFFECTED_PROJECTS=$(npx nx print-affected | jq -c .projects)
         echo affected projects: $AFFECTED_PROJECTS
