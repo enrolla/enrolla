@@ -1,4 +1,10 @@
 name: CI
+
+permissions:
+  contents: read
+  metadata: read
+  pull-requests: write
+
 on:
   pull_request:
 
@@ -22,7 +28,10 @@ jobs:
       - run: npx nx --version
       - run: npx nx workspace-lint
       - run: npx prettier --check .
-      - uses: ./.github/actions/comment-affected
+      - uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            NX Affected: $(npx nx print-affected | jq -c .projects)
       - run: npx nx affected --target=lint --parallel=3
       # Should be re-enabled once we have tests in place :)
       # - run: npx nx affected --target=test --parallel=3 --ci --code-coverage
