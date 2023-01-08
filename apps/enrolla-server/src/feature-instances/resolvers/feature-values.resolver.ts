@@ -1,6 +1,6 @@
 import { Resolver, ResolveField, Parent } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
-import { GraphQLJWTAuthGuard } from '../../authz/graphql-jwt-auth.guard';
+import { GraphQLPropelAuthGuard } from '../../authz/graphql-propelauth-auth.guard';
 import { FeaturesService } from '../../features/features.service';
 import { Feature } from '../../features/entities/feature.entity';
 import { FeatureValue } from '../entities/feature-value.entity';
@@ -10,7 +10,7 @@ import { Loader } from '../../dataloader.interceptor';
 import { FeaturesLoader } from '../../features/features.loader';
 
 @Resolver(() => FeatureValue)
-@UseGuards(GraphQLJWTAuthGuard)
+@UseGuards(GraphQLPropelAuthGuard)
 export class FeatureValuesResolver {
   constructor(private readonly featuresService: FeaturesService) {}
 

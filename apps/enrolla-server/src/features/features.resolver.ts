@@ -2,13 +2,13 @@ import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { FeaturesService } from './features.service';
 import { Feature } from './entities/feature.entity';
 import { UseGuards } from '@nestjs/common';
-import { GraphQLJWTAuthGuard } from '../authz/graphql-jwt-auth.guard';
+import { GraphQLPropelAuthGuard } from '../authz/graphql-propelauth-auth.guard';
 import { TenantId } from '../authz/tenant.decorator';
 import { CreateFeatureInput } from './dto/create-feature.input';
 import { UpdateFeatureInput } from './dto/update-feature.input';
 
 @Resolver(() => Feature)
-@UseGuards(GraphQLJWTAuthGuard)
+@UseGuards(GraphQLPropelAuthGuard)
 export class FeaturesResolver {
   constructor(private readonly featuresService: FeaturesService) {}
 

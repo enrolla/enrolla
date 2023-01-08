@@ -16,7 +16,7 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { TenantId } from '../authz/tenant.decorator';
 
 @Controller({ path: 'management/features', version: '1' })
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('PropelAuth'))
 @ApiBearerAuth()
 export class FeaturesController {
   constructor(private readonly featuresService: FeaturesService) {}
