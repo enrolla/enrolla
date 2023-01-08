@@ -3,7 +3,7 @@ import { CreateCustomerInput } from './dto/create-customer.input';
 import { UpdateCustomerInput } from './dto/update-customer.input';
 import { OrganizationsService } from '../organizations/organizations.service';
 import { Organization } from '../organizations/entities/organization.entity';
-import { PrismaService } from '../prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { Customer } from './entities/customer.entity';
 import { FeatureValue } from '../feature-instances/entities/feature-value.entity';
 import { FeatureInstancesService } from '../feature-instances/feature-instances.service';

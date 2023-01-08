@@ -43,16 +43,6 @@ type FeatureValue {
   value: JSON!
 }
 
-type PackageFeature {
-  feature: Feature!
-  value: JSON!
-  id: Cuid!
-  tenantId: String!
-  createdAt: DateTime!
-  packageId: Cuid!
-  package: Package!
-}
-
 type Package {
   id: Cuid!
   tenantId: String!
@@ -60,7 +50,7 @@ type Package {
   parentPackageId: Cuid
   name: String!
   version: SemVer!
-  features: [PackageFeature!]!
+  features: [FeatureValue!]!
   effectiveConfiguration: [FeatureValue!]!
   description: String
   icon: String
@@ -72,16 +62,6 @@ A field whose value is a Semantic Version: https://semver.org
 """
 scalar SemVer
 
-type CustomerFeature {
-  feature: Feature!
-  value: JSON!
-  id: Cuid!
-  tenantId: String!
-  createdAt: DateTime!
-  customerId: Cuid!
-  customer: Customer!
-}
-
 type Customer {
   id: Cuid!
   tenantId: String!
@@ -89,7 +69,7 @@ type Customer {
   name: String!
   package: Package
   packageId: String
-  features: [CustomerFeature!]!
+  features: [FeatureValue!]!
   effectiveConfiguration: [FeatureValue!]!
   createdAt: DateTime!
 }

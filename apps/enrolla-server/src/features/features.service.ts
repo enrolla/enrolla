@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateFeatureInput } from './dto/update-feature.input';
 import { CreateFeatureInput } from './dto/create-feature.input';
-import { PrismaService } from '../prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { FeatureCreatedEvent } from './events/feature-created.event';
 import { FeatureUpdatedEvent } from './events/feature-updated.event';
@@ -58,6 +58,17 @@ export class FeaturesService {
           id,
           tenantId,
         },
+      },
+    });
+  }
+
+  async findMany(ids: string[], tenantId: string) {
+    return await this.prismaService.feature.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+        tenantId,
       },
     });
   }

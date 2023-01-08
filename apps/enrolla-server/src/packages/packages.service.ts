@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePackageInput } from './dto/create-package.input';
 import { UpdatePackageInput } from './dto/update-package.input';
-import { PrismaService } from '../prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Events } from '../constants';
 import { PackageRemovedEvent } from './events/package-removed.event';

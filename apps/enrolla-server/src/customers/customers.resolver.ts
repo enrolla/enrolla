@@ -16,7 +16,6 @@ import { UseGuards } from '@nestjs/common';
 import { Package } from '../packages/entities/package.entity';
 import { PackagesService } from '../packages/packages.service';
 import { FeatureInstancesService } from '../feature-instances/feature-instances.service';
-import { CustomerFeature } from '../feature-instances/entities/customer-feature.entity';
 import { FeatureValue } from '../feature-instances/entities/feature-value.entity';
 
 @Resolver(() => Customer)
@@ -76,11 +75,16 @@ export class CustomersResolver {
     return packageId && this.packagesService.findOne(packageId, tenantId);
   }
 
-  @ResolveField(() => [CustomerFeature])
+  @ResolveField(() => [FeatureValue])
   async features(@Parent() customer: Customer) {
     const { id, tenantId } = customer;
+    const featureInstances =
+      await this.featuresInstancesService.findByCustomerId(id, tenantId);
 
-    return this.featuresInstancesService.findByCustomerId(id, tenantId);
+    return featureInstances.map((f) => ({
+      value: f.value,
+      featureId: f.featureId,
+    }));
   }
 
   @ResolveField(() => [FeatureValue])
