@@ -1,10 +1,5 @@
 name: CI
 
-permissions:
-  contents: read
-  metadata: read
-  pull-requests: write
-
 on:
   pull_request:
 
@@ -15,6 +10,7 @@ jobs:
     permissions:
       contents: 'read'
       actions: 'read'
+      pull-requests: write
     steps:
       - uses: actions/checkout@v2
         with:
