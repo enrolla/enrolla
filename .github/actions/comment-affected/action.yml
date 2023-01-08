@@ -9,6 +9,3 @@ runs:
       with:
         message: |
           NX Affected: $(npx nx print-affected | jq -c .projects)
-        comment_tag: nx_affected
-        mode: upsert
-        create_if_not_exists: true
