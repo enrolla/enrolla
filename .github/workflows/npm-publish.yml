@@ -3,7 +3,7 @@ name: NPM Publish
 on:
   push:
     branches:
-      - 'no_auto_release'
+      - 'main'
 
 jobs:
   affected-packages:
