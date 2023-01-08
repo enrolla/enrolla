@@ -14,7 +14,11 @@ import {
 } from '@pankod/refine-mantine';
 import logo from './assets/logo.png';
 import logoDark from './assets/logo_dark.png';
-import { useAuthInfo, useLogoutFunction } from '@propelauth/react';
+import {
+  useAuthInfo,
+  useRedirectFunctions,
+  useLogoutFunction,
+} from '@propelauth/react';
 import { Login } from './pages/login';
 import { FeatureCreate, FeatureList, FeatureShow } from './pages/features';
 import { PackageCreate, PackageList, PackageShow } from './pages/packages';
@@ -30,10 +34,11 @@ import { GraphQLClient } from 'graphql-request';
 import { CustomerCreate, CustomerList, CustomerShow } from './pages/customers';
 import { Integrations } from './pages/integrations';
 import { Dashboard } from './pages/dashboard';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export default function App() {
   const authInfo = useAuthInfo();
+  const { redirectToCreateOrgPage } = useRedirectFunctions();
   const logoutFn = useLogoutFunction();
 
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
@@ -50,13 +55,26 @@ export default function App() {
     []
   );
 
+  const [loaded, setLoaded] = useState(false);
+
   useEffect(() => {
-    if (!authInfo.loading && authInfo.isLoggedIn) {
+    if (authInfo.loading) {
+      return;
+    }
+
+    if (authInfo.orgHelper?.getOrgs().length === 0) {
+      redirectToCreateOrgPage();
+      return;
+    }
+
+    setLoaded(true);
+
+    if (authInfo.isLoggedIn) {
       gqlClient.setHeader('Authorization', `Bearer ${authInfo.accessToken}`);
     }
-  }, [authInfo, gqlClient]);
+  }, [authInfo, redirectToCreateOrgPage, gqlClient]);
 
-  if (authInfo.loading) {
+  if (!loaded) {
     return <span>loading...</span>;
   }
 
@@ -70,7 +88,7 @@ export default function App() {
     },
     checkError: () => Promise.resolve(),
     checkAuth: () => {
-      if (authInfo.isLoggedIn) {
+      if (!authInfo.loading && authInfo.isLoggedIn) {
         return Promise.resolve();
       }
 
@@ -78,7 +96,7 @@ export default function App() {
     },
     getPermissions: () => Promise.resolve(),
     getUserIdentity: async () => {
-      if (authInfo.user) {
+      if (!authInfo.loading && authInfo.user) {
         return {
           ...authInfo.user,
           avatar: authInfo.user.pictureUrl,
