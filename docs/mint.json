@@ -1,14 +1,21 @@
 {
   "name": "Enrolla",
   "logo": {
-    "dark": "/logo/dark.png",
-    "light": "/logo/light.png"
+    "light": "/logo/light.png",
+    "dark": "/logo/dark.png"
   },
   "favicon": "/favicon.png",
   "colors": {
-    "primary": "#0069ED",
-    "light": "#4D9CFF",
-    "dark": "#0050B4"
+    "primary": "#6644EC",
+    "light": "#B8BDFE",
+    "dark": "#3E21B2",
+    "anchors": {
+      "from": "#3E21B2",
+      "to": "#6644EC"
+    },
+    "background": {
+      "dark": "#121212"
+    }
   },
   "topbarLinks": [
     {
@@ -64,5 +71,6 @@
     "twitter": "https://twitter.com/mintlify",
     "github": "https://github.com/mintlify",
     "linkedin": "https://www.linkedin.com/company/mintsearch"
-  }
+  },
+  "backgroundImage": "/background.png"
 }
