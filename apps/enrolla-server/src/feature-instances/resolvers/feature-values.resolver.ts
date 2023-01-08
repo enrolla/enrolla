@@ -5,6 +5,9 @@ import { FeaturesService } from '../../features/features.service';
 import { Feature } from '../../features/entities/feature.entity';
 import { FeatureValue } from '../entities/feature-value.entity';
 import { TenantId } from '../../authz/tenant.decorator';
+import * as DataLoader from 'dataloader';
+import { Loader } from '../../dataloader.interceptor';
+import { FeaturesLoader } from '../../features/features.loader';
 
 @Resolver(() => FeatureValue)
 @UseGuards(GraphQLJWTAuthGuard)
@@ -14,10 +17,11 @@ export class FeatureValuesResolver {
   @ResolveField(() => Feature)
   async feature(
     @TenantId() tenantId: string,
-    @Parent() featureValue: FeatureValue
+    @Parent() featureValue: FeatureValue,
+    @Loader(FeaturesLoader) featureLoader: DataLoader<string, Feature>
   ) {
     const { featureId } = featureValue;
 
-    return this.featuresService.findOne(featureId, tenantId);
+    return featureLoader.load(featureId);
   }
 }
