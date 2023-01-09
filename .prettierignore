@@ -3,3 +3,4 @@ CHANGELOG.md
 /dist
 /coverage
 /libs/graphql-codegen/output
+/docs
