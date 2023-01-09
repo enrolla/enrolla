@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@enrolla/graphql-codegen": ["libs/graphql-codegen/src/index.ts"],
       "@enrolla/node-server-sdk": ["libs/node-server-sdk/src/index.ts"],
       "@enrolla/prisma-models": ["libs/prisma-models/src/index.ts"]
     }

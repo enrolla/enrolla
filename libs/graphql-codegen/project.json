@@ -1,0 +1,13 @@
+{
+  "name": "graphql-codegen",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/graphql-codegen/src",
+  "projectType": "library",
+  "implicitDependencies": ["enrolla-server"],
+  "targets": {
+    "build": {
+      "command": "graphql-codegen --config libs/graphql-codegen/configuration.ts"
+    }
+  },
+  "tags": []
+}
