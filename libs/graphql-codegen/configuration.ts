@@ -10,7 +10,7 @@ const config: CodegenConfig = {
         'typescript',
         'typescript-operations',
         'typescript-graphql-request',
-      ]
+      ],
     },
     'libs/graphql-codegen/output/graphql.schema.json': {
       plugins: ['introspection'],

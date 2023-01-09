@@ -3,4 +3,6 @@ CHANGELOG.md
 /dist
 /coverage
 /libs/graphql-codegen/output
+/libs/graphql-codegen/fragments
 /docs
+/libs/node-server-sdk/graphql-codegen

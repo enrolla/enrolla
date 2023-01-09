@@ -3,9 +3,15 @@ import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>;
+};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>;
+};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -83,7 +89,7 @@ export enum FeatureType {
   Float = 'FLOAT',
   Integer = 'INTEGER',
   Json = 'JSON',
-  String = 'STRING'
+  String = 'STRING',
 }
 
 export type FeatureValue = {
@@ -108,61 +114,49 @@ export type Mutation = {
   updatePackage: Package;
 };
 
-
 export type MutationCreateCustomerArgs = {
   input: CreateCustomerInput;
 };
-
 
 export type MutationCreateFeatureArgs = {
   input: CreateFeatureInput;
 };
 
-
 export type MutationCreateOrganizationArgs = {
   input: CreateOrganizationInput;
 };
-
 
 export type MutationCreatePackageArgs = {
   input: CreatePackageInput;
 };
 
-
 export type MutationRemoveCustomerArgs = {
   id: Scalars['String'];
 };
-
 
 export type MutationRemoveFeatureArgs = {
   id: Scalars['String'];
 };
 
-
 export type MutationRemoveOrganizationArgs = {
   id: Scalars['String'];
 };
-
 
 export type MutationRemovePackageArgs = {
   id: Scalars['String'];
 };
 
-
 export type MutationUpdateCustomerArgs = {
   input: UpdateCustomerInput;
 };
-
 
 export type MutationUpdateFeatureArgs = {
   input: UpdateFeatureInput;
 };
 
-
 export type MutationUpdateOrganizationArgs = {
   input: UpdateOrganizationInput;
 };
-
 
 export type MutationUpdatePackageArgs = {
   input: UpdatePackageInput;
@@ -201,21 +195,17 @@ export type Query = {
   packages: Array<Package>;
 };
 
-
 export type QueryCustomerArgs = {
   id: Scalars['String'];
 };
-
 
 export type QueryFeatureArgs = {
   id: Scalars['String'];
 };
 
-
 export type QueryOrganizationArgs = {
   id: Scalars['String'];
 };
-
 
 export type QueryPackageArgs = {
   id: Scalars['String'];
@@ -242,64 +232,125 @@ export type UpdatePackageInput = {
   id: Scalars['Cuid'];
 };
 
-export type GetAllCustomersAndFeaturesQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetAllCustomersAndFeaturesQueryVariables = Exact<{
+  [key: string]: never;
+}>;
 
+export type GetAllCustomersAndFeaturesQuery = {
+  __typename?: 'Query';
+  customers: Array<{
+    __typename?: 'Customer';
+    name: string;
+    organizationId?: string | null;
+    effectiveConfiguration: Array<{
+      __typename?: 'FeatureValue';
+      value: any;
+      feature: { __typename?: 'Feature'; key: string; type: FeatureType };
+    }>;
+  }>;
+  features: Array<{
+    __typename?: 'Feature';
+    key: string;
+    type: FeatureType;
+    defaultValue: any;
+  }>;
+};
 
-export type GetAllCustomersAndFeaturesQuery = { __typename?: 'Query', customers: Array<{ __typename?: 'Customer', name: string, organizationId?: string | null, effectiveConfiguration: Array<{ __typename?: 'FeatureValue', value: any, feature: { __typename?: 'Feature', key: string, type: FeatureType } }> }>, features: Array<{ __typename?: 'Feature', key: string, type: FeatureType, defaultValue: any }> };
+export type FeatureDefaultFragment = {
+  __typename?: 'Feature';
+  key: string;
+  type: FeatureType;
+  defaultValue: any;
+};
 
-export type FeatureDefaultFragment = { __typename?: 'Feature', key: string, type: FeatureType, defaultValue: any };
+export type FeatureValueFragment = {
+  __typename?: 'FeatureValue';
+  value: any;
+  feature: { __typename?: 'Feature'; key: string; type: FeatureType };
+};
 
-export type FeatureValueFragment = { __typename?: 'FeatureValue', value: any, feature: { __typename?: 'Feature', key: string, type: FeatureType } };
-
-export type SdkCustomerFragment = { __typename?: 'Customer', name: string, organizationId?: string | null, effectiveConfiguration: Array<{ __typename?: 'FeatureValue', value: any, feature: { __typename?: 'Feature', key: string, type: FeatureType } }> };
+export type SdkCustomerFragment = {
+  __typename?: 'Customer';
+  name: string;
+  organizationId?: string | null;
+  effectiveConfiguration: Array<{
+    __typename?: 'FeatureValue';
+    value: any;
+    feature: { __typename?: 'Feature'; key: string; type: FeatureType };
+  }>;
+};
 
 export const FeatureDefaultFragmentDoc = gql`
-    fragment FeatureDefault on Feature {
-  key
-  type
-  defaultValue
-}
-    `;
-export const FeatureValueFragmentDoc = gql`
-    fragment FeatureValue on FeatureValue {
-  feature {
+  fragment FeatureDefault on Feature {
     key
     type
+    defaultValue
   }
-  value
-}
-    `;
-export const SdkCustomerFragmentDoc = gql`
-    fragment SDKCustomer on Customer {
-  name
-  organizationId
-  effectiveConfiguration {
-    ...FeatureValue
-  }
-}
-    ${FeatureValueFragmentDoc}`;
-export const GetAllCustomersAndFeaturesDocument = gql`
-    query getAllCustomersAndFeatures {
-  customers {
-    ...SDKCustomer
-  }
-  features {
-    ...FeatureDefault
-  }
-}
-    ${SdkCustomerFragmentDoc}
-${FeatureDefaultFragmentDoc}`;
-
-export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
-
-
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
-
-export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
-  return {
-    getAllCustomersAndFeatures(variables?: GetAllCustomersAndFeaturesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAllCustomersAndFeaturesQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetAllCustomersAndFeaturesQuery>(GetAllCustomersAndFeaturesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getAllCustomersAndFeatures', 'query');
+`;
+export const FeatureValueFragmentDoc = gql`
+  fragment FeatureValue on FeatureValue {
+    feature {
+      key
+      type
     }
+    value
+  }
+`;
+export const SdkCustomerFragmentDoc = gql`
+  fragment SDKCustomer on Customer {
+    name
+    organizationId
+    effectiveConfiguration {
+      ...FeatureValue
+    }
+  }
+  ${FeatureValueFragmentDoc}
+`;
+export const GetAllCustomersAndFeaturesDocument = gql`
+  query getAllCustomersAndFeatures {
+    customers {
+      ...SDKCustomer
+    }
+    features {
+      ...FeatureDefault
+    }
+  }
+  ${SdkCustomerFragmentDoc}
+  ${FeatureDefaultFragmentDoc}
+`;
+
+export type SdkFunctionWrapper = <T>(
+  action: (requestHeaders?: Record<string, string>) => Promise<T>,
+  operationName: string,
+  operationType?: string
+) => Promise<T>;
+
+const defaultWrapper: SdkFunctionWrapper = (
+  action,
+  _operationName,
+  _operationType
+) => action();
+
+export function getSdk(
+  client: GraphQLClient,
+  withWrapper: SdkFunctionWrapper = defaultWrapper
+) {
+  return {
+    getAllCustomersAndFeatures(
+      variables?: GetAllCustomersAndFeaturesQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<GetAllCustomersAndFeaturesQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<GetAllCustomersAndFeaturesQuery>(
+            GetAllCustomersAndFeaturesDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getAllCustomersAndFeatures',
+        'query'
+      );
+    },
   };
 }
 export type Sdk = ReturnType<typeof getSdk>;

@@ -1,30 +1,30 @@
 type BaseOptions = {
-    organizationId?: string;
-}
+  organizationId?: string;
+};
 
 type AnyDefault = {
-    defaultValue?: any;
-}
+  defaultValue?: any;
+};
 
 type StringDefault = {
-    defaultValue?: string;
-}
+  defaultValue?: string;
+};
 
 type NumberDefault = {
-    defaultValue?: number;
-}
+  defaultValue?: number;
+};
 
 type FloatDefault = {
-    defaultValue?: number;
-}
+  defaultValue?: number;
+};
 
 type BooleanDefault = {
-    defaultValue?: boolean;
-}
+  defaultValue?: boolean;
+};
 
-type JsonDefault = { 
-    defaultValue?: Record<string, unknown>;
-}
+type JsonDefault = {
+  defaultValue?: Record<string, unknown>;
+};
 
 export type Options = BaseOptions & AnyDefault;
 
