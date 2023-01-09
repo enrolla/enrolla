@@ -65,7 +65,7 @@
     "@nrwl/linter": "15.4.4",
     "@nrwl/nest": "15.4.4",
     "@nrwl/node": "15.4.4",
-    "@nrwl/react": "15.4.4",
+    "@nrwl/react": "15.4.5",
     "@nrwl/vite": "15.4.4",
     "@nrwl/workspace": "15.4.4",
     "@nx-tools/container-metadata": "^4.0.2",
