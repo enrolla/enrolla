@@ -17,7 +17,6 @@ enum FeatureType {
   STRING
   BOOLEAN
   JSON
-  SECRET
 
   @@map("feature_type")
 }
@@ -99,6 +98,7 @@ model Customer {
   packageId      String?           @map("package_id")
   name           String
   features       CustomerFeature[]
+  secretsKeys    String[]          @map("secrets_keys")
   createdAt      DateTime          @default(now()) @map("created_at")
 
   @@unique([id, tenantId])
@@ -111,11 +111,12 @@ model Secret {
   tenantId            String    @map("tenant_id")
   key                 String
   value               String
-  randomBytes         String    @map("random_bytes")
+  iv                  String    @map("iv")
+  customerId          String?   @map("customer_id")
   createdAt           DateTime  @default(now()) @map("created_at")
 
   @@unique([id, tenantId])
-  @@unique([tenantId, key])
+  @@unique([tenantId, customerId, key])
   @@index([tenantId])
   @@map("secrets")
 }

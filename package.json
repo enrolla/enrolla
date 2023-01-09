@@ -31,6 +31,7 @@
     "ajv": "^8.11.2",
     "apollo-server-express": "^3.11.1",
     "auth0": "^2.44.1",
+    "aws-sdk": "^2.1290.0",
     "camelcase": "^7.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",

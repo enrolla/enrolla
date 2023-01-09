@@ -17,6 +17,9 @@ import { Package } from '../packages/entities/package.entity';
 import { PackagesService } from '../packages/packages.service';
 import { FeatureInstancesService } from '../feature-instances/feature-instances.service';
 import { FeatureValue } from '../feature-instances/entities/feature-value.entity';
+import { Secret } from '../secrets/entities/secret.entity';
+import { SecretsService } from '../secrets/secrets.service';
+import { CreateSecretInput } from './dto/create-secret.input';
 
 @Resolver(() => Customer)
 @UseGuards(GraphQLJWTAuthGuard)
@@ -24,7 +27,8 @@ export class CustomersResolver {
   constructor(
     private readonly customersService: CustomersService,
     private readonly packagesService: PackagesService,
-    private readonly featuresInstancesService: FeatureInstancesService
+    private readonly featuresInstancesService: FeatureInstancesService,
+    private readonly secretsService: SecretsService
   ) {}
 
   @Mutation(() => Customer)
@@ -33,6 +37,19 @@ export class CustomersResolver {
     @Args('input') createCustomerInput: CreateCustomerInput
   ) {
     return await this.customersService.create(createCustomerInput, tenantId);
+  }
+
+  @Mutation(() => Secret)
+  async createSecret(
+    @TenantId() tenantId: string,
+    @Args('input') createSecretInput: CreateSecretInput
+  ) {
+    return await this.customersService.addSecret(
+      tenantId,
+      createSecretInput.customerId,
+      createSecretInput.key,
+      createSecretInput.value
+    );
   }
 
   @Query(() => [Customer], { name: 'customers' })
@@ -85,6 +102,15 @@ export class CustomersResolver {
       value: f.value,
       featureId: f.featureId,
     }));
+  }
+
+  @ResolveField(() => [Secret])
+  async secrets(@Parent() customer: Customer) {
+    const { id, secretsKeys, tenantId } = customer;
+
+    return (
+      secretsKeys && this.secretsService.getMulti(tenantId, id, secretsKeys)
+    );
   }
 
   @ResolveField(() => [FeatureValue])

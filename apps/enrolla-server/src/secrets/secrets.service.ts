@@ -1,86 +1,76 @@
 import { Injectable } from '@nestjs/common';
-import { createCipheriv, createDecipheriv, randomBytes, scrypt } from 'crypto';
-import { env } from 'process';
-import { promisify } from 'util';
 import { PrismaService } from '../prisma/prisma.service';
-import { Secret } from '@prisma/client';
+import { SecretManager } from './secret-manager.interface';
+import { ConfigurationsService } from '../configurations/configurations.service';
+import { SelfHostedSecretManager } from './self-hosted.secret-manager';
+import { AwsParameterStoreSecretManagaer } from '../integrations/secret-managers/aws-parameter-store.secret-manager';
+import { Secret } from './entities/secret.entity';
 
 @Injectable()
 export class SecretsService {
-  private static ENCRYPTION_ALGORITHM = 'aes-256-ctr';
-  private static RANDOM_BYTES_LENGTH = 16;
-  private encryptionKey = env.SECRET_ENCRYPTION_KEY;
+  private static SECRET_MANAGER_TYPE_CONFIG_KEY = 'SECRET_MANAGER_TYPE';
 
-  constructor(private prismaService: PrismaService) {}
+  private selfHostedSecretManager: SelfHostedSecretManager;
+  private awsParameterStoreSecretManager: AwsParameterStoreSecretManagaer;
 
-  async set(tenantId: string, key: string, value: string): Promise<Secret> {
-    const { encryptedValue, randomBytes } = await this.encrypt(value);
-
-    return await this.prismaService.secret.create({
-      data: {
-        key,
-        tenantId,
-        value: encryptedValue,
-        randomBytes: randomBytes,
-      },
-    });
-  }
-
-  async get(tenantId: string, key: string): Promise<string> {
-    const secret = await this.prismaService.secret.findUnique({
-      where: {
-        tenantId_key: {
-          tenantId,
-          key,
-        },
-      },
-    });
-
-    return await this.decrypt(secret.value, secret.randomBytes);
-  }
-
-  async delete(tenantId: string, key: string): Promise<Secret> {
-    return await this.prismaService.secret.delete({
-      where: {
-        tenantId_key: {
-          tenantId,
-          key,
-        },
-      },
-    });
-  }
-
-  private async encrypt(
-    value: string,
-    randomBytesLength: number = SecretsService.RANDOM_BYTES_LENGTH
+  constructor(
+    private configurationsService: ConfigurationsService,
+    private prismaService: PrismaService
   ) {
-    const iv = randomBytes(randomBytesLength);
-    const key = (await promisify(scrypt)(
-      this.encryptionKey,
-      'salt',
-      32
-    )) as Buffer;
-    const cipher = createCipheriv(SecretsService.ENCRYPTION_ALGORITHM, key, iv);
-
-    return {
-      encryptedValue: Buffer.concat([
-        cipher.update(value),
-        cipher.final(),
-      ]).toString('hex'),
-      randomBytes: iv.toString('hex'),
-    };
+    this.selfHostedSecretManager = new SelfHostedSecretManager(prismaService);
+    this.awsParameterStoreSecretManager = new AwsParameterStoreSecretManagaer(
+      configurationsService
+    );
   }
 
-  private async decrypt(value: string, randomBytes: string) {
-    const decipher = createDecipheriv(
-      SecretsService.ENCRYPTION_ALGORITHM,
-      this.encryptionKey,
-      randomBytes
+  async setValue(
+    tenantId: string,
+    customerId: string,
+    key: string,
+    value: string
+  ): Promise<Secret> {
+    const secretManager = await this.tenantSecretManager(tenantId);
+
+    return await secretManager.setValue(tenantId, customerId, key, value);
+  }
+
+  async getValue(tenantId: string, customerId: string, key: string) {
+    const secretManager = await this.tenantSecretManager(tenantId);
+
+    return await secretManager.getValue(tenantId, customerId, key);
+  }
+
+  async getMulti(tenantId: string, customerId: string, keys: string[]) {
+    const secretManager = await this.tenantSecretManager(tenantId);
+
+    return await secretManager.getMulti(tenantId, customerId, keys);
+  }
+
+  async delete(
+    tenantId: string,
+    customerId: string,
+    key: string
+  ): Promise<void> {
+    const secretManager = await this.tenantSecretManager(tenantId);
+
+    await secretManager.delete(tenantId, customerId, key);
+  }
+
+  private async tenantSecretManager(tenantId: string): Promise<SecretManager> {
+    const secretManagerType = await this.configurationsService.getValue<string>(
+      tenantId,
+      SecretsService.SECRET_MANAGER_TYPE_CONFIG_KEY
     );
 
-    return Buffer.concat([
-      decipher.update(Buffer.from(value)),
-      decipher.final(),
-    ]).toString();
+    switch (secretManagerType) {
+      case 'SELF_HOSTED':
+        return this.selfHostedSecretManager;
+      case 'AWS_PARAMETER_STORE':
+        return this.awsParameterStoreSecretManager;
+      default:
+        throw new Error(
+          `Organization manager type ${secretManagerType} not supported`
+        );
+    }
   }
 }
