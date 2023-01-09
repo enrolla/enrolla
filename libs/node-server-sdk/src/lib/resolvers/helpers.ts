@@ -1,4 +1,4 @@
-import { FeatureDefaultFragment, FeatureType, FeatureValueFragment } from 'libs/graphql-codegen/output';
+import { FeatureType } from '../../graphql-codegen';
 import { exists, getCustomerFeatureValue, getDefaultFeatureValue } from '../store';
 import { Feature, FeatureValue } from '../interfaces';
 import { DEFAULT_VALUES } from './defaults';

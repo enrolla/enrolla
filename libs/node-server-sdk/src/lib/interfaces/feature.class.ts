@@ -1,4 +1,4 @@
-import { FeatureType } from "libs/graphql-codegen/output";
+import { FeatureType } from '../../graphql-codegen';
 
 export type FeatureValue = string | number | boolean | Record<string, unknown>
 

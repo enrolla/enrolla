@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request';
-import { getSdk, Sdk } from '../../../../graphql-codegen/output';
+import { getSdk, Sdk } from '../../graphql-codegen';
 import { InitialzeOptions } from '../interfaces';
 import { DEFAULT_URL } from './constants';
 

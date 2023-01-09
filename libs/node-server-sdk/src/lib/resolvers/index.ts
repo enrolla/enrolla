@@ -1,4 +1,4 @@
-import { FeatureType } from 'libs/graphql-codegen/output';
+import { FeatureType } from '../../graphql-codegen';
 import { Options, StringValueOptions, NumberValueOptions, FloatValueOptions, BooleanValueOptions, JsonValueOptions } from './types';
 import { FeatureValue } from '../interfaces';
 import { safeResolver, safeTypedResolver } from './helpers';

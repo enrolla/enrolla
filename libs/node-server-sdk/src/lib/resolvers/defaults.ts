@@ -1,4 +1,4 @@
-import { FeatureType } from 'libs/graphql-codegen/output';
+import { FeatureType } from '../../graphql-codegen';
 
 export const DEFAULT_VALUES = {
     [FeatureType.String]: '',

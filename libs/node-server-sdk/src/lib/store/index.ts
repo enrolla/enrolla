@@ -1,5 +1,5 @@
 import { stripIgnoredCharacters } from "graphql";
-import { FeatureDefaultFragment, FeatureValueFragment } from "libs/graphql-codegen/output";
+import { FeatureDefaultFragment, FeatureValueFragment } from '../../graphql-codegen';
 import { fetchAllCustomersAndFeatures } from "../api";
 import { Feature } from "../interfaces";
 
