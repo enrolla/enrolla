@@ -1,0 +1,30 @@
+query getAllCustomersAndFeatures {
+    customers {
+      ...SDKCustomer
+  }
+  features {
+      ...FeatureDefault
+  }
+}
+
+fragment FeatureDefault on Feature {
+      key
+      type
+      defaultValue
+  }
+
+fragment FeatureValue on FeatureValue {
+    feature {
+      key
+      type
+    }
+    value
+  }
+
+fragment SDKCustomer on Customer {
+    name
+    organizationId
+    effectiveConfiguration {
+      ...FeatureValue
+    }
+  }
