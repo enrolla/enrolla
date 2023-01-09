@@ -90,7 +90,7 @@ export const safeTypedResolver = (
 
     return result.value;
   } catch (error) {
-    handleErrors(error, feature, expectedType, options);
+    return handleErrors(error, feature, expectedType, options);
   }
 };
 
@@ -101,6 +101,6 @@ export const safeResolver = (
   try {
     return featureResolverBase(feature, options).value;
   } catch (error) {
-    handleErrors(error, feature, undefined, options);
+    return handleErrors(error, feature, undefined, options);
   }
 };
