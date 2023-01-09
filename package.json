@@ -67,7 +67,7 @@
     "@nrwl/node": "15.4.4",
     "@nrwl/react": "15.4.4",
     "@nrwl/vite": "15.4.4",
-    "@nrwl/workspace": "15.4.4",
+    "@nrwl/workspace": "15.4.5",
     "@nx-tools/container-metadata": "^4.0.2",
     "@nx-tools/nx-container": "^4.0.2",
     "@nx-tools/nx-prisma": "^4.0.2",
