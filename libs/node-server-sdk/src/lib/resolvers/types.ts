@@ -1,1 +1,1 @@
-export type Options = {};
+export type Options = Record<string, never>;

@@ -8,7 +8,7 @@ export let _configuration: InitialzeOptions;
 
 const startPolling = (configuration: InitialzeOptions) => {
   if (!configuration?.polling) return;
-  const { enabled, intervalSeconds, onError } = configuration?.polling;
+  const { enabled, intervalSeconds, onError } = configuration.polling;
 
   if (enabled) {
     setInterval(() => {

@@ -13,7 +13,7 @@ import {
 export const resolver = (
   feature: string,
   organizationId: string,
-  options?: Options
+  options?: Options // eslint-disable-line @typescript-eslint/no-unused-vars
 ): Feature => {
   if (!feature) {
     throw new FeatureNotProvidedError();
