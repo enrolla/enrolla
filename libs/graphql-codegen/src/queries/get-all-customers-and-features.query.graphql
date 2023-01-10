@@ -1,14 +1,13 @@
 query getAllCustomersAndFeatures {
   customers {
-      name
-      organizationId
-      effectiveConfiguration {
-        feature {
-          key
-          type
-        }
-        value
+    organizationId
+    effectiveConfiguration {
+      feature {
+        key
+        type
       }
+      value
+    }
   }
   features {
     key
