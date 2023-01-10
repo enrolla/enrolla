@@ -242,7 +242,32 @@ export type UpdatePackageInput = {
   id: Scalars['Cuid'];
 };
 
+export type GetAllCustomersAndFeaturesQueryVariables = Exact<{ [key: string]: never; }>;
 
+
+export type GetAllCustomersAndFeaturesQuery = { __typename?: 'Query', customers: Array<{ __typename?: 'Customer', name: string, organizationId?: string | null, effectiveConfiguration: Array<{ __typename?: 'FeatureValue', value: any, feature: { __typename?: 'Feature', key: string, type: FeatureType } }> }>, features: Array<{ __typename?: 'Feature', key: string, type: FeatureType, defaultValue: any }> };
+
+
+export const GetAllCustomersAndFeaturesDocument = gql`
+    query getAllCustomersAndFeatures {
+  customers {
+    name
+    organizationId
+    effectiveConfiguration {
+      feature {
+        key
+        type
+      }
+      value
+    }
+  }
+  features {
+    key
+    type
+    defaultValue
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 
@@ -251,7 +276,9 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-
+    getAllCustomersAndFeatures(variables?: GetAllCustomersAndFeaturesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAllCustomersAndFeaturesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetAllCustomersAndFeaturesQuery>(GetAllCustomersAndFeaturesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getAllCustomersAndFeatures', 'query');
+    }
   };
 }
 export type Sdk = ReturnType<typeof getSdk>;

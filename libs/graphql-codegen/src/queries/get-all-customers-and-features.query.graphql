@@ -1,0 +1,17 @@
+query getAllCustomersAndFeatures {
+  customers {
+    organizationId
+    effectiveConfiguration {
+      feature {
+        key
+        type
+      }
+      value
+    }
+  }
+  features {
+    key
+    type
+    defaultValue
+  }
+}

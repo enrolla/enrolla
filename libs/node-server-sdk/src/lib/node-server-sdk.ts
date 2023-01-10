@@ -1,3 +1,2 @@
-export function nodeServerSdk(): string {
-  return 'node-server-sdk';
-}
+export * from './resolvers';
+export * from './configuration';
