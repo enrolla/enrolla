@@ -7,7 +7,7 @@ export const getFeatureValue = (
   feature: string,
   organizationId: string,
   options?: Options
-): FeatureValue => resolver(feature, organizationId, options).value;
+): FeatureValue => resolver(feature, organizationId, options);
 
 export const getFeatureStringValue = (
   feature: string,

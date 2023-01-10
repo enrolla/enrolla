@@ -2,7 +2,7 @@ import { InitialzeOptions } from '../interfaces';
 import { InitilizationError } from '../errors';
 
 export const validateConfiguration = (options: InitialzeOptions): void => {
-  const { apiToken, polling } = options;
+  const { apiToken, polling, evaluationHooks } = options;
   if (!apiToken) {
     throw new InitilizationError('"apiToken" is required');
   }
@@ -25,5 +25,23 @@ export const validateConfiguration = (options: InitialzeOptions): void => {
     if (onError && typeof onError !== 'function') {
       throw new InitilizationError('"polling.onError" must be a function.');
     }
+  }
+
+  if (
+    evaluationHooks?.beforeEvaluation &&
+    typeof evaluationHooks.beforeEvaluation !== 'function'
+  ) {
+    throw new InitilizationError(
+      '"evaluationHooks.beforeEvaluation" must be a function.'
+    );
+  }
+
+  if (
+    evaluationHooks?.afterEvaluation &&
+    typeof evaluationHooks.afterEvaluation !== 'function'
+  ) {
+    throw new InitilizationError(
+      '"evaluationHooks.afterEvaluation" must be a function.'
+    );
   }
 };
