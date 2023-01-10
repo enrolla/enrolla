@@ -77,7 +77,7 @@
     "@nx-tools/nx-prisma": "^4.0.2",
     "@testing-library/react": "13.4.0",
     "@types/jest": "28.1.1",
-    "@types/node": "16.11.7",
+    "@types/node": "18.11.18",
     "@types/pluralize": "^0.0.29",
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.9",
