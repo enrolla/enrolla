@@ -1,9 +1,11 @@
+import { FeatureValue } from '../interfaces/feature.class';
+
 type BaseOptions = {
   organizationId?: string;
 };
 
 type AnyDefault = {
-  defaultValue?: any;
+  defaultValue?: FeatureValue;
 };
 
 type StringDefault = {
