@@ -1,8 +1,3 @@
-import { stripIgnoredCharacters } from 'graphql';
-import {
-  FeatureDefaultFragment,
-  FeatureValueFragment,
-} from '../../graphql-codegen';
 import { fetchAllCustomersAndFeatures } from '../api';
 import { Feature } from '../interfaces';
 

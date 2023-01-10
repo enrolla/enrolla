@@ -1,4 +1,4 @@
-import { FeatureType } from '../../graphql-codegen';
+import { FeatureType } from '@enrolla/graphql-codegen';
 import {
   exists,
   getCustomerFeatureValue,
