@@ -12,7 +12,7 @@ import {
   FeatureTypeError,
   CustomerFeatureNotFoundError,
   OrganizationIdNotSuppliedError,
-} from './errors';
+} from '../errors';
 
 const featureResolverBase = (
   feature: string,
