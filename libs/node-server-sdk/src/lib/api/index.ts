@@ -11,7 +11,7 @@ export const initializeGraphQLClient = (options: InitialzeOptions) => {
 
   const graphQLClient = new GraphQLClient(_url, {
     headers: {
-      authorization: `Bearer ${apiToken}`,
+      token: apiToken,
     },
   });
 
