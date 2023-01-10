@@ -247,48 +247,27 @@ export type GetAllCustomersAndFeaturesQueryVariables = Exact<{ [key: string]: ne
 
 export type GetAllCustomersAndFeaturesQuery = { __typename?: 'Query', customers: Array<{ __typename?: 'Customer', name: string, organizationId?: string | null, effectiveConfiguration: Array<{ __typename?: 'FeatureValue', value: any, feature: { __typename?: 'Feature', key: string, type: FeatureType } }> }>, features: Array<{ __typename?: 'Feature', key: string, type: FeatureType, defaultValue: any }> };
 
-export type FeatureDefaultFragment = { __typename?: 'Feature', key: string, type: FeatureType, defaultValue: any };
 
-export type FeatureValueFragment = { __typename?: 'FeatureValue', value: any, feature: { __typename?: 'Feature', key: string, type: FeatureType } };
-
-export type SdkCustomerFragment = { __typename?: 'Customer', name: string, organizationId?: string | null, effectiveConfiguration: Array<{ __typename?: 'FeatureValue', value: any, feature: { __typename?: 'Feature', key: string, type: FeatureType } }> };
-
-export const FeatureDefaultFragmentDoc = gql`
-    fragment FeatureDefault on Feature {
-  key
-  type
-  defaultValue
-}
-    `;
-export const FeatureValueFragmentDoc = gql`
-    fragment FeatureValue on FeatureValue {
-  feature {
-    key
-    type
-  }
-  value
-}
-    `;
-export const SdkCustomerFragmentDoc = gql`
-    fragment SDKCustomer on Customer {
-  name
-  organizationId
-  effectiveConfiguration {
-    ...FeatureValue
-  }
-}
-    ${FeatureValueFragmentDoc}`;
 export const GetAllCustomersAndFeaturesDocument = gql`
     query getAllCustomersAndFeatures {
   customers {
-    ...SDKCustomer
+    name
+    organizationId
+    effectiveConfiguration {
+      feature {
+        key
+        type
+      }
+      value
+    }
   }
   features {
-    ...FeatureDefault
+    key
+    type
+    defaultValue
   }
 }
-    ${SdkCustomerFragmentDoc}
-${FeatureDefaultFragmentDoc}`;
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 

@@ -3,7 +3,7 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 const config: CodegenConfig = {
   overwrite: true,
   schema: 'apps/enrolla-server/src/schema.gql',
-  documents: 'libs/graphql-codegen/src/fragments/**/*.graphql',
+  documents: 'libs/graphql-codegen/src/queries/**/*.graphql',
   generates: {
     'libs/graphql-codegen/src/output/index.ts': {
       plugins: [
