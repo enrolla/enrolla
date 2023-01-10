@@ -1,6 +1,9 @@
 export interface InitialzeOptions {
   apiToken: string;
   url?: string;
-  pollingEnabled?: boolean;
-  pollIntervalSeconds?: number;
+  polling?: {
+    enabled: boolean;
+    intervalSeconds: number;
+    onError?: (error: Error) => void;
+  };
 }

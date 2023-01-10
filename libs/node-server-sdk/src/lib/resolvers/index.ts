@@ -1,46 +1,58 @@
 import { FeatureType } from '@enrolla/graphql-codegen';
-import {
-  Options,
-  StringValueOptions,
-  NumberValueOptions,
-  FloatValueOptions,
-  BooleanValueOptions,
-  JsonValueOptions,
-} from './types';
+import { Options } from './types';
 import { FeatureValue } from '../interfaces';
-import { safeResolver, safeTypedResolver } from './helpers';
+import { resolver, typedResolver } from './helpers';
 
 export const getFeatureValue = (
   feature: string,
+  organizationId: string,
   options?: Options
-): FeatureValue | undefined => safeResolver(feature, options);
+): FeatureValue => resolver(feature, organizationId, options).value;
 
 export const getFeatureStringValue = (
   feature: string,
-  options?: StringValueOptions
-): string => safeTypedResolver(feature, FeatureType.String, options) as string;
+  organizationId: string,
+  options?: Options
+): string =>
+  typedResolver(feature, organizationId, FeatureType.String, options) as string;
 
 export const getFeatureIntegerValue = (
   feature: string,
-  options?: NumberValueOptions
-): number => safeTypedResolver(feature, FeatureType.Integer, options) as number;
+  organizationId: string,
+  options?: Options
+): number =>
+  typedResolver(
+    feature,
+    organizationId,
+    FeatureType.Integer,
+    options
+  ) as number;
 
 export const getFeatureFloatValue = (
   feature: string,
-  options?: FloatValueOptions
-): number => safeTypedResolver(feature, FeatureType.Float, options) as number;
+  organizationId: string,
+  options?: Options
+): number =>
+  typedResolver(feature, organizationId, FeatureType.Float, options) as number;
 
 export const getFeatureBooleanValue = (
   feature: string,
-  options?: BooleanValueOptions
+  organizationId: string,
+  options?: Options
 ): boolean =>
-  safeTypedResolver(feature, FeatureType.Boolean, options) as boolean;
+  typedResolver(
+    feature,
+    organizationId,
+    FeatureType.Boolean,
+    options
+  ) as boolean;
 
 export const getFeatureJsonValue = (
   feature: string,
-  options?: JsonValueOptions
+  organizationId: string,
+  options?: Options
 ): Record<string, unknown> =>
-  safeTypedResolver(feature, FeatureType.Json, options) as Record<
+  typedResolver(feature, organizationId, FeatureType.Json, options) as Record<
     string,
     unknown
   >;
