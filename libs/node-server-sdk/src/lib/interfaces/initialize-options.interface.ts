@@ -1,5 +1,3 @@
-import { FeatureValue } from '../interfaces';
-
 export interface InitialzeOptions {
   apiToken: string;
   url?: string;
@@ -13,7 +11,7 @@ export interface InitialzeOptions {
     afterEvaluation?: (
       feature: string,
       organizationId: string,
-      result: FeatureValue
+      result: any // eslint-disable-line @typescript-eslint/no-explicit-any
     ) => void;
   };
 }
