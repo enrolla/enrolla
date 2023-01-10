@@ -1,4 +1,4 @@
-query getAllCustomersAndFeatures {
+query getAllCustomerFeatures {
   customers {
     organizationId
     effectiveConfiguration {
@@ -8,10 +8,5 @@ query getAllCustomersAndFeatures {
       }
       value
     }
-  }
-  features {
-    key
-    type
-    defaultValue
   }
 }

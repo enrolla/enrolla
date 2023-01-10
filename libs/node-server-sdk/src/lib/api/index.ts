@@ -11,12 +11,12 @@ export const initializeGraphQLClient = (options: InitialzeOptions) => {
 
   const graphQLClient = new GraphQLClient(_url, {
     headers: {
-      authorization: `Bearer ${apiToken}`,
+      token: apiToken,
     },
   });
 
   _client = getSdk(graphQLClient);
 };
 
-export const fetchAllCustomersAndFeatures = async () =>
-  _client.getAllCustomersAndFeatures();
+export const fetchAllCustomerFeatures = async () =>
+  _client.getAllCustomerFeatures();
