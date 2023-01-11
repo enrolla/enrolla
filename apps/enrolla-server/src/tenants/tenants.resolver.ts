@@ -1,6 +1,6 @@
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
-import { GraphQLPropelAuthGuard } from '../authz/graphql-auth.guard';
+import { GraphQLAuthGuard } from '../authz/graphql-auth.guard';
 import { TenantId } from '../authz/tenant.decorator';
 import { TenantsService } from './tenants.service';
 import { ApiToken } from './entities/api-token.entity';
@@ -8,7 +8,7 @@ import { CreateApiTokenInput } from './dto/create-api-token.input';
 import { Tenant } from './entities/tenant.entity';
 
 @Resolver(() => Tenant)
-@UseGuards(GraphQLPropelAuthGuard)
+@UseGuards(GraphQLAuthGuard)
 export class TenantsResolver {
   constructor(private readonly tenantsService: TenantsService) {}
 
