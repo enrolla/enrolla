@@ -79,6 +79,12 @@ type Organization {
   name: String!
 }
 
+type ApiToken {
+  id: Cuid!
+  name: String!
+  token: String!
+}
+
 type Query {
   features: [Feature!]!
   feature(id: String!): Feature!
@@ -88,6 +94,7 @@ type Query {
   customer(id: String!): Customer!
   organizations: [Organization!]!
   organization(id: String!): Organization!
+  apiTokens: [ApiToken!]!
 }
 
 type Mutation {
@@ -103,6 +110,8 @@ type Mutation {
   createOrganization(input: CreateOrganizationInput!): Organization!
   updateOrganization(input: UpdateOrganizationInput!): Organization!
   removeOrganization(id: String!): Organization!
+  createApiToken(input: CreateApiTokenInput!): ApiToken!
+  revokeApiToken(id: String!): ApiToken!
 }
 
 input CreateFeatureInput {
@@ -155,4 +164,8 @@ input CreateOrganizationInput {
 input UpdateOrganizationInput {
   name: String
   id: String!
+}
+
+input CreateApiTokenInput {
+  name: String!
 }

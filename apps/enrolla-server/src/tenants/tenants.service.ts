@@ -1,33 +1,66 @@
 import { Injectable } from '@nestjs/common';
-import { ManagementClient } from 'auth0';
+import * as jwt from 'jsonwebtoken';
 import { env } from 'process';
+import { PrismaService } from '../prisma/prisma.service';
+import { ApiToken } from './entities/api-token.entity';
+import { CreateApiTokenInput } from './dto/create-api-token.input';
 
 @Injectable()
 export class TenantsService {
-  auth0ManagementClient = new ManagementClient({
-    domain: env.AUTH0_DOMAIN,
-    clientId: env.AUTH0_CLIENT_ID,
-    clientSecret: env.AUTH0_CLIENT_SECRET,
-  });
+  private static ENCRYPTION_KEY = env.API_TOKEN_GENERATION_PRIVATE_KEY;
 
-  async register(userId: string, organizationName: string) {
-    const organization = await this.auth0ManagementClient.organizations.create({
-      name: organizationName,
+  constructor(private prismaService: PrismaService) {}
+
+  async createApiToken(
+    tenantId: string,
+    createApiTokenInput: CreateApiTokenInput
+  ): Promise<ApiToken> {
+    const token = jwt.sign(
+      { tenantId: tenantId },
+      TenantsService.ENCRYPTION_KEY
+    );
+
+    return await this.prismaService.apiToken.create({
+      data: {
+        token,
+        name: createApiTokenInput.name,
+        tenantId,
+      },
+    });
+  }
+
+  async getApiTokens(tenantId: string): Promise<ApiToken[]> {
+    return await this.prismaService.apiToken.findMany({
+      where: {
+        tenantId,
+      },
+    });
+  }
+
+  async deleteApiToken(tenantId: string, id: string) {
+    return await this.prismaService.apiToken.delete({
+      where: {
+        id_tenantId: {
+          id,
+          tenantId,
+        },
+      },
+    });
+  }
+
+  async validateApiToken(token: string) {
+    const decoded = jwt.verify(token, TenantsService.ENCRYPTION_KEY);
+
+    const apiToken = await this.prismaService.apiToken.findUnique({
+      where: {
+        token: token,
+      },
     });
 
-    await this.auth0ManagementClient.organizations.addEnabledConnection(
-      { id: organization.id },
-      {
-        connection_id: env.AUTH0_GOOGLE_OAUTH2_CONNECTION_ID,
-        assign_membership_on_login: false,
-      }
-    );
+    if (!apiToken || apiToken.tenantId !== decoded['tenantId']) {
+      throw new Error('Invalid API token');
+    }
 
-    await this.auth0ManagementClient.organizations.addMembers(
-      { id: organization.id },
-      {
-        members: [userId],
-      }
-    );
+    return decoded;
   }
 }
