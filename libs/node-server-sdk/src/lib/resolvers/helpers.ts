@@ -1,106 +1,73 @@
 import { FeatureType } from '@enrolla/graphql-codegen';
-import {
-  exists,
-  getCustomerFeatureValue,
-  getDefaultFeatureValue,
-} from '../store';
+import { organizationExists, getCustomerFeatureValue } from '../store';
 import { Feature, FeatureValue } from '../interfaces';
-import { DEFAULT_VALUES } from './defaults';
 import { Options } from './types';
 import {
   FeatureNotFoundError,
-  FeatureTypeError,
-  CustomerFeatureNotFoundError,
-  OrganizationIdNotSuppliedError,
+  FeatureNotProvidedError,
+  FeatureTypeMismatchError,
+  OrganizationNotFoundError,
+  OrganizationIdNotProvidedError,
 } from '../errors';
+import { _configuration } from '../configuration';
 
-const featureResolverBase = (
+export const baseResolver = (
   feature: string,
-  options?: Options
-): Feature | undefined => {
-  const organizationId = options?.organizationId;
-
-  if (!exists(feature)) {
-    throw new FeatureNotFoundError();
+  organizationId: string,
+  options?: Options // eslint-disable-line @typescript-eslint/no-unused-vars
+): Feature => {
+  if (!feature) {
+    throw new FeatureNotProvidedError();
   }
 
   if (!organizationId) {
-    throw new OrganizationIdNotSuppliedError();
+    throw new OrganizationIdNotProvidedError();
+  }
+
+  _configuration?.evaluationHooks?.beforeEvaluation?.(feature, organizationId);
+
+  if (!organizationExists(organizationId)) {
+    throw new OrganizationNotFoundError(feature, organizationId);
   }
 
   const customerFeature = getCustomerFeatureValue(feature, organizationId);
   if (!customerFeature) {
-    throw new CustomerFeatureNotFoundError();
+    throw new FeatureNotFoundError(feature);
   }
 
   return customerFeature;
 };
 
-const typedDefaultValue = (
+export const resolver = (
   feature: string,
-  expectedType: FeatureType | undefined,
+  organizationId: string,
   options?: Options
-): FeatureValue | undefined => {
-  const defaultFeature = getDefaultFeatureValue(feature);
+): FeatureValue => {
+  const result = baseResolver(feature, organizationId, options);
+  _configuration?.evaluationHooks?.afterEvaluation?.(
+    feature,
+    organizationId,
+    result.value
+  );
 
-  if (!expectedType) {
-    return defaultFeature?.value;
-  }
-
-  return defaultFeature.type === expectedType
-    ? defaultFeature.value
-    : options?.defaultValue ?? DEFAULT_VALUES[expectedType];
+  return result.value;
 };
 
-const handleErrors = (
-  error: Error,
+export const typedResolver = (
   feature: string,
-  expectedType: FeatureType | undefined,
-  options?: Options
-) => {
-  // TODO call 'onError' hook function to log appropriately
-
-  switch (error.constructor) {
-    case FeatureNotFoundError:
-      return options?.defaultValue ?? DEFAULT_VALUES[expectedType];
-
-    case OrganizationIdNotSuppliedError:
-      return typedDefaultValue(feature, expectedType, options);
-
-    case CustomerFeatureNotFoundError:
-      return typedDefaultValue(feature, expectedType, options);
-
-    case FeatureTypeError:
-      return typedDefaultValue(feature, expectedType, options);
-    default:
-      return options?.defaultValue ?? DEFAULT_VALUES[expectedType];
-  }
-};
-
-export const safeTypedResolver = (
-  feature: string,
+  organizationId: string,
   expectedType: FeatureType,
   options?: Options
 ): FeatureValue => {
-  try {
-    const result = featureResolverBase(feature, options);
-    if (result.type !== expectedType) {
-      throw new FeatureTypeError();
-    }
-
-    return result.value;
-  } catch (error) {
-    return handleErrors(error, feature, expectedType, options);
+  const result = baseResolver(feature, organizationId, options);
+  if (result.type !== expectedType) {
+    throw new FeatureTypeMismatchError(feature, expectedType, result.type);
   }
-};
+  _configuration?.evaluationHooks?.afterEvaluation?.(
+    feature,
+    organizationId,
+    result.value
+  );
 
-export const safeResolver = (
-  feature: string,
-  options?: Options
-): FeatureValue | undefined => {
-  try {
-    return featureResolverBase(feature, options).value;
-  } catch (error) {
-    return handleErrors(error, feature, undefined, options);
-  }
+  return result.value;
 };

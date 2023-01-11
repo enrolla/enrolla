@@ -19,7 +19,25 @@
   </a>
 </p>
 
-### Getting Started with Local Developement
+# ⭐️ Why Enrolla?
+
+Managing customer configurations takes much work. At first, it seems like just creating another SQL database, but in reality, it's just the beginning.
+
+You need to define different pricing tiers for different customers, but some important ones require extra customization. You need to store lots of different values for them - throttling configurations, secrets, and just plain JSONs. And you need to be able to access these configurations across your system - with 0 latency. You need this data synchronized across many systems - CRMs, authentication services, billing systems, and even sometimes your Databases.
+Enrolla's goal is to simplify customer configuration management and provide developers with the tools to focus on delivering best-in-class products - while providing the needed flexibility for the rest of the company.
+
+# ✨ Features
+
+- 🛂 Easily manage all your configurations - throttling, secrets, just plain JSONs
+- 🧩 Integrations with CRMs, authentication services, billing systems
+- ⏩ Typescript SDK for fetching configurations to your services with smart caching (Python and Go coming soon!)
+- 📦 Built-in backoffice for non engineers
+- 😎 Headless UI templates for providing needed knobs for your customers (Coming soon!)
+- 👩‍💻 Community driven
+
+# 🚀 Getting Started
+
+### Local Developement
 
 Enrolla is using a monorepo (powered by [Nx Workspaces](https://nx.dev/)) with multiple apps and libraries.
 
