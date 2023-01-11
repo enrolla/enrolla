@@ -2,17 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type ApiToken {
-  id: Cuid!
-  name: String!
-  token: String!
-}
-
-"""
-A field whose value conforms to the standard cuid format as specified in https://github.com/ericelliott/cuid#broken-down
-"""
-scalar Cuid @specifiedBy(url: "https://github.com/ericelliott/cuid#broken-down")
-
 type Feature {
   id: Cuid!
   tenantId: String!
@@ -22,6 +11,11 @@ type Feature {
   description: String
   createdAt: DateTime!
 }
+
+"""
+A field whose value conforms to the standard cuid format as specified in https://github.com/ericelliott/cuid#broken-down
+"""
+scalar Cuid @specifiedBy(url: "https://github.com/ericelliott/cuid#broken-down")
 
 enum FeatureType {
   INTEGER
@@ -80,8 +74,13 @@ type Organization {
   name: String!
 }
 
+type ApiToken {
+  id: Cuid!
+  name: String!
+  token: String!
+}
+
 type Query {
-  apiTokens: [ApiToken!]!
   features: [Feature!]!
   feature(id: String!): Feature!
   packages: [Package!]!
@@ -90,10 +89,10 @@ type Query {
   customer(id: String!): Customer!
   organizations: [Organization!]!
   organization(id: String!): Organization!
+  apiTokens: [ApiToken!]!
 }
 
 type Mutation {
-  createApiToken(input: CreateApiTokenInput!): ApiToken!
   createFeature(input: CreateFeatureInput!): Feature!
   updateFeature(input: UpdateFeatureInput!): Feature!
   removeFeature(id: String!): Feature!
@@ -106,10 +105,8 @@ type Mutation {
   createOrganization(input: CreateOrganizationInput!): Organization!
   updateOrganization(input: UpdateOrganizationInput!): Organization!
   removeOrganization(id: String!): Organization!
-}
-
-input CreateApiTokenInput {
-  name: String!
+  createApiToken(input: CreateApiTokenInput!): ApiToken!
+  revokeApiToken(id: String!): ApiToken!
 }
 
 input CreateFeatureInput {
@@ -162,4 +159,8 @@ input CreateOrganizationInput {
 input UpdateOrganizationInput {
   name: String
   id: String!
+}
+
+input CreateApiTokenInput {
+  name: String!
 }

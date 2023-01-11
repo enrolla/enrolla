@@ -23,6 +23,11 @@ export class TenantsResolver {
     );
   }
 
+  @Mutation(() => ApiToken)
+  async revokeApiToken(@TenantId() tenantId: string, @Args('id') id: string) {
+    return await this.tenantsService.deleteApiToken(tenantId, id);
+  }
+
   @Query(() => [ApiToken])
   async apiTokens(@TenantId() tenantId: string) {
     return await this.tenantsService.getApiTokens(tenantId);

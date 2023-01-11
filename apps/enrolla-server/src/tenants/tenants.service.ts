@@ -37,6 +37,17 @@ export class TenantsService {
     });
   }
 
+  async deleteApiToken(tenantId: string, id: string) {
+    return await this.prismaService.apiToken.delete({
+      where: {
+        id_tenantId: {
+          id,
+          tenantId,
+        },
+      },
+    });
+  }
+
   async validateApiToken(token: string) {
     const decoded = jwt.verify(token, TenantsService.ENCRYPTION_KEY);
 
