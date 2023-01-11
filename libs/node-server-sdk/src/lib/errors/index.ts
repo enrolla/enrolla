@@ -16,6 +16,15 @@ class EnrollaError extends Error {
   }
 }
 
+export class NotInitializedError extends EnrollaError {
+  constructor() {
+    super(
+      `The Enrolla SDK must be initialized by calling the "initialize" function prior to use.`
+    );
+    this.severity = SEVERITY.Critical;
+  }
+}
+
 export class InitilizationError extends EnrollaError {
   readonly cause: Error | undefined;
 
@@ -43,7 +52,7 @@ export class OrganizationIdNotProvidedError extends EnrollaError {
 export class OrganizationNotFoundError extends EnrollaError {
   constructor(feature: string, organizationId: string) {
     super(
-      `The organizationId "${organizationId}" not found when attempting to evaluate feature "${feature}".`
+      `The organizationId "${organizationId}" was not found when attempting to evaluate feature "${feature}".`
     );
     this.severity = SEVERITY.Error;
   }

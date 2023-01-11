@@ -1,2 +1,2 @@
 export * from './resolvers';
-export * from './configuration';
+export { initialize } from './configuration';
