@@ -4,11 +4,11 @@ import { Organization } from './entities/organization.entity';
 import { CreateOrganizationInput } from './dto/create-organization.input';
 import { UpdateOrganizationInput } from './dto/update-organization.input';
 import { TenantId } from '../authz/tenant.decorator';
-import { GraphQLPropelAuthGuard } from '../authz/graphql-propelauth-auth.guard';
+import { GraphQLAuthGuard } from '../authz/graphql-auth.guard';
 import { UseGuards } from '@nestjs/common';
 
 @Resolver(() => Organization)
-@UseGuards(GraphQLPropelAuthGuard)
+@UseGuards(GraphQLAuthGuard)
 export class OrganizationsResolver {
   constructor(private readonly organizationsService: OrganizationsService) {}
 
