@@ -1,6 +1,6 @@
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
-import { GraphQLPropelAuthGuard } from '../authz/graphql-propelauth-auth.guard';
+import { GraphQLPropelAuthGuard } from '../authz/graphql-auth.guard';
 import { TenantId } from '../authz/tenant.decorator';
 import { TenantsService } from './tenants.service';
 import { ApiToken } from './entities/api-token.entity';

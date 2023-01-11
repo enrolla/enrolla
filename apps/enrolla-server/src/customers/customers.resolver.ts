@@ -11,7 +11,7 @@ import { Customer } from './entities/customer.entity';
 import { CreateCustomerInput } from './dto/create-customer.input';
 import { UpdateCustomerInput } from './dto/update-customer.input';
 import { TenantId } from '../authz/tenant.decorator';
-import { GraphQLPropelAuthGuard } from '../authz/graphql-propelauth-auth.guard';
+import { GraphQLPropelAuthGuard } from '../authz/graphql-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { Package } from '../packages/entities/package.entity';
 import { PackagesService } from '../packages/packages.service';

@@ -11,6 +11,6 @@ export const TenantId = createParamDecorator(
       request = context.switchToHttp().getRequest();
     }
 
-    return request.user && Object.keys(request.user.orgIdToOrgMemberInfo)[0];
+    return request.user && request.user.tenantId;
   }
 );

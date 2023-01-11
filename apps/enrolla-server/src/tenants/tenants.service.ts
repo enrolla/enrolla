@@ -30,6 +30,7 @@ export class TenantsService {
   }
 
   async getApiTokens(tenantId: string): Promise<ApiToken[]> {
+    console.log('getApiTokens', tenantId);
     return await this.prismaService.apiToken.findMany({
       where: {
         tenantId,
@@ -61,6 +62,6 @@ export class TenantsService {
       throw new Error('Invalid API token');
     }
 
-    return decoded;
+    return { tenantId: decoded['tenantId'] };
   }
 }

@@ -2,7 +2,7 @@ import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { FeaturesService } from './features.service';
 import { Feature } from './entities/feature.entity';
 import { UseGuards } from '@nestjs/common';
-import { GraphQLPropelAuthGuard } from '../authz/graphql-propelauth-auth.guard';
+import { GraphQLPropelAuthGuard } from '../authz/graphql-auth.guard';
 import { TenantId } from '../authz/tenant.decorator';
 import { CreateFeatureInput } from './dto/create-feature.input';
 import { UpdateFeatureInput } from './dto/update-feature.input';
