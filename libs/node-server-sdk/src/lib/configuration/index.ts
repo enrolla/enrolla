@@ -19,6 +19,12 @@ const startPolling = (configuration: InitialzeOptions) => {
   }
 };
 
+/**
+ * Initializes the Enrolla SDK. Must be called once before any other SDK methods.
+ *
+ * @param options
+ * @throws {InitilizationError} if the configuration is invalid or if failed to fetch feature data.
+ */
 export const initialize = async (options: InitialzeOptions) => {
   validateConfiguration(options);
   _configuration = Object.freeze(options);

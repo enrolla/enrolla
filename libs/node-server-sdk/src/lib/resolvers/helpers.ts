@@ -8,6 +8,7 @@ import {
   FeatureTypeMismatchError,
   OrganizationNotFoundError,
   OrganizationIdNotProvidedError,
+  NotInitializedError,
 } from '../errors';
 import { _configuration } from '../configuration';
 
@@ -16,6 +17,10 @@ export const baseResolver = (
   organizationId: string,
   options?: Options // eslint-disable-line @typescript-eslint/no-unused-vars
 ): Feature => {
+  if (!_configuration?.apiToken) {
+    throw new NotInitializedError();
+  }
+
   if (!feature) {
     throw new FeatureNotProvidedError();
   }
