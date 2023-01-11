@@ -20,10 +20,10 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'JwtAuth') {
 
     try {
       // Trying to validate the JWT as a PropelAuth token by default, representing management ui access
-      const { userId, orgIdToOrgMemberInfo: tenantId } =
+      const { userId, orgIdToOrgMemberInfo } =
         await this.propelAuth.validateAccessTokenAndGetUser(jwt);
 
-      return { userId, tenantId, isSdk: false };
+      return { userId, tenantId: Object.keys(orgIdToOrgMemberInfo)[0], isSdk: false };
     } catch (error) {
       // If the JWT is not a PropelAuth token, we assume it's an API token, representing SDK access
       // In case of an error, the method will throw an exception and 401 unauthorized will be returned
