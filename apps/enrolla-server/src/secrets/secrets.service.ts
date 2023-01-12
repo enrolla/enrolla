@@ -3,7 +3,6 @@ import { PrismaService } from '../prisma/prisma.service';
 import { SecretManager } from './secret-manager.interface';
 import { ConfigurationsService } from '../configurations/configurations.service';
 import { SelfHostedSecretManager } from './self-hosted.secret-manager';
-import { AwsParameterStoreSecretManagaer } from '../integrations/secret-managers/aws-parameter-store.secret-manager';
 import { Secret } from './entities/secret.entity';
 
 @Injectable()
@@ -11,16 +10,12 @@ export class SecretsService {
   private static SECRET_MANAGER_TYPE_CONFIG_KEY = 'SECRET_MANAGER_TYPE';
 
   private selfHostedSecretManager: SelfHostedSecretManager;
-  private awsParameterStoreSecretManager: AwsParameterStoreSecretManagaer;
 
   constructor(
     private configurationsService: ConfigurationsService,
     private prismaService: PrismaService
   ) {
     this.selfHostedSecretManager = new SelfHostedSecretManager(prismaService);
-    this.awsParameterStoreSecretManager = new AwsParameterStoreSecretManagaer(
-      configurationsService
-    );
   }
 
   async setValue(
@@ -65,8 +60,6 @@ export class SecretsService {
     switch (secretManagerType) {
       case 'SELF_HOSTED':
         return this.selfHostedSecretManager;
-      case 'AWS_PARAMETER_STORE':
-        return this.awsParameterStoreSecretManager;
       default:
         throw new Error(
           `Organization manager type ${secretManagerType} not supported`
