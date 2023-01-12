@@ -24,7 +24,7 @@ export class TenantsResolver {
   }
 
   @Mutation(() => ApiToken)
-  async revokeApiToken(@TenantId() tenantId: string, @Args('id') id: string) {
+  async removeApiToken(@TenantId() tenantId: string, @Args('id') id: string) {
     return await this.tenantsService.deleteApiToken(tenantId, id);
   }
 
