@@ -62,7 +62,7 @@ export class SecretsService {
         return this.selfHostedSecretManager;
       default:
         throw new Error(
-          `Organization manager type ${secretManagerType} not supported`
+          `Secret manager type ${secretManagerType} not supported`
         );
     }
   }
