@@ -30,7 +30,6 @@ export class TenantsService {
   }
 
   async getApiTokens(tenantId: string): Promise<ApiToken[]> {
-    console.log('getApiTokens', tenantId);
     return await this.prismaService.apiToken.findMany({
       where: {
         tenantId,
