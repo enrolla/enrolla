@@ -1,0 +1,93 @@
+---
+title: "NodeJS"
+---
+
+## Installation
+
+<Tabs>
+  <Tab title="npm">
+    ```bash
+        npm install @enrolla/node-server-sdk
+    ```
+  </Tab>
+  <Tab title="yarn">
+    ```bash
+        yarn add @enrolla/node-server-sdk
+    ```
+  </Tab>
+</Tabs>
+
+## Usage
+
+### Initialiation
+
+<Warning>The SDK must be initialized prior to using</Warning>
+
+The SDK should be initialized (by calling the `initialize` function) once in the lifecycle of your application, prior to using any of the SDK's other functionality.
+
+Its reccomended to initialize the SDK in the entry point of your application before accepting connections.
+
+#### Example (Express Server)
+```js
+const express = require('express')
+const enrolla = require('@enrolla/node-server-sdk')
+
+const app = express()
+const port = 3000
+
+try {
+  enrolla.initialize({ apiToken: <API_TOKEN> });
+} catch (error) { // handle error }
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+```
+
+## Feature Evaluation
+
+The SDK supports both typed and untyped feature evaluation.
+
+#### Untyped Feature Evaluation
+
+Use the `getFeatureValue` function to evaluate a feature without specifying the return type.
+The return type will be the type defined in the Management UI for that feature.
+
+```ts
+import { getFeatureValue } = from '@enrolla/node-server-sdk'
+
+const myFunction = (organizationId: string) => {
+    try {
+        const featureValue = getFeatureValue('my-feature', organizationId);
+        // use feature value
+    } catch (err) {
+        // handle error
+    }
+}
+```
+
+#### Typed Feature Evaluation
+
+Use any of the folling functions to evaluate a feature and specify the return type:
+
+<Warning>The function must match the type defined in the UI else the SDK will throw an error</Warning>
+
+- `getFeatureStringValue`
+- `getFeatureIntegerValue`
+- `getFeatureFloatValue`
+- `getFeatureBooleanValue`
+- `getFeatureJSONValue`
+
+
+```ts
+import { getFeatureStringValue } = from '@enrolla/node-server-sdk'
+
+const myFunction = (organizationId: string) => {
+    try {
+        const featureValue: string = getFeatureStringValue('my--string-feature', organizationId);
+        // use feature value
+    } catch (err) {
+        // handle error
+    }
+}
+```
