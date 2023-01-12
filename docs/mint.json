@@ -19,58 +19,46 @@
   },
   "topbarLinks": [
     {
-      "name": "Documentation",
-      "url": "https://mintlify.com/docs"
+      "name": "Website",
+      "url": "https://enrolla.io"
     }
   ],
   "topbarCtaButton": {
     "name": "Get Started",
-    "url": "https://github.com/mintlify/starter"
+    "url": "https://app.vecinity.io"
   },
   "anchors": [
     {
-      "name": "API Reference",
+      "name": "Github",
+      "icon": "github",
+      "url": "https://github.com/enrolla/enrolla"
+    },
+    {
+      "name": "SDKs",
       "icon": "rectangle-terminal",
-      "url": "api-reference"
-    },
-    {
-      "name": "Changelog",
-      "icon": "list",
-      "url": "https://mintlify.com"
-    },
-    {
-      "name": "Community",
-      "icon": "discord",
-      "url": "https://mintlify.com/community"
+      "url": "https://docs.enrolla.io/sdk/introduction"
     }
   ],
   "navigation": [
     {
-      "group": "Home",
-      "pages": ["introduction", "development"]
+      "group": "Quick Start",
+      "pages": ["introduction", "features"]
     },
     {
-      "group": "Learn More",
-      "pages": ["features", "resources"]
+      "group": "SDK Documentation",
+      "pages": ["sdk/introduction", "sdk/node", "sdk/python", "sdk/golang"]
+    },
+    {
+      "group": "Management UI",
+      "pages": ["mgmt-ui/introduction"]
     },
     {
       "group": "API Documentation",
-      "pages": ["api-reference/authentication"]
-    },
-    {
-      "group": "Endpoint Examples",
-      "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/update",
-        "api-reference/endpoint/delete"
-      ]
+      "pages": ["api-docs/authentication", "api-docs/endpoint"]
     }
   ],
   "footerSocials": {
-    "twitter": "https://twitter.com/mintlify",
-    "github": "https://github.com/mintlify",
-    "linkedin": "https://www.linkedin.com/company/mintsearch"
+    "github": "https://github.com/enrolla/enrolla"
   },
   "backgroundImage": "/background.png"
 }

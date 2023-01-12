@@ -1,0 +1,50 @@
+---
+title: "Overview"
+---
+
+Access the Management UI at `app.enrolla.io` and log in with your credentials.
+
+## Authentication
+
+Log in with your company email and Enrolla will automatically recognize users with the same email domain.
+
+You choose whether to allow them access automatically, or via invite only.
+
+## Features
+
+Features are the basic buildings blocks on which you can later create packages, and overrides for customers.
+
+Each `feature` includes:
+- A`key` to uniquly identify the feature.
+- A `type` from one of the following: `string`, `integer`, `float`, `boolean`, `JSON`.
+- A `description` to help you identify the feature.
+- A `default value`.
+
+<Frame>
+  <img src="/images/features.png" />
+</Frame>
+
+## Packages
+
+Packages allow you to group together sets of features and override their default values.
+
+Packages may also inherit from one another so that when a parent changes, so do all packages which inherit from it.
+
+<Frame>
+  <img src="/images/packages.png" />
+</Frame>
+
+
+## Customers
+
+Here you define the values for all features for an individual customer.
+
+When creating a customer, you must provide the unique `organization id` that you use to identify the customer. 
+This can be made easier via an integration with your authentication provider.
+
+<Info>This is the same identifer that you must supply the Enrolls SDK to evaluate the feature value for a particular cutomer</Info>
+
+When creating a new customer you must choose a package to which the customer belongs.
+The customer will inherit all feature values from that package by default.
+
+Note that you can also override any values you choose, to make customizations unique to this customer.
