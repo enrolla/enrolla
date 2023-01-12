@@ -218,7 +218,7 @@ export default function App() {
                 list: ApiTokenList,
                 create: ApiTokenCreate,
                 canDelete: true,
-                options: { label: 'API Tokens' },
+                options: { label: 'Admin' },
                 icon: <IconShieldLock size="16" />,
               },
             ]}

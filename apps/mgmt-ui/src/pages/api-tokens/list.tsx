@@ -19,6 +19,17 @@ import { IApiToken } from '../../interfaces';
 import { useMemo } from 'react';
 import { IconCopy, IconCheck } from '@tabler/icons';
 
+const tokenDisplayValue = (tokenValue: string) => {
+  try {
+    return `****${tokenValue.substring(
+      tokenValue.length - 4,
+      tokenValue.length
+    )}`;
+  } catch {
+    return '****';
+  }
+};
+
 export const ApiTokenList: React.FC = () => {
   const columns = useMemo<ColumnDef<IApiToken>[]>(
     () => [
@@ -32,15 +43,13 @@ export const ApiTokenList: React.FC = () => {
         header: 'Token Value',
         accessorKey: 'token',
         cell: function render({ getValue }) {
+          const tokenValue = getValue() as string;
           return (
-            <Flex
-              style={{ width: 200 }}
-              justify="flex-start"
-              align="flex-start"
-              direction="row"
-            >
-              <Text truncate>{getValue() as string}</Text>
-              <CopyButton value={getValue() as string} timeout={2000}>
+            <Flex justify="flex-start" align="flex-start" direction="row">
+              <Text style={{ width: '75px' }}>
+                {tokenDisplayValue(tokenValue)}
+              </Text>
+              <CopyButton value={tokenValue} timeout={2000}>
                 {({ copied, copy }) => (
                   <Tooltip
                     label={copied ? 'Copied' : 'Copy'}
@@ -108,7 +117,7 @@ export const ApiTokenList: React.FC = () => {
 
   return (
     <ScrollArea>
-      <List>
+      <List title="API Tokens">
         <Table highlightOnHover>
           <thead>
             {getHeaderGroups().map((headerGroup) => (

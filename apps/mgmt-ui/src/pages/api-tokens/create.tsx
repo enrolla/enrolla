@@ -23,7 +23,7 @@ export const ApiTokenCreate: React.FC = () => {
     });
 
   return (
-    <Create saveButtonProps={saveButtonProps}>
+    <Create title="Api Token" saveButtonProps={saveButtonProps}>
       <form>
         <TextInput
           mt={8}
