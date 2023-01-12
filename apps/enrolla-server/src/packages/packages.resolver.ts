@@ -10,14 +10,14 @@ import { PackagesService } from './packages.service';
 import { Package } from './entities/package.entity';
 import { TenantId } from '../authz/tenant.decorator';
 import { UseGuards } from '@nestjs/common';
-import { GraphQLPropelAuthGuard } from '../authz/graphql-propelauth-auth.guard';
+import { GraphQLAuthGuard } from '../authz/graphql-auth.guard';
 import { CreatePackageInput } from './dto/create-package.input';
 import { UpdatePackageInput } from './dto/update-package.input';
 import { FeatureInstancesService } from '../feature-instances/feature-instances.service';
 import { FeatureValue } from '../feature-instances/entities/feature-value.entity';
 
 @Resolver(() => Package)
-@UseGuards(GraphQLPropelAuthGuard)
+@UseGuards(GraphQLAuthGuard)
 export class PackagesResolver {
   constructor(
     private readonly packagesService: PackagesService,

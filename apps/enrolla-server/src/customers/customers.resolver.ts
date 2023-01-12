@@ -11,7 +11,7 @@ import { Customer } from './entities/customer.entity';
 import { CreateCustomerInput } from './dto/create-customer.input';
 import { UpdateCustomerInput } from './dto/update-customer.input';
 import { TenantId } from '../authz/tenant.decorator';
-import { GraphQLPropelAuthGuard } from '../authz/graphql-propelauth-auth.guard';
+import { GraphQLAuthGuard } from '../authz/graphql-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { Package } from '../packages/entities/package.entity';
 import { PackagesService } from '../packages/packages.service';
@@ -22,7 +22,7 @@ import { SecretsService } from '../secrets/secrets.service';
 import { CreateSecretInput } from './dto/create-secret.input';
 
 @Resolver(() => Customer)
-@UseGuards(GraphQLPropelAuthGuard)
+@UseGuards(GraphQLAuthGuard)
 export class CustomersResolver {
   constructor(
     private readonly customersService: CustomersService,

@@ -36,6 +36,16 @@ import { Integrations } from './pages/integrations';
 import { Dashboard } from './pages/dashboard';
 import { useEffect, useMemo, useState } from 'react';
 
+// Yep, it's ugly, but Vercel doesn't provide an easy way to separate our staging and production environments.
+// Will refactor soon (famous last words).
+const monkeyPatchBackendUrl = () => {
+  if (window.location.href.startsWith('https://app-staging.vecinity.io')) {
+    return 'https://api-staging.vecinity.io';
+  } else {
+    return import.meta.env.VITE_BACKEND_URL;
+  }
+};
+
 export default function App() {
   const authInfo = useAuthInfo();
   const { redirectToCreateOrgPage } = useRedirectFunctions();
@@ -51,7 +61,7 @@ export default function App() {
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
 
   const gqlClient = useMemo(
-    () => new GraphQLClient(`${import.meta.env.VITE_BACKEND_URL}/graphql`),
+    () => new GraphQLClient(`${monkeyPatchBackendUrl()}/graphql`),
     []
   );
 

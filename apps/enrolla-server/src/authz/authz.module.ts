@@ -1,10 +1,14 @@
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
-import { PropelAuthStrategy } from './propelauth.strategy';
+import { JwtStrategy } from './jwt-auth.strategy';
+import { TenantsModule } from '../tenants/tenants.module';
 
 @Module({
-  imports: [PassportModule.register({ defaultStrategy: 'PropelAuth' })],
-  providers: [PropelAuthStrategy],
+  imports: [
+    PassportModule.register({ defaultStrategy: 'JwtAuth' }),
+    TenantsModule,
+  ],
+  providers: [JwtStrategy],
   exports: [PassportModule],
 })
 export class AuthzModule {}

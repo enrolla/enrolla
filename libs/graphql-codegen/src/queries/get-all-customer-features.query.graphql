@@ -1,0 +1,12 @@
+query getAllCustomerFeatures {
+  customers {
+    organizationId
+    effectiveConfiguration {
+      feature {
+        key
+        type
+      }
+      value
+    }
+  }
+}

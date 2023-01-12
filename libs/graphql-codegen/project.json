@@ -5,8 +5,20 @@
   "projectType": "library",
   "implicitDependencies": ["enrolla-server"],
   "targets": {
-    "build": {
+    "generate": {
       "command": "graphql-codegen --config libs/graphql-codegen/configuration.ts"
+    },
+    "build": {
+      "dependsOn": [{ "projects": "self", "target": "generate" }],
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/graphql-codegen",
+        "tsConfig": "libs/graphql-codegen/tsconfig.lib.json",
+        "packageJson": "libs/graphql-codegen/package.json",
+        "main": "libs/graphql-codegen/src/index.ts",
+        "assets": ["libs/graphql-codegen/*.md"]
+      }
     }
   },
   "tags": []

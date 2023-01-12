@@ -106,6 +106,18 @@ model Customer {
   @@map("customers")
 }
 
+model ApiToken {
+  id        String   @id @default(cuid())
+  tenantId  String   @map("tenant_id")
+  name      String
+  token     String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([id, tenantId])
+  @@unique([token])
+  @@map("api_tokens")
+}
+
 model Secret {
   id                  String    @id @default(cuid())
   tenantId            String    @map("tenant_id")
