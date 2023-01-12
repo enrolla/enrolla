@@ -145,6 +145,7 @@ export const PackageCreate: React.FC = () => {
         </Stepper.Step>
         <Stepper.Step label="Customize Features">
           <FeatureCustomizeComponent
+            parentPackageId={values['parentPackageId'] as string}
             customizedFeatures={values['features'] as FeatureValue[]}
             onCustomizedFeaturesChange={(newCustomizedFeatures) => {
               setValues({ features: newCustomizedFeatures });

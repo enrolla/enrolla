@@ -81,6 +81,16 @@ export class PackagesService {
   }
 
   async findOne(id: string, tenantId: string) {
+    if (id === '0') {
+      return {
+        id: '0',
+        name: 'Default',
+        tenantId,
+        description: 'Default configuration',
+        createdAt: new Date(),
+        parentPackageId: null,
+      };
+    }
     return await this.prismaService.package.findUnique({
       where: {
         id_tenantId: {

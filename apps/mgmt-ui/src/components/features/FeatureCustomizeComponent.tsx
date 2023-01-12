@@ -1,4 +1,4 @@
-import { useList } from '@pankod/refine-core';
+import { useOne } from '@pankod/refine-core';
 import {
   Checkbox,
   Group,
@@ -8,10 +8,10 @@ import {
   TransferListItemComponent,
   TransferListItemComponentProps,
 } from '@pankod/refine-mantine';
-import { useReducer, useState } from 'react';
+import { useReducer } from 'react';
 import { FeatureViewComponent } from './FeatureViewComponent';
 import { FeatureEditComponent } from './FeatureEditComponent';
-import { Feature, FeatureType, FeatureValue } from '@enrolla/graphql-codegen';
+import { FeatureType, FeatureValue, Package } from '@enrolla/graphql-codegen';
 
 type UiRowData = {
   featureValue?: FeatureValue;
@@ -20,10 +20,10 @@ type UiRowData = {
 
 type UiState = [UiRowData[], UiRowData[]];
 
-type AvailableFeaturesReceived = {
-  type: 'AVAILABLE_FEATURES_RECEIVED';
+type ParentConfigReceived = {
+  type: 'PARENT_CONFIG_RECEIVED';
   payload: {
-    availableFeatures: Feature[];
+    parentConfig: FeatureValue[];
     dispatchFunction: React.Dispatch<ReducerAction>;
   };
 };
@@ -43,38 +43,38 @@ type FeaureCustomizedAction = {
 };
 
 type ReducerAction =
-  | AvailableFeaturesReceived
+  | ParentConfigReceived
   | TransferListUpdatedAction
   | FeaureCustomizedAction;
 
 const prepareFeatures = (
-  receivedFeatures: Feature[],
+  parentConfig: FeatureValue[],
   customizedFeatures: FeatureValue[],
   dispatch: React.Dispatch<ReducerAction>
 ): UiState => {
   const preparedAvailableFeatures: UiRowData[] = [];
   const preparedCustomizedFeatures: UiRowData[] = [];
 
-  for (const availableFeature of receivedFeatures) {
+  for (const availableFeature of parentConfig) {
     const customizedFeature = customizedFeatures.find(
-      (feature) => feature.feature.id === availableFeature.id
+      (feature) => feature.feature.id === availableFeature.feature.id
     );
 
     if (customizedFeature) {
       preparedCustomizedFeatures.push({
-        label: availableFeature.key,
-        value: availableFeature.key,
+        label: availableFeature.feature.key,
+        value: availableFeature.feature.key,
         featureValue: {
-          feature: availableFeature,
+          feature: availableFeature.feature,
           value: customizedFeature.value,
         },
         dispatch,
       });
     } else {
       preparedAvailableFeatures.push({
-        label: availableFeature.key,
-        value: availableFeature.key,
-        featureValue: { feature: availableFeature, value: null },
+        label: availableFeature.feature.key,
+        value: availableFeature.feature.key,
+        featureValue: { feature: availableFeature.feature, value: null },
         dispatch,
       });
     }
@@ -176,11 +176,13 @@ const ItemComponent: TransferListItemComponent = ({
 };
 
 export interface FeatureCustomizeProps {
+  parentPackageId: string;
   customizedFeatures: FeatureValue[];
   onCustomizedFeaturesChange: (newCustomizedFeatures: FeatureValue[]) => void;
 }
 
 export const FeatureCustomizeComponent = ({
+  parentPackageId,
   customizedFeatures,
   onCustomizedFeaturesChange,
 }: FeatureCustomizeProps) => {
@@ -189,9 +191,9 @@ export const FeatureCustomizeComponent = ({
     action: ReducerAction
   ): UiState => {
     switch (action.type) {
-      case 'AVAILABLE_FEATURES_RECEIVED':
+      case 'PARENT_CONFIG_RECEIVED':
         return prepareFeatures(
-          action.payload.availableFeatures,
+          action.payload.parentConfig,
           customizedFeatures,
           action.payload.dispatchFunction
         );
@@ -231,7 +233,7 @@ export const FeatureCustomizeComponent = ({
   const reducer = (state: UiState, action: ReducerAction): UiState => {
     const [newAvailable, newCustomized] = handleAction(state, action);
 
-    if (action.type !== 'AVAILABLE_FEATURES_RECEIVED') {
+    if (action.type !== 'PARENT_CONFIG_RECEIVED') {
       onCustomizedFeaturesChange(
         newCustomized.map((feature) => {
           if (!feature.featureValue) {
@@ -247,16 +249,27 @@ export const FeatureCustomizeComponent = ({
 
   const [uiState, dispatch] = useReducer(reducer, [[], []]);
 
-  useList<Feature>({
-    resource: 'features',
+  useOne<Package>({
+    resource: 'package',
+    id: parentPackageId ?? '0',
     metaData: {
-      fields: ['id', 'key', 'defaultValue', 'type', 'description'],
+      fields: [
+        {
+          effectiveConfiguration: [
+            { feature: ['id', 'key', 'type', 'description'] },
+            'value',
+          ],
+        },
+      ],
     },
     queryOptions: {
-      onSuccess: ({ data: availableFeatures }) =>
+      onSuccess: ({ data: packagez }) =>
         dispatch({
-          type: 'AVAILABLE_FEATURES_RECEIVED',
-          payload: { availableFeatures, dispatchFunction: dispatch },
+          type: 'PARENT_CONFIG_RECEIVED',
+          payload: {
+            parentConfig: packagez.effectiveConfiguration,
+            dispatchFunction: dispatch,
+          },
         }),
     },
   });
