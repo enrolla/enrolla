@@ -20,12 +20,12 @@
   "topbarLinks": [
     {
       "name": "Website",
-      "url": "https://enrolla.io"
+      "url": "https://www.enrolla.io"
     }
   ],
   "topbarCtaButton": {
     "name": "Get Started",
-    "url": "https://app.vecinity.io"
+    "url": "https://app.enrolla.io"
   },
   "anchors": [
     {

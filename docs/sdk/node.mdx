@@ -21,16 +21,16 @@ title: "NodeJS"
 
 ### Initialiation
 
-<Warning>The SDK must be initialized prior to using</Warning>
-
 The SDK should be initialized (by calling the `initialize` function) once in the lifecycle of your application, prior to using any of the SDK's other functionality.
 
-Its reccomended to initialize the SDK in the entry point of your application before accepting connections.
+Initialize the SDK in the entry point of your application before accepting connections.
+
+<Warning>Forgetting to initialize the SDK will result in an exception being thrown.</Warning>
 
 #### Example (Express Server)
-```js
-const express = require('express')
-const enrolla = require('@enrolla/node-server-sdk')
+```ts
+import express from 'express'
+import enrolla from '@enrolla/node-server-sdk'
 
 const app = express()
 const port = 3000
@@ -45,6 +45,9 @@ app.listen(port, () => {
 ```
 
 ## Feature Evaluation
+
+The SDK can retrieve the value of any feature for a given customer. 
+You must provide it with the `organizationId` of the customer you want to evaluate the feature for.
 
 The SDK supports both typed and untyped feature evaluation.
 
@@ -68,9 +71,9 @@ const myFunction = (organizationId: string) => {
 
 #### Typed Feature Evaluation
 
-Use any of the folling functions to evaluate a feature and specify the return type:
+Use any of the following functions to evaluate a feature and specify the return type:
 
-<Warning>The function must match the type defined in the UI else the SDK will throw an error</Warning>
+<Warning>The function must match the type defined in the UI, otherwise the SDK will throw an error.</Warning>
 
 - `getFeatureStringValue`
 - `getFeatureIntegerValue`
@@ -84,7 +87,7 @@ import { getFeatureStringValue } = from '@enrolla/node-server-sdk'
 
 const myFunction = (organizationId: string) => {
     try {
-        const featureValue: string = getFeatureStringValue('my--string-feature', organizationId);
+        const featureValue: string = getFeatureStringValue('my-string-feature', organizationId);
         // use feature value
     } catch (err) {
         // handle error

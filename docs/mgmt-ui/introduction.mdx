@@ -2,9 +2,9 @@
 title: "Overview"
 ---
 
-Access the Management UI at `app.enrolla.io` and log in with your credentials.
+Access the Management UI at [app.enrolla.io](https://app.enrolla.io) and log in with your credentials.
 
-## Authentication
+## Organization settings
 
 Log in with your company email and Enrolla will automatically recognize users with the same email domain.
 
@@ -12,13 +12,16 @@ You choose whether to allow them access automatically, or via invite only.
 
 ## Features
 
-Features are the basic buildings blocks on which you can later create packages, and overrides for customers.
+Features are the basic buildings blocks of Enrolla. 
+A feature can describe any property of a customer you may wish to keep track:
+- An entitlement, like which product features are enabled for a customer.
+- A configuration, which can be any customer specific setting (e.g. a color scheme, cloud provider. etc.).
 
 Each `feature` includes:
 - A`key` to uniquly identify the feature.
 - A `type` from one of the following: `string`, `integer`, `float`, `boolean`, `JSON`.
 - A `description` to help you identify the feature.
-- A `default value`.
+- A `default value`, which is the value this feature will be set to for all customers unless otherwise overridden.
 
 <Frame>
   <img src="/images/features.png" />
@@ -26,7 +29,7 @@ Each `feature` includes:
 
 ## Packages
 
-Packages allow you to group together sets of features and override their default values.
+Packages allow you to group together sets of features and define their default values.
 
 Packages may also inherit from one another so that when a parent changes, so do all packages which inherit from it.
 
