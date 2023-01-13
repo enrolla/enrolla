@@ -27,6 +27,7 @@ import { TenantsModule } from './tenants/tenants.module';
       resolvers: {
         JSON: GraphQLJSON,
       },
+      playground: true,
     }),
     AuthzModule,
     PrismaModule,
