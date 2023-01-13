@@ -32,6 +32,11 @@ export interface ICustomer {
   createdAt: string;
 }
 
+export interface IOrganization {
+  id: string;
+  name: string;
+}
+
 export interface IApiToken {
   id: string;
   name: string;

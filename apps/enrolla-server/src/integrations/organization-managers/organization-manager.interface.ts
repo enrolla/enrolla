@@ -13,3 +13,8 @@ export interface OrganizationManager {
   ): Promise<Organization>;
   removeOrganization(tenantId: string, organizationId: string): Promise<void>;
 }
+
+export enum OrganizationManagerType {
+  None = 'NONE',
+  Auth0 = 'AUTH0',
+}

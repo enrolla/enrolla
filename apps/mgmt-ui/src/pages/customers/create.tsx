@@ -12,15 +12,20 @@ import {
   Text,
   useSelect,
   useStepsForm,
+  SelectItem,
 } from '@pankod/refine-mantine';
 import { List } from '@mantine/core';
 import { IconEditCircle } from '@tabler/icons';
 import { FeatureCustomizeComponent } from '../../components/features/FeatureCustomizeComponent';
 import { FeatureViewComponent } from '../../components/features/FeatureViewComponent';
-import { ICustomer, IFeature } from '../../interfaces';
+import { ICustomer, IFeature, IOrganization } from '../../interfaces';
 import { CustomizedFeature } from '../../interfaces/features.interface';
+import { useState } from 'react';
 
 export const CustomerCreate: React.FC = () => {
+  const [organizationList, setOrganizationList] = useState<
+    (SelectItem & { created: boolean })[]
+  >([]);
   const {
     saveButtonProps,
     getInputProps,
@@ -31,6 +36,19 @@ export const CustomerCreate: React.FC = () => {
     initialValues: {
       features: [],
       packageId: null,
+      createOrganizationName: null,
+    },
+    transformValues: (values) => {
+      const shouldCreateOrg = organizationList.find(
+        (org) => org.value === values['organizationId']
+      )?.created;
+      return {
+        ...values,
+        organizationId: shouldCreateOrg ? null : values['organizationId'],
+        createOrganizationName: shouldCreateOrg
+          ? values['organizationId']
+          : null,
+      };
     },
     validate: {
       name: (value) => {
@@ -55,11 +73,18 @@ export const CustomerCreate: React.FC = () => {
     },
   });
 
-  const { selectProps: selectOrganizationProps } = useSelect({
+  useList<IOrganization>({
     resource: 'organizations',
-    optionLabel: 'name',
-    metaData: {
-      fields: ['id', 'name'],
+    metaData: { fields: ['id', 'name'] },
+    queryOptions: {
+      onSuccess: ({ data: organizations }) =>
+        setOrganizationList(
+          organizations.map((org) => ({
+            label: org.name,
+            value: org.id,
+            created: false,
+          }))
+        ),
     },
   });
 
@@ -99,11 +124,18 @@ export const CustomerCreate: React.FC = () => {
           <Select
             mt={8}
             label="Organization Id"
+            data={organizationList}
             placeholder="the internal identifier you use for this customer"
             withAsterisk
+            searchable
             creatable
+            getCreateLabel={(query) => `+ Create ${query}`}
+            onCreate={(query) => {
+              const item = { value: query, label: query, created: true };
+              setOrganizationList((current) => [...current, item]);
+              return item;
+            }}
             {...getInputProps('organizationId')}
-            {...selectOrganizationProps}
           />
           <Select
             mt={8}
