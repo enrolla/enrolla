@@ -28,6 +28,7 @@ import { SecretsModule } from './secrets/secrets.module';
       resolvers: {
         JSON: GraphQLJSON,
       },
+      playground: true,
     }),
     AuthzModule,
     PrismaModule,

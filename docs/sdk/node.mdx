@@ -1,0 +1,96 @@
+---
+title: "NodeJS"
+---
+
+## Installation
+
+<Tabs>
+  <Tab title="npm">
+    ```bash
+        npm install @enrolla/node-server-sdk
+    ```
+  </Tab>
+  <Tab title="yarn">
+    ```bash
+        yarn add @enrolla/node-server-sdk
+    ```
+  </Tab>
+</Tabs>
+
+## Usage
+
+### Initialiation
+
+The SDK should be initialized (by calling the `initialize` function) once in the lifecycle of your application, prior to using any of the SDK's other functionality.
+
+Initialize the SDK in the entry point of your application before accepting connections.
+
+<Warning>Forgetting to initialize the SDK will result in an exception being thrown.</Warning>
+
+#### Example (Express Server)
+```ts
+import express from 'express'
+import enrolla from '@enrolla/node-server-sdk'
+
+const app = express()
+const port = 3000
+
+try {
+  enrolla.initialize({ apiToken: <API_TOKEN> });
+} catch (error) { // handle error }
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+```
+
+## Feature Evaluation
+
+The SDK can retrieve the value of any feature for a given customer. 
+You must provide it with the `organizationId` of the customer you want to evaluate the feature for.
+
+The SDK supports both typed and untyped feature evaluation.
+
+#### Untyped Feature Evaluation
+
+Use the `getFeatureValue` function to evaluate a feature without specifying the return type.
+The return type will be the type defined in the Management UI for that feature.
+
+```ts
+import { getFeatureValue } = from '@enrolla/node-server-sdk'
+
+const myFunction = (organizationId: string) => {
+    try {
+        const featureValue = getFeatureValue('my-feature', organizationId);
+        // use feature value
+    } catch (err) {
+        // handle error
+    }
+}
+```
+
+#### Typed Feature Evaluation
+
+Use any of the following functions to evaluate a feature and specify the return type:
+
+<Warning>The function must match the type defined in the UI, otherwise the SDK will throw an error.</Warning>
+
+- `getFeatureStringValue`
+- `getFeatureIntegerValue`
+- `getFeatureFloatValue`
+- `getFeatureBooleanValue`
+- `getFeatureJSONValue`
+
+
+```ts
+import { getFeatureStringValue } = from '@enrolla/node-server-sdk'
+
+const myFunction = (organizationId: string) => {
+    try {
+        const featureValue: string = getFeatureStringValue('my-string-feature', organizationId);
+        // use feature value
+    } catch (err) {
+        // handle error
+    }
+}
+```

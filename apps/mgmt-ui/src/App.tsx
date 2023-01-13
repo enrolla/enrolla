@@ -20,6 +20,7 @@ import {
   useLogoutFunction,
 } from '@propelauth/react';
 import { Login } from './pages/login';
+import { ApiTokenList, ApiTokenCreate } from './pages/api-tokens';
 import { FeatureCreate, FeatureList, FeatureShow } from './pages/features';
 import { PackageCreate, PackageList, PackageShow } from './pages/packages';
 import {
@@ -27,6 +28,7 @@ import {
   IconLayoutList,
   IconUsers,
   IconBuildingStore,
+  IconShieldLock,
 } from '@tabler/icons';
 import { Layout } from './components/layout';
 import dataProvider from './providers/backendGraphQLProvider';
@@ -210,6 +212,14 @@ export default function App() {
                 name: 'integrations',
                 list: () => null,
                 icon: <IconBuildingStore size="16" />,
+              },
+              {
+                name: 'apiTokens',
+                list: ApiTokenList,
+                create: ApiTokenCreate,
+                canDelete: true,
+                options: { label: 'Admin' },
+                icon: <IconShieldLock size="16" />,
               },
             ]}
           />

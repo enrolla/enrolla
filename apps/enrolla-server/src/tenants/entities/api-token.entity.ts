@@ -15,4 +15,7 @@ export class ApiToken {
 
   @Field(() => String)
   token: string;
+
+  @Field(() => Date)
+  createdAt: Date;
 }

@@ -1,3 +1,5 @@
+<br>
+<br>
 <p align="center">
 <a href="https://enrolla.io/#gh-light-mode-only">
 <img width="300" src="https://raw.githubusercontent.com/enrolla/enrolla/main/logo-light.png#gh-light-mode-only">
@@ -6,7 +8,7 @@
 <img width="300" src="https://raw.githubusercontent.com/enrolla/enrolla/main/logo-dark.png#gh-dark-mode-only">
 </a>
 </p>
-
+<br>
 <p align="center">
   <img src="https://github.com/enrolla/enrolla/actions/workflows/ci.yml/badge.svg" alt="CI">
   <img src="https://github.com/enrolla/enrolla/actions/workflows/cd.yml/badge.svg" alt="CD">
@@ -19,6 +21,11 @@
   </a>
 </p>
 
+ <p align="center">
+    <br />
+    <a href="https://docs.enrolla.io" rel="dofollow"><strong>Explore the docs »</strong></a>
+ </p>
+
 # ⭐️ Why Enrolla?
 
 Managing customer configurations takes much work. At first, it seems like just creating another SQL database, but in reality, it's just the beginning.
@@ -30,9 +37,9 @@ Enrolla's goal is to simplify customer configuration management and provide deve
 
 - 🛂 Easily manage all your configurations - throttling, secrets, just plain JSONs
 - 🧩 Integrations with CRMs, authentication services, billing systems
-- ⏩ Typescript SDK for fetching configurations to your services with smart caching (Python and Go coming soon!)
+- ⏩ Typescript SDK for fetching configurations to your services with smart caching (Python and Go in developement)
 - 📦 Built-in backoffice for non engineers
-- 😎 Headless UI templates for providing needed knobs for your customers (Coming soon!)
+- 😎 Headless UI templates for providing needed knobs for your customers (in developement)
 - 👩‍💻 Community driven
 
 # 🚀 Getting Started
