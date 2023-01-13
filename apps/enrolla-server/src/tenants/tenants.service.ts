@@ -4,6 +4,7 @@ import { env } from 'process';
 import { PrismaService } from '../prisma/prisma.service';
 import { ApiToken } from './entities/api-token.entity';
 import { CreateApiTokenInput } from './dto/create-api-token.input';
+import { decrypt, encrypt } from '../utils/encryption.utils';
 
 @Injectable()
 export class TenantsService {
@@ -20,9 +21,11 @@ export class TenantsService {
       TenantsService.ENCRYPTION_KEY
     );
 
+    const { encryptedData } = await encrypt(token, 0);
+
     return await this.prismaService.apiToken.create({
       data: {
-        token,
+        token: encryptedData,
         name: createApiTokenInput.name,
         tenantId,
       },
@@ -30,11 +33,18 @@ export class TenantsService {
   }
 
   async getApiTokens(tenantId: string): Promise<ApiToken[]> {
-    return await this.prismaService.apiToken.findMany({
+    const tokens = await this.prismaService.apiToken.findMany({
       where: {
         tenantId,
       },
     });
+
+    tokens.forEach(async (token) => {
+      const decryptedData = await decrypt(token.token, 0);
+      token.token = decryptedData;
+    });
+
+    return tokens;
   }
 
   async deleteApiToken(tenantId: string, id: string) {
@@ -50,10 +60,11 @@ export class TenantsService {
 
   async validateApiToken(token: string) {
     const decoded = jwt.verify(token, TenantsService.ENCRYPTION_KEY);
+    const { encryptedData } = await encrypt(token, 0);
 
     const apiToken = await this.prismaService.apiToken.findUnique({
       where: {
-        token: token,
+        token: encryptedData,
       },
     });
 
