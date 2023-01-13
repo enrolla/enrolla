@@ -88,7 +88,19 @@ export class CustomersService {
           tenantId,
         },
       },
-      data: {},
+      data: {
+        name: updateCustomerInput.name,
+        tenantId,
+        packageId: updateCustomerInput.packageId,
+        features: {
+          deleteMany: {},
+          create: updateCustomerInput.features.map((feature) => ({
+            featureId: feature.featureId,
+            value: feature.value,
+            tenantId,
+          })),
+        },
+      },
     });
   }
 
