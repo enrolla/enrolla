@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { env } from 'process';
 import { PrismaService } from '../prisma/prisma.service';
@@ -59,19 +59,23 @@ export class TenantsService {
   }
 
   async validateApiToken(token: string) {
-    const decoded = jwt.verify(token, TenantsService.ENCRYPTION_KEY);
-    const { encryptedData } = await encrypt(token, 0);
+    try {
+      const decoded = jwt.verify(token, TenantsService.ENCRYPTION_KEY);
+      const { encryptedData } = await encrypt(token, 0);
 
-    const apiToken = await this.prismaService.apiToken.findUnique({
-      where: {
-        token: encryptedData,
-      },
-    });
+      const apiToken = await this.prismaService.apiToken.findUnique({
+        where: {
+          token: encryptedData,
+        },
+      });
 
-    if (!apiToken || apiToken.tenantId !== decoded['tenantId']) {
-      throw new Error('Invalid API token');
+      if (!apiToken || apiToken.tenantId !== decoded['tenantId']) {
+        throw new Error('Invalid API token');
+      }
+
+      return { tenantId: decoded['tenantId'] };
+    } catch (error) {
+      throw new HttpException('Unauthorized: Invalid API Token', 401);
     }
-
-    return { tenantId: decoded['tenantId'] };
   }
 }
