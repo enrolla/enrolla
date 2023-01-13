@@ -21,7 +21,7 @@ export class TenantsService {
       TenantsService.ENCRYPTION_KEY
     );
 
-    const { encryptedData } = await encrypt(token, 0);
+    const { encryptedData } = await encrypt(token);
 
     return await this.prismaService.apiToken.create({
       data: {
@@ -40,7 +40,7 @@ export class TenantsService {
     });
 
     tokens.forEach(async (token) => {
-      const decryptedData = await decrypt(token.token, 0);
+      const decryptedData = await decrypt(token.token);
       token.token = decryptedData;
     });
 

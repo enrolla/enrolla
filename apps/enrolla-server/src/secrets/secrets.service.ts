@@ -5,6 +5,8 @@ import { decrypt, encrypt } from '../utils/encryption.utils';
 
 @Injectable()
 export class SecretsService {
+  ENCRYPTION_IV_LENGTH = 16;
+
   constructor(private prismaService: PrismaService) {}
 
   async create(
@@ -13,7 +15,10 @@ export class SecretsService {
     key: string,
     value: string
   ): Promise<Secret> {
-    const { encryptedData, iv } = await encrypt(value);
+    const { encryptedData, iv } = await encrypt(
+      value,
+      this.ENCRYPTION_IV_LENGTH
+    );
 
     return await this.prismaService.secret.create({
       data: {
@@ -32,7 +37,10 @@ export class SecretsService {
     id: string,
     value: string
   ): Promise<Secret> {
-    const { encryptedData, iv } = await encrypt(value);
+    const { encryptedData, iv } = await encrypt(
+      value,
+      this.ENCRYPTION_IV_LENGTH
+    );
 
     return await this.prismaService.secret.update({
       where: {
