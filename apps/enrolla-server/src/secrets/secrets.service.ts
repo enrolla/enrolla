@@ -1,69 +1,115 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { SecretManager } from './secret-manager.interface';
-import { ConfigurationsService } from '../configurations/configurations.service';
-import { SelfHostedSecretManager } from './self-hosted.secret-manager';
 import { Secret } from './entities/secret.entity';
+import { env } from 'process';
+import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
 
 @Injectable()
 export class SecretsService {
-  private static SECRET_MANAGER_TYPE_CONFIG_KEY = 'SECRET_MANAGER_TYPE';
+  private static ENCRYPTION_ALGORITHM = 'aes-256-ctr';
+  private static RANDOM_BYTES_LENGTH = 16;
+  private encryptionKey = env.SECRET_ENCRYPTION_KEY;
 
-  private selfHostedSecretManager: SelfHostedSecretManager;
+  constructor(private prismaService: PrismaService) {}
 
-  constructor(
-    private configurationsService: ConfigurationsService,
-    private prismaService: PrismaService
-  ) {
-    this.selfHostedSecretManager = new SelfHostedSecretManager(prismaService);
-  }
-
-  async setValue(
+  async create(
     tenantId: string,
     customerId: string,
     key: string,
     value: string
   ): Promise<Secret> {
-    const secretManager = await this.tenantSecretManager(tenantId);
+    const { encryptedData, iv } = await this.encrypt(value);
 
-    return await secretManager.setValue(tenantId, customerId, key, value);
+    return await this.prismaService.secret.create({
+      data: {
+        key: key,
+        tenantId: tenantId,
+        value: encryptedData,
+        customerId: customerId,
+        iv: iv,
+      },
+    });
   }
 
-  async getValue(tenantId: string, customerId: string, key: string) {
-    const secretManager = await this.tenantSecretManager(tenantId);
-
-    return await secretManager.getValue(tenantId, customerId, key);
-  }
-
-  async getMulti(tenantId: string, customerId: string, keys: string[]) {
-    const secretManager = await this.tenantSecretManager(tenantId);
-
-    return await secretManager.getMulti(tenantId, customerId, keys);
-  }
-
-  async delete(
+  async update(
     tenantId: string,
     customerId: string,
-    key: string
-  ): Promise<void> {
-    const secretManager = await this.tenantSecretManager(tenantId);
+    id: string,
+    value: string
+  ): Promise<Secret> {
+    const { encryptedData, iv } = await this.encrypt(value);
 
-    await secretManager.delete(tenantId, customerId, key);
+    return await this.prismaService.secret.update({
+      where: {
+        id_tenantId: {
+          id,
+          tenantId,
+        },
+      },
+      data: {
+        value: encryptedData,
+        iv,
+      },
+    });
   }
 
-  private async tenantSecretManager(tenantId: string): Promise<SecretManager> {
-    const secretManagerType = await this.configurationsService.getValue<string>(
-      tenantId,
-      SecretsService.SECRET_MANAGER_TYPE_CONFIG_KEY
+  async findByCustomerId(
+    tenantId: string,
+    customerId: string
+  ): Promise<Secret[]> {
+    const secrets = await this.prismaService.secret.findMany({
+      where: {
+        tenantId,
+        customerId,
+      },
+    });
+
+    secrets.forEach(async (secret) => {
+      secret.value = await this.decrypt(secret.value, secret.iv);
+    });
+
+    return secrets;
+  }
+
+  async remove(tenantId: string, id: string): Promise<void> {
+    await this.prismaService.secret.delete({
+      where: {
+        id_tenantId: {
+          id,
+          tenantId,
+        },
+      },
+    });
+  }
+
+  private async encrypt(
+    value: string,
+    randomBytesLength: number = SecretsService.RANDOM_BYTES_LENGTH
+  ) {
+    const iv = randomBytes(randomBytesLength);
+    const cipher = createCipheriv(
+      SecretsService.ENCRYPTION_ALGORITHM,
+      Buffer.from(this.encryptionKey),
+      iv
     );
 
-    switch (secretManagerType) {
-      case 'SELF_HOSTED':
-        return this.selfHostedSecretManager;
-      default:
-        throw new Error(
-          `Secret manager type ${secretManagerType} not supported`
-        );
-    }
+    let encrypted = cipher.update(value);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+
+    return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
+  }
+
+  private async decrypt(value: string, iv: string) {
+    const _iv = Buffer.from(iv, 'hex');
+    const encryptedText = Buffer.from(value, 'hex');
+    const decipher = createDecipheriv(
+      SecretsService.ENCRYPTION_ALGORITHM,
+      Buffer.from(this.encryptionKey),
+      _iv
+    );
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+
+    return decrypted.toString();
   }
 }

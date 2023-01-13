@@ -1,6 +1,3 @@
--- AlterTable
-ALTER TABLE "customers" ADD COLUMN     "secrets_keys" TEXT[];
-
 -- CreateTable
 CREATE TABLE "secrets" (
     "id" TEXT NOT NULL,
@@ -15,10 +12,10 @@ CREATE TABLE "secrets" (
 );
 
 -- CreateIndex
-CREATE INDEX "secrets_tenant_id_idx" ON "secrets"("tenant_id");
+CREATE INDEX "secrets_tenant_id_customer_id_idx" ON "secrets"("tenant_id", "customer_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "secrets_id_tenant_id_key" ON "secrets"("id", "tenant_id");
 
--- CreateIndex
-CREATE UNIQUE INDEX "secrets_tenant_id_customer_id_key_key" ON "secrets"("tenant_id", "customer_id", "key");
+-- AddForeignKey
+ALTER TABLE "secrets" ADD CONSTRAINT "secrets_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;

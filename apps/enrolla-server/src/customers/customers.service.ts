@@ -122,49 +122,4 @@ export class CustomersService {
 
     return mergeConfigurations(customerConfig, packageConfig);
   }
-
-  async addSecret(
-    tenantId: string,
-    customerId: string,
-    key: string,
-    value: string
-  ) {
-    const secret = await this.secretsService.setValue(
-      tenantId,
-      customerId,
-      key,
-      value
-    );
-    const customerSecretsKeys = await this.prismaService.customer.findUnique({
-      where: {
-        id_tenantId: {
-          id: customerId,
-          tenantId,
-        },
-      },
-      select: {
-        secretsKeys: true,
-      },
-    });
-
-    const existingSecretsKeys = customerSecretsKeys
-      ? customerSecretsKeys.secretsKeys
-      : [];
-
-    await this.prismaService.customer.update({
-      where: {
-        id_tenantId: {
-          id: customerId,
-          tenantId,
-        },
-      },
-      data: {
-        secretsKeys: {
-          set: [...existingSecretsKeys, secret.key],
-        },
-      },
-    });
-
-    return secret;
-  }
 }

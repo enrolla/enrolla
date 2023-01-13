@@ -44,7 +44,7 @@ export class CustomersResolver {
     @TenantId() tenantId: string,
     @Args('input') createSecretInput: CreateSecretInput
   ) {
-    return await this.customersService.addSecret(
+    return await this.secretsService.create(
       tenantId,
       createSecretInput.customerId,
       createSecretInput.key,
@@ -106,11 +106,9 @@ export class CustomersResolver {
 
   @ResolveField(() => [Secret])
   async secrets(@Parent() customer: Customer) {
-    const { id, secretsKeys, tenantId } = customer;
+    const { id, tenantId } = customer;
 
-    return (
-      secretsKeys && this.secretsService.getMulti(tenantId, id, secretsKeys)
-    );
+    return await this.secretsService.findByCustomerId(tenantId, id);
   }
 
   @ResolveField(() => [FeatureValue])

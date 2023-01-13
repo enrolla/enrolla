@@ -98,7 +98,7 @@ model Customer {
   packageId      String?           @map("package_id")
   name           String
   features       CustomerFeature[]
-  secretsKeys    String[]          @map("secrets_keys")
+  secrets        Secret[]          
   createdAt      DateTime          @default(now()) @map("created_at")
 
   @@unique([id, tenantId])
@@ -119,16 +119,16 @@ model ApiToken {
 }
 
 model Secret {
-  id                  String    @id @default(cuid())
-  tenantId            String    @map("tenant_id")
+  id                  String      @id @default(cuid())
+  tenantId            String      @map("tenant_id")
   key                 String
   value               String
-  iv                  String    @map("iv")
-  customerId          String?   @map("customer_id")
-  createdAt           DateTime  @default(now()) @map("created_at")
+  iv                  String      @map("iv")
+  customer            Customer?   @relation(fields: [customerId], references: [id])
+  customerId          String?     @map("customer_id")
+  createdAt           DateTime    @default(now()) @map("created_at")
 
   @@unique([id, tenantId])
-  @@unique([tenantId, customerId, key])
-  @@index([tenantId])
+  @@index([tenantId, customerId])
   @@map("secrets")
 }
