@@ -64,6 +64,11 @@ type Package {
 """A field whose value is a Semantic Version: https://semver.org"""
 scalar SemVer
 
+type Secret {
+  key: String!
+  value: String!
+}
+
 type Customer {
   id: Cuid!
   tenantId: String!
@@ -72,6 +77,7 @@ type Customer {
   package: Package
   packageId: String
   features: [FeatureValue!]!
+  secrets: [Secret!]!
   effectiveConfiguration: [FeatureValue!]!
   createdAt: DateTime!
 }
@@ -103,6 +109,7 @@ type Mutation {
   updatePackage(input: UpdatePackageInput!): Package!
   removePackage(id: String!): Package!
   createCustomer(input: CreateCustomerInput!): Customer!
+  createSecret(input: CreateSecretInput!): Secret!
   updateCustomer(input: UpdateCustomerInput!): Customer!
   removeCustomer(id: String!): Customer!
   createOrganization(input: CreateOrganizationInput!): Organization!
@@ -147,6 +154,12 @@ input CreateCustomerInput {
   name: String!
   packageId: String
   features: [FeatureInstanceInput!]!
+}
+
+input CreateSecretInput {
+  customerId: String!
+  key: String!
+  value: String!
 }
 
 input UpdateCustomerInput {

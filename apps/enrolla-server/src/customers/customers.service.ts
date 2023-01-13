@@ -12,6 +12,7 @@ import {
   getConfigurationFromFeatures,
   mergeConfigurations,
 } from '../utils/configuration.utils';
+import { SecretsService } from '../secrets/secrets.service';
 
 @Injectable()
 export class CustomersService {
@@ -19,7 +20,8 @@ export class CustomersService {
     private prismaService: PrismaService,
     private organizationsService: OrganizationsService,
     private featureInstancesService: FeatureInstancesService,
-    private packagesService: PackagesService
+    private packagesService: PackagesService,
+    private secretsService: SecretsService
   ) {}
 
   async create(createCustomerInput: CreateCustomerInput, tenantId: string) {
