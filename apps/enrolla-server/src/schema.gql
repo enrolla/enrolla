@@ -151,6 +151,7 @@ input UpdatePackageInput {
 
 input CreateCustomerInput {
   organizationId: String
+  createOrganizationName: String
   name: String!
   packageId: String
   features: [FeatureInstanceInput!]!
@@ -164,6 +165,7 @@ input CreateSecretInput {
 
 input UpdateCustomerInput {
   organizationId: String
+  createOrganizationName: String
   name: String
   packageId: String
   features: [FeatureInstanceInput!]

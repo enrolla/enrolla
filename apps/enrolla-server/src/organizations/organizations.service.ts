@@ -2,14 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { CreateOrganizationInput } from './dto/create-organization.input';
 import { UpdateOrganizationInput } from './dto/update-organization.input';
 import { ConfigurationsService } from '../configurations/configurations.service';
+import { NoneOrganizationManager } from '../integrations/organization-managers/impl/none.organization-manager';
 import { Auth0OrganizationManager } from '../integrations/organization-managers/impl/auth0.organization-manager';
-import { OrganizationManager } from '../integrations/organization-managers/organization-manager.interface';
+import {
+  OrganizationManager,
+  OrganizationManagerType,
+} from '../integrations/organization-managers/organization-manager.interface';
 
 @Injectable()
 export class OrganizationsService {
   private static ORGANIZATION_MANAGER_TYPE_CONFIG_KEY =
     'ORGANIZATION_MANAGER_TYPE';
 
+  private noneOrganizationManager = new NoneOrganizationManager();
   private auth0OrganizationManager: Auth0OrganizationManager;
 
   constructor(private configurationsService: ConfigurationsService) {
@@ -47,7 +52,7 @@ export class OrganizationsService {
     updateOrganizationInput: UpdateOrganizationInput,
     tenantId: string
   ) {
-    return `This action updates a #${id} organization`;
+    throw new Error('Not implemented');
   }
 
   async remove(id: string, tenantId: string) {
@@ -58,15 +63,18 @@ export class OrganizationsService {
 
   private async tenantOrganizationManager(
     tenantId: string
-  ): Promise<OrganizationManager> {
+  ): Promise<OrganizationManager | null> {
     const organizationManagerType =
-      await this.configurationsService.getValue<string>(
+      await this.configurationsService.getValue<OrganizationManagerType>(
         tenantId,
         OrganizationsService.ORGANIZATION_MANAGER_TYPE_CONFIG_KEY
       );
 
-    switch (organizationManagerType) {
-      case 'AUTH0':
+    switch (organizationManagerType || OrganizationManagerType.None) {
+      case OrganizationManagerType.None:
+        return this.noneOrganizationManager;
+
+      case OrganizationManagerType.Auth0:
         return this.auth0OrganizationManager;
       default:
         throw new Error(

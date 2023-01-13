@@ -28,9 +28,12 @@ export class CustomersService {
     let organization: Organization;
     let organizationId = createCustomerInput.organizationId;
 
-    if (createCustomerInput.organizationId == null) {
+    if (createCustomerInput.organizationId === null) {
+      if (createCustomerInput.createOrganizationName === null) {
+        throw new Error('Must specify name for organization to be created');
+      }
       organization = await this.organizationsService.create(
-        { name: createCustomerInput.name },
+        { name: createCustomerInput.createOrganizationName },
         tenantId
       );
 
