@@ -1,5 +1,5 @@
 import { env } from 'process';
-import { ConfigurationManager } from '../configuration-manager.interface';
+import { ConfigurationManager } from '../../configuration-manager.interface';
 import * as sdk from '@enrolla/node-server-sdk';
 
 export class SdkConfigurationManager implements ConfigurationManager {
