@@ -4,8 +4,8 @@ import {
   NumberInput,
   TextInput,
 } from '@pankod/refine-mantine';
-import { FeatureType } from '../../interfaces/features.interface';
 import { GetInputPropsType } from '@mantine/form/lib/types';
+import { FeatureType } from '@enrolla/graphql-codegen';
 
 export interface FeatureEditComponentProps {
   type: FeatureType;

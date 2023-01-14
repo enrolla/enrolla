@@ -6,12 +6,11 @@ import {
   useForm,
 } from '@pankod/refine-mantine';
 import { FeatureEditComponent } from '../../components/features/FeatureEditComponent';
-import { IFeature } from '../../interfaces';
-import { FeatureType } from '../../interfaces/features.interface';
+import { Feature, FeatureType } from '@enrolla/graphql-codegen';
 
 export const FeatureCreate: React.FC = () => {
   const { saveButtonProps, getInputProps, values, setFieldValue } =
-    useForm<IFeature>({
+    useForm<Feature>({
       initialValues: {
         type: 'STRING',
       },

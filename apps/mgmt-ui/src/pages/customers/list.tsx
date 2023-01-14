@@ -10,11 +10,11 @@ import {
   DeleteButton,
   DateField,
 } from '@pankod/refine-mantine';
-import { IFeature, IPackage } from '../../interfaces';
 import { useMemo } from 'react';
+import { Feature, Package } from '@enrolla/graphql-codegen';
 
 export const CustomerList: React.FC = () => {
-  const columns = useMemo<ColumnDef<IFeature>[]>(
+  const columns = useMemo<ColumnDef<Feature>[]>(
     () => [
       {
         id: 'name',
@@ -26,7 +26,7 @@ export const CustomerList: React.FC = () => {
         header: 'Package',
         accessorKey: 'package',
         cell: function render({ getValue }) {
-          const customerPackage = getValue() as IPackage | null;
+          const customerPackage = getValue() as Package | null;
           if (!customerPackage) {
             return null;
           }

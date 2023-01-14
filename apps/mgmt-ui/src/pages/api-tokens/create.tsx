@@ -1,26 +1,25 @@
 import { Create, TextInput, useForm } from '@pankod/refine-mantine';
-import { IApiToken } from '../../interfaces';
+import { ApiToken } from '@enrolla/graphql-codegen';
 
 export const ApiTokenCreate: React.FC = () => {
-  const { saveButtonProps, getInputProps, values, setFieldValue } =
-    useForm<IApiToken>({
-      refineCoreProps: {
-        successNotification: () => {
-          return {
-            message: `API Token created successfully.`,
-            type: 'success',
-          };
-        },
+  const { saveButtonProps, getInputProps } = useForm<ApiToken>({
+    refineCoreProps: {
+      successNotification: () => {
+        return {
+          message: `API Token created successfully.`,
+          type: 'success',
+        };
       },
-      validate: {
-        name: (value) => {
-          if (!value) {
-            return 'Name is required';
-          }
-        },
+    },
+    validate: {
+      name: (value) => {
+        if (!value) {
+          return 'Name is required';
+        }
       },
-      validateInputOnBlur: true,
-    });
+    },
+    validateInputOnBlur: true,
+  });
 
   return (
     <Create title="Api Token" saveButtonProps={saveButtonProps}>

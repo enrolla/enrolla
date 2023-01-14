@@ -1,6 +1,6 @@
 import { Text } from '@pankod/refine-mantine';
 import { Prism } from '@mantine/prism';
-import { FeatureType, FeatureValue } from '../../interfaces/features.interface';
+import { FeatureType, Feature } from '@enrolla/graphql-codegen';
 
 export const FEATURE_TYPE_NAMES: { [key in FeatureType]: string } = {
   INTEGER: 'Integer',
@@ -12,7 +12,7 @@ export const FEATURE_TYPE_NAMES: { [key in FeatureType]: string } = {
 
 interface FeatureShowProps {
   type: FeatureType;
-  value: FeatureValue;
+  value: Feature['defaultValue'];
   inline?: boolean;
 }
 
