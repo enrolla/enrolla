@@ -16,6 +16,7 @@ import { OrganizationsModule } from './organizations/organizations.module';
 import { ConfigurationsModule } from './configurations/configurations.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { TenantsModule } from './tenants/tenants.module';
+import { SecretsModule } from './secrets/secrets.module';
 
 @Module({
   imports: [
@@ -23,10 +24,11 @@ import { TenantsModule } from './tenants/tenants.module';
     EventEmitterModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'apps/enrolla-server/src/schema.gql'),
+      autoSchemaFile: join(process.cwd(), '/graphql/schema.gql'),
       resolvers: {
         JSON: GraphQLJSON,
       },
+      playground: true,
     }),
     AuthzModule,
     PrismaModule,
@@ -38,6 +40,7 @@ import { TenantsModule } from './tenants/tenants.module';
     OrganizationsModule,
     ConfigurationsModule,
     TenantsModule,
+    SecretsModule,
   ],
   controllers: [AppController],
 })

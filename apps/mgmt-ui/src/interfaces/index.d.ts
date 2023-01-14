@@ -31,3 +31,15 @@ export interface ICustomer {
   package: IPackage;
   createdAt: string;
 }
+
+export interface IOrganization {
+  id: string;
+  name: string;
+}
+
+export interface IApiToken {
+  id: string;
+  name: string;
+  token: string;
+  createdAt: string;
+}

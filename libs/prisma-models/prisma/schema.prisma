@@ -98,6 +98,7 @@ model Customer {
   packageId      String?           @map("package_id")
   name           String
   features       CustomerFeature[]
+  secrets        Secret[]          
   createdAt      DateTime          @default(now()) @map("created_at")
 
   @@unique([id, tenantId])
@@ -115,4 +116,19 @@ model ApiToken {
   @@unique([id, tenantId])
   @@unique([token])
   @@map("api_tokens")
+}
+
+model Secret {
+  id                  String      @id @default(cuid())
+  tenantId            String      @map("tenant_id")
+  key                 String
+  value               String
+  iv                  String      @map("iv")
+  customer            Customer?   @relation(fields: [customerId], references: [id])
+  customerId          String?     @map("customer_id")
+  createdAt           DateTime    @default(now()) @map("created_at")
+
+  @@unique([id, tenantId])
+  @@index([tenantId, customerId])
+  @@map("secrets")
 }

@@ -8,8 +8,10 @@ export class CreateCustomerInput {
   @Field(() => String, { nullable: true })
   organizationId?: string;
 
+  @Field(() => String, { nullable: true })
+  createOrganizationName?: string;
+
   @Field(() => String)
-  @NotContains(' ')
   name: string;
 
   @Field(() => String, { nullable: true })

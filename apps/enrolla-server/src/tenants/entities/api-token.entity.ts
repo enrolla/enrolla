@@ -3,6 +3,10 @@ import { CuidResolver } from 'graphql-scalars';
 
 @ObjectType()
 export class ApiToken {
+  constructor(props: Partial<ApiToken>) {
+    Object.assign(this, props);
+  }
+
   @Field(() => CuidResolver)
   id: string;
 
@@ -11,4 +15,7 @@ export class ApiToken {
 
   @Field(() => String)
   token: string;
+
+  @Field(() => Date)
+  createdAt: Date;
 }
