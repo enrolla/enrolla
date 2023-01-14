@@ -24,7 +24,7 @@ import { SecretsModule } from './secrets/secrets.module';
     EventEmitterModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'apps/enrolla-server/src/schema.gql'),
+      autoSchemaFile: join(process.cwd(), '/graphql/schema.gql'),
       resolvers: {
         JSON: GraphQLJSON,
       },

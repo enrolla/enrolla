@@ -23,7 +23,20 @@ export type Scalars = {
   SemVer: any;
 };
 
+export type ApiToken = {
+  __typename?: 'ApiToken';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['Cuid'];
+  name: Scalars['String'];
+  token: Scalars['String'];
+};
+
+export type CreateApiTokenInput = {
+  name: Scalars['String'];
+};
+
 export type CreateCustomerInput = {
+  createOrganizationName?: InputMaybe<Scalars['String']>;
   features: Array<FeatureInstanceInput>;
   name: Scalars['String'];
   organizationId?: InputMaybe<Scalars['String']>;
@@ -49,6 +62,12 @@ export type CreatePackageInput = {
   parentPackageId?: InputMaybe<Scalars['Cuid']>;
 };
 
+export type CreateSecretInput = {
+  customerId: Scalars['String'];
+  key: Scalars['String'];
+  value: Scalars['String'];
+};
+
 export type Customer = {
   __typename?: 'Customer';
   createdAt: Scalars['DateTime'];
@@ -59,6 +78,7 @@ export type Customer = {
   organizationId?: Maybe<Scalars['String']>;
   package?: Maybe<Package>;
   packageId?: Maybe<Scalars['String']>;
+  secrets: Array<Secret>;
   tenantId: Scalars['String'];
 };
 
@@ -94,10 +114,13 @@ export type FeatureValue = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createApiToken: ApiToken;
   createCustomer: Customer;
   createFeature: Feature;
   createOrganization: Organization;
   createPackage: Package;
+  createSecret: Secret;
+  removeApiToken: ApiToken;
   removeCustomer: Customer;
   removeFeature: Feature;
   removeOrganization: Organization;
@@ -106,6 +129,11 @@ export type Mutation = {
   updateFeature: Feature;
   updateOrganization: Organization;
   updatePackage: Package;
+};
+
+
+export type MutationCreateApiTokenArgs = {
+  input: CreateApiTokenInput;
 };
 
 
@@ -126,6 +154,16 @@ export type MutationCreateOrganizationArgs = {
 
 export type MutationCreatePackageArgs = {
   input: CreatePackageInput;
+};
+
+
+export type MutationCreateSecretArgs = {
+  input: CreateSecretInput;
+};
+
+
+export type MutationRemoveApiTokenArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -191,6 +229,7 @@ export type Package = {
 
 export type Query = {
   __typename?: 'Query';
+  apiTokens: Array<ApiToken>;
   customer: Customer;
   customers: Array<Customer>;
   feature: Feature;
@@ -221,7 +260,14 @@ export type QueryPackageArgs = {
   id: Scalars['String'];
 };
 
+export type Secret = {
+  __typename?: 'Secret';
+  key: Scalars['String'];
+  value: Scalars['String'];
+};
+
 export type UpdateCustomerInput = {
+  createOrganizationName?: InputMaybe<Scalars['String']>;
   features?: InputMaybe<Array<FeatureInstanceInput>>;
   id: Scalars['String'];
   name?: InputMaybe<Scalars['String']>;
