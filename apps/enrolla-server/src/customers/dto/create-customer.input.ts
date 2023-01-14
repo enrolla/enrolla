@@ -12,7 +12,6 @@ export class CreateCustomerInput {
   createOrganizationName?: string;
 
   @Field(() => String)
-  @NotContains(' ')
   name: string;
 
   @Field(() => String, { nullable: true })
