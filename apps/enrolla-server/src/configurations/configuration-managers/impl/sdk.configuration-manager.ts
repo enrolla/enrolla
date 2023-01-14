@@ -1,7 +1,9 @@
 import { env } from 'process';
 import { ConfigurationManager } from '../../configuration-manager.interface';
 import * as sdk from '@enrolla/node-server-sdk';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class SdkConfigurationManager implements ConfigurationManager {
   DEFAULT_POLLING_INTERVAL_SECONDS = 10;
   private sdkInitialized = false;
