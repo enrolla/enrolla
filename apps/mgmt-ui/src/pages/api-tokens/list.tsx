@@ -10,12 +10,11 @@ import {
   DeleteButton,
   DateField,
   CopyButton,
-  Button,
   Tooltip,
   ActionIcon,
 } from '@pankod/refine-mantine';
 import { Flex } from '@mantine/core';
-import { IApiToken } from '../../interfaces';
+import { ApiToken } from '@enrolla/graphql-codegen';
 import { useMemo } from 'react';
 import { IconCopy, IconCheck } from '@tabler/icons';
 
@@ -31,7 +30,7 @@ const tokenDisplayValue = (tokenValue: string) => {
 };
 
 export const ApiTokenList: React.FC = () => {
-  const columns = useMemo<ColumnDef<IApiToken>[]>(
+  const columns = useMemo<ColumnDef<ApiToken>[]>(
     () => [
       {
         id: 'name',

@@ -18,8 +18,12 @@ import { List } from '@mantine/core';
 import { IconEditCircle } from '@tabler/icons';
 import { FeatureCustomizeComponent } from '../../components/features/FeatureCustomizeComponent';
 import { FeatureViewComponent } from '../../components/features/FeatureViewComponent';
-import { ICustomer, IFeature, IOrganization } from '../../interfaces';
-import { CustomizedFeature } from '../../interfaces/features.interface';
+import {
+  Customer,
+  Feature,
+  FeatureValue,
+  Organization,
+} from '@enrolla/graphql-codegen';
 import { useState } from 'react';
 
 export const CustomerCreate: React.FC = () => {
@@ -32,7 +36,7 @@ export const CustomerCreate: React.FC = () => {
     values,
     setValues,
     steps: { currentStep, gotoStep },
-  } = useStepsForm<ICustomer>({
+  } = useStepsForm<Customer>({
     initialValues: {
       features: [],
       packageId: null,
@@ -73,7 +77,7 @@ export const CustomerCreate: React.FC = () => {
     },
   });
 
-  useList<IOrganization>({
+  useList<Organization>({
     resource: 'organizations',
     metaData: { fields: ['id', 'name'] },
     queryOptions: {
@@ -88,7 +92,7 @@ export const CustomerCreate: React.FC = () => {
     },
   });
 
-  const { data: featureList } = useList<IFeature>({
+  const { data: featureList } = useList<Feature>({
     resource: 'features',
     metaData: {
       fields: ['id', 'key', 'defaultValue', 'type', 'description'],
@@ -147,7 +151,7 @@ export const CustomerCreate: React.FC = () => {
         </Stepper.Step>
         <Stepper.Step label="Customize Features">
           <FeatureCustomizeComponent
-            customizedFeatures={values['features'] as CustomizedFeature[]}
+            customizedFeatures={values['features'] as FeatureValue[]}
             onCustomizedFeaturesChange={(newCustomizedFeatures) => {
               setValues({ features: newCustomizedFeatures });
             }}
@@ -163,28 +167,26 @@ export const CustomerCreate: React.FC = () => {
               </Title>
               <List center icon={<IconEditCircle size={16} />}>
                 {featureList &&
-                  (values['features'] as CustomizedFeature[])?.map(
-                    (feature) => {
-                      const featureMetadata = featureList.data.find(
-                        (f) => f.id === feature.featureId
-                      );
-                      if (!featureMetadata) {
-                        return null;
-                      }
-
-                      return (
-                        <List.Item>
-                          <Group>
-                            <Text>{featureMetadata.key}:</Text>
-                            <FeatureViewComponent
-                              type={featureMetadata.type}
-                              value={feature.value.value}
-                            />
-                          </Group>
-                        </List.Item>
-                      );
+                  (values['features'] as FeatureValue[])?.map((feature) => {
+                    const featureMetadata = featureList.data.find(
+                      (f) => f.id === feature.feature.id
+                    );
+                    if (!featureMetadata) {
+                      return null;
                     }
-                  )}
+
+                    return (
+                      <List.Item>
+                        <Group>
+                          <Text>{featureMetadata.key}:</Text>
+                          <FeatureViewComponent
+                            type={featureMetadata.type}
+                            value={feature.value.value}
+                          />
+                        </Group>
+                      </List.Item>
+                    );
+                  })}
               </List>
             </>
           </Stack>
