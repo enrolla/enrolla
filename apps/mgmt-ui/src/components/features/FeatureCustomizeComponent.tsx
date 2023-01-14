@@ -57,25 +57,33 @@ const prepareFeatures = (
 
   for (const availableFeature of parentConfig) {
     const customizedFeature = customizedFeatures.find(
-      (feature) => feature.feature.id === availableFeature.feature.id
+      (f) => f.feature.id === availableFeature.feature.id
     );
+
+    const row = {
+      label: availableFeature.feature.key,
+      value: availableFeature.feature.key,
+      dispatch,
+    };
+
+    const baseFeature = {
+      ...availableFeature.feature,
+      defaultValue: availableFeature.value,
+    };
 
     if (customizedFeature) {
       preparedCustomizedFeatures.push({
-        label: availableFeature.feature.key,
-        value: availableFeature.feature.key,
+        ...row,
         featureValue: {
-          feature: availableFeature.feature,
+          feature: baseFeature,
           value: customizedFeature.value,
         },
         dispatch,
       });
     } else {
       preparedAvailableFeatures.push({
-        label: availableFeature.feature.key,
-        value: availableFeature.feature.key,
-        featureValue: { feature: availableFeature.feature, value: null },
-        dispatch,
+        ...row,
+        featureValue: { feature: baseFeature, value: null },
       });
     }
   }
@@ -212,7 +220,9 @@ export const FeatureCustomizeComponent = ({
             featureValue: {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               ...row.featureValue!,
-              value: row.featureValue?.feature.defaultValue,
+              value:
+                row.featureValue?.value ??
+                row.featureValue?.feature.defaultValue,
             },
           })),
         ];

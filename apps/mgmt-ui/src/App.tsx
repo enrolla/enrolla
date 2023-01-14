@@ -27,7 +27,12 @@ import {
 } from '@tabler/icons';
 import { Layout } from './components/layout';
 import dataProvider from './providers/backendGraphQLProvider';
-import { CustomerCreate, CustomerList, CustomerShow } from './pages/customers';
+import {
+  CustomerCreate,
+  CustomerEdit,
+  CustomerList,
+  CustomerShow,
+} from './pages/customers';
 import { Integrations } from './pages/integrations';
 import { Dashboard } from './pages/dashboard';
 import useAuthProvider from './providers/useAuthProvider';
@@ -122,6 +127,7 @@ export default function App() {
                 list: CustomerList,
                 show: CustomerShow,
                 create: CustomerCreate,
+                edit: CustomerEdit,
                 icon: <IconUsers size="16" />,
               },
               {
