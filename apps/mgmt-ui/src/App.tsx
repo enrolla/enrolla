@@ -107,7 +107,7 @@ export default function App() {
               routes: [
                 {
                   element: <Integrations />,
-                  path: 'integrations',
+                  path: 'settings/integrations',
                   layout: true,
                 },
               ],
@@ -153,6 +153,7 @@ export default function App() {
                 edit: PackageEdit,
                 icon: <IconPackage size="16" />,
               },
+              { name: 'settings', icon: <IconSettings size="16" /> },
               {
                 name: 'secret-keys',
                 key: 'secretKeys',
@@ -162,10 +163,10 @@ export default function App() {
               },
               {
                 name: 'integrations',
+                parentName: 'settings',
                 list: () => null,
                 icon: <IconBuildingStore size="16" />,
               },
-              { name: 'settings', icon: <IconSettings size="16" /> },
               {
                 name: 'api-tokens',
                 key: 'apiTokens',

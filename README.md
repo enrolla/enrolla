@@ -44,12 +44,17 @@ Enrolla's goal is to simplify customer configuration management and provide deve
 
 ## ✨ Features
 
-- 🛂 Easily manage all your configurations - throttling, secrets, just plain JSONs
-- 🧩 Integrations with CRMs, authentication services, billing systems
-- ⏩ Typescript SDK for fetching configurations to your services with smart caching (Python and Go in developement)
+- 🔐 Easily manage customer API Tokens and other secrets
+- 🛂 Easily management entitlements and other customer configurations
+- 🧩 Integrations with authentication services
 - 📦 Built-in backoffice for non engineers
-- 😎 Headless UI templates for providing needed knobs for your customers (in developement)
 - 👩‍💻 Community driven
+
+Coming soon:
+
+- 😎 Headless UI templates for providing needed knobs for your customers
+- ⏩ Python and Go SDKs
+- 🧩 Integrations with CRMs and billing systems
 
 ## 🌱 Contributing
 
