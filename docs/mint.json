@@ -25,18 +25,13 @@
   ],
   "topbarCtaButton": {
     "name": "Get Started",
-    "url": "https://app.enrolla.io"
+    "url": "https://c9nshtdss2i.typeform.com/to/mLMW70eV"
   },
   "anchors": [
     {
       "name": "Github",
       "icon": "github",
       "url": "https://github.com/enrolla/enrolla"
-    },
-    {
-      "name": "SDKs",
-      "icon": "rectangle-terminal",
-      "url": "https://docs.enrolla.io/sdk/introduction"
     }
   ],
   "navigation": [
@@ -58,7 +53,8 @@
     }
   ],
   "footerSocials": {
-    "github": "https://github.com/enrolla/enrolla"
+    "github": "https://github.com/enrolla/enrolla",
+    "twitter": "https://twitter.com/enrolla_io"
   },
   "backgroundImage": "/background.png"
 }
