@@ -17,4 +17,5 @@ export interface OrganizationManager {
 export enum OrganizationManagerType {
   None = 'NONE',
   Auth0 = 'AUTH0',
+  PropelAuth = 'PROPEL_AUTH',
 }

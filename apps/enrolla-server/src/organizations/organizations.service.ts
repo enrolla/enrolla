@@ -2,49 +2,42 @@ import { Injectable } from '@nestjs/common';
 import { CreateOrganizationInput } from './dto/create-organization.input';
 import { UpdateOrganizationInput } from './dto/update-organization.input';
 import { ConfigurationsService } from '../configurations/configurations.service';
-import { NoneOrganizationManager } from '../integrations/organization-managers/impl/none.organization-manager';
-import { Auth0OrganizationManager } from '../integrations/organization-managers/impl/auth0.organization-manager';
 import {
   OrganizationManager,
   OrganizationManagerType,
 } from '../integrations/organization-managers/organization-manager.interface';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class OrganizationsService {
   private static ORGANIZATION_MANAGER_TYPE_CONFIG_KEY =
     'ORGANIZATION_MANAGER_TYPE';
 
-  private noneOrganizationManager = new NoneOrganizationManager();
-  private auth0OrganizationManager: Auth0OrganizationManager;
-
-  constructor(private configurationsService: ConfigurationsService) {
-    this.auth0OrganizationManager = new Auth0OrganizationManager(
-      configurationsService
-    );
-  }
+  constructor(
+    private moduleRef: ModuleRef,
+    private configurationsService: ConfigurationsService
+  ) {}
 
   async create(
     createOrganizationInput: CreateOrganizationInput,
     tenantId: string
   ) {
-    const organizationManager = await this.tenantOrganizationManager(tenantId);
-
-    return await organizationManager.createOrganization(
-      tenantId,
-      createOrganizationInput
+    return await this.organizationManager(tenantId).then(
+      async (manager) =>
+        await manager.createOrganization(tenantId, createOrganizationInput)
     );
   }
 
   async findAll(tenantId: string) {
-    const organizationManager = await this.tenantOrganizationManager(tenantId);
-
-    return await organizationManager.getOrganizations(tenantId);
+    return await this.organizationManager(tenantId).then(
+      async (manager) => await manager.getOrganizations(tenantId)
+    );
   }
 
   async findOne(id: string, tenantId: string) {
-    const organizationManager = await this.tenantOrganizationManager(tenantId);
-
-    return await organizationManager.getOrganization(tenantId, id);
+    return await this.organizationManager(tenantId).then(
+      async (manager) => await manager.getOrganization(tenantId, id)
+    );
   }
 
   async update(
@@ -56,30 +49,26 @@ export class OrganizationsService {
   }
 
   async remove(id: string, tenantId: string) {
-    const organizationManager = await this.tenantOrganizationManager(tenantId);
-
-    return await organizationManager.removeOrganization(tenantId, id);
+    return await this.organizationManager(tenantId).then(
+      async (manager) => await manager.removeOrganization(tenantId, id)
+    );
   }
 
-  private async tenantOrganizationManager(
+  private async organizationManager(
     tenantId: string
-  ): Promise<OrganizationManager | null> {
+  ): Promise<OrganizationManager> {
     const organizationManagerType =
       await this.configurationsService.getValue<OrganizationManagerType>(
         tenantId,
         OrganizationsService.ORGANIZATION_MANAGER_TYPE_CONFIG_KEY
       );
 
-    switch (organizationManagerType || OrganizationManagerType.None) {
-      case OrganizationManagerType.None:
-        return this.noneOrganizationManager;
+    const enumKey = Object.keys(OrganizationManagerType)[
+      Object.values(OrganizationManagerType).indexOf(organizationManagerType)
+    ];
 
-      case OrganizationManagerType.Auth0:
-        return this.auth0OrganizationManager;
-      default:
-        throw new Error(
-          `Organization manager type ${organizationManagerType} not supported`
-        );
-    }
+    return this.moduleRef.get(
+      `OrganizationManager${enumKey}`
+    ) as OrganizationManager;
   }
 }

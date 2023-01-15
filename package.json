@@ -12,6 +12,7 @@
     "@emotion/styled": "11.10.5",
     "@mantine/prism": "^5.9.5",
     "@nestjs/apollo": "^10.1.7",
+    "@nestjs/axios": "^1.0.1",
     "@nestjs/common": "^9.2.1",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.2.1",
