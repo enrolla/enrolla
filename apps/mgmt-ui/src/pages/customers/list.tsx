@@ -9,6 +9,7 @@ import {
   ShowButton,
   DeleteButton,
   DateField,
+  EditButton,
 } from '@pankod/refine-mantine';
 import { useMemo } from 'react';
 import { Feature, Package } from '@enrolla/graphql-codegen';
@@ -51,6 +52,7 @@ export const CustomerList: React.FC = () => {
           return (
             <Group spacing="xs" noWrap>
               <ShowButton hideText recordItemId={getValue() as number} />
+              <EditButton hideText recordItemId={getValue() as number} />
               <DeleteButton hideText recordItemId={getValue() as number} />
             </Group>
           );

@@ -151,7 +151,17 @@ input FeatureInstanceInput {
 }
 
 input UpdatePackageInput {
+  name: String
+  description: String
+  icon: String
+  parentPackageId: Cuid
+  features: [FeatureInstanceInput!]
   id: Cuid!
+  updateStrategy: PackageUpdateStrategy
+}
+
+enum PackageUpdateStrategy {
+  MIGRATE_ALL_CHILDREN
 }
 
 input CreateCustomerInput {

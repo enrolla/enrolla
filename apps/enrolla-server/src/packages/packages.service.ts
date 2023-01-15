@@ -15,6 +15,8 @@ import {
 } from '../utils/configuration.utils';
 import { Prisma } from '@prisma/client';
 import { FeaturesService } from '../features/features.service';
+import { PackageUpdateStrategy } from './update-strategies/strategies';
+import { migrateAllChildren } from './update-strategies/migrate-all-children.strategy';
 
 @Injectable()
 export class PackagesService {
@@ -79,6 +81,16 @@ export class PackagesService {
   }
 
   async findOne(id: string, tenantId: string) {
+    if (id === '0') {
+      return {
+        id: '0',
+        name: 'Default',
+        tenantId,
+        description: 'Default configuration',
+        createdAt: new Date(),
+        parentPackageId: null,
+      };
+    }
     return await this.prismaService.package.findUnique({
       where: {
         id_tenantId: {
@@ -94,14 +106,38 @@ export class PackagesService {
     updatePackageDto: UpdatePackageInput,
     tenantId: string
   ) {
+    if (
+      (updatePackageDto.features || updatePackageDto.parentPackageId) &&
+      !updatePackageDto.updateStrategy
+    ) {
+      throw new Error(
+        'Cannot update features or parent package without update strategy'
+      );
+    }
+
+    let newPackageId = id;
+    switch (updatePackageDto.updateStrategy) {
+      case PackageUpdateStrategy.MIGRATE_ALL_CHILDREN:
+        newPackageId = await migrateAllChildren(
+          this.prismaService,
+          id,
+          updatePackageDto,
+          tenantId
+        );
+    }
+
     const packagez = await this.prismaService.package.update({
       where: {
         id_tenantId: {
-          id,
+          id: newPackageId,
           tenantId,
         },
       },
-      data: {},
+      data: {
+        name: updatePackageDto.name,
+        description: updatePackageDto.description,
+        icon: updatePackageDto.icon,
+      },
     });
 
     this.eventEmitter.emit(

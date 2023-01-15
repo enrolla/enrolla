@@ -1,11 +1,8 @@
-import { useTable, ColumnDef, flexRender } from '@pankod/refine-react-table';
+import { useTable, ColumnDef } from '@pankod/refine-react-table';
 import {
-  Box,
   Group,
   List,
   ScrollArea,
-  Table,
-  Pagination,
   ShowButton,
   DeleteButton,
   DateField,
@@ -13,13 +10,14 @@ import {
   Text,
   createStyles,
   SimpleGrid,
+  EditButton,
 } from '@pankod/refine-mantine';
 import { useMemo } from 'react';
-import { IPackage } from '../../interfaces';
 import {
   PackageIcon,
   PredefinedIcon,
 } from '../../components/packages/PackageIcon';
+import { Package } from '@enrolla/graphql-codegen';
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -38,7 +36,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export const PackageList: React.FC = () => {
-  const columns = useMemo<ColumnDef<IPackage>[]>(
+  const columns = useMemo<ColumnDef<Package>[]>(
     () => [
       {
         id: 'id',
@@ -65,7 +63,7 @@ export const PackageList: React.FC = () => {
         header: 'Parent Package',
         accessorKey: 'parentPackageId',
         cell: function render({ getValue, table }) {
-          const parentPackage: IPackage | undefined = table.options.data.find(
+          const parentPackage: Package | undefined = table.options.data.find(
             (item) => item.id === getValue()
           );
           return parentPackage?.name ?? '-';
@@ -98,11 +96,7 @@ export const PackageList: React.FC = () => {
     []
   );
 
-  const {
-    getHeaderGroups,
-    getRowModel,
-    refineCore: { setCurrent, pageCount, current },
-  } = useTable({
+  const { getRowModel } = useTable({
     columns,
     refineCoreProps: {
       metaData: {
@@ -149,69 +143,23 @@ export const PackageList: React.FC = () => {
                   </Text>
                 </Card.Section>
                 <Group mt="lg">
-                  <ShowButton recordItemId={row.getValue('id') as string} />
-                  <DeleteButton recordItemId={row.getValue('id') as string} />
+                  <ShowButton
+                    hideText
+                    recordItemId={row.getValue('id') as string}
+                  />
+                  <EditButton
+                    hideText
+                    recordItemId={row.getValue('id') as number}
+                  />
+                  <DeleteButton
+                    hideText
+                    recordItemId={row.getValue('id') as string}
+                  />
                 </Group>
               </Card>
             );
           })}
         </SimpleGrid>
-      </List>
-    </ScrollArea>
-  );
-
-  return (
-    <ScrollArea>
-      <List>
-        <Table highlightOnHover>
-          <thead>
-            {getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <th key={header.id}>
-                      {!header.isPlaceholder && (
-                        <Group spacing="xs" noWrap>
-                          <Box>
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                          </Box>
-                        </Group>
-                      )}
-                    </th>
-                  );
-                })}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {getRowModel().rows.map((row) => {
-              return (
-                <tr key={row.id}>
-                  {row.getVisibleCells().map((cell) => {
-                    return (
-                      <td key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
-        <br />
-        <Pagination
-          position="right"
-          total={pageCount}
-          page={current}
-          onChange={setCurrent}
-        />
       </List>
     </ScrollArea>
   );
