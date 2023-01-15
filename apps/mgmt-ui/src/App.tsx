@@ -15,7 +15,7 @@ import {
 import logo from './assets/logo.png';
 import logoDark from './assets/logo_dark.png';
 import { Login } from './pages/login';
-import { ApiTokenList, ApiTokenCreate } from './pages/api-tokens';
+import { ApiTokenList } from './pages/api-tokens';
 import { FeatureCreate, FeatureList, FeatureShow } from './pages/features';
 import {
   PackageCreate,
@@ -29,6 +29,7 @@ import {
   IconUsers,
   IconBuildingStore,
   IconShieldLock,
+  IconSettings,
 } from '@tabler/icons';
 import { Layout } from './components/layout';
 import dataProvider from './providers/backendGraphQLProvider';
@@ -156,12 +157,14 @@ export default function App() {
                 list: () => null,
                 icon: <IconBuildingStore size="16" />,
               },
+              { name: 'settings', icon: <IconSettings size="16" /> },
               {
-                name: 'apiTokens',
+                name: 'api-tokens',
+                key: 'apiTokens',
+                parentName: 'settings',
                 list: ApiTokenList,
-                create: ApiTokenCreate,
                 canDelete: true,
-                options: { label: 'Admin' },
+                options: { label: 'API Tokens' },
                 icon: <IconShieldLock size="16" />,
               },
             ]}

@@ -12,8 +12,12 @@ import {
   CopyButton,
   Tooltip,
   ActionIcon,
+  useModalForm,
+  TextInput,
+  SaveButton,
+  Title,
 } from '@pankod/refine-mantine';
-import { Flex } from '@mantine/core';
+import { Flex, Modal } from '@mantine/core';
 import { ApiToken } from '@enrolla/graphql-codegen';
 import { useMemo } from 'react';
 import { IconCopy, IconCheck } from '@tabler/icons';
@@ -30,6 +34,29 @@ const tokenDisplayValue = (tokenValue: string) => {
 };
 
 export const ApiTokenList: React.FC = () => {
+  const {
+    saveButtonProps,
+    getInputProps,
+    modal: { show, close, visible },
+  } = useModalForm<ApiToken>({
+    refineCoreProps: {
+      action: 'create',
+      successNotification: () => {
+        return {
+          message: `API Token created successfully.`,
+          type: 'success',
+        };
+      },
+    },
+    validate: {
+      name: (value) => {
+        if (!value) {
+          return 'Name is required';
+        }
+      },
+    },
+    validateInputOnBlur: true,
+  });
   const columns = useMemo<ColumnDef<ApiToken>[]>(
     () => [
       {
@@ -115,58 +142,75 @@ export const ApiTokenList: React.FC = () => {
   });
 
   return (
-    <ScrollArea>
-      <List title="API Tokens">
-        <Table highlightOnHover>
-          <thead>
-            {getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <th key={header.id}>
-                      {!header.isPlaceholder && (
-                        <Group spacing="xs" noWrap>
-                          <Box>
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                          </Box>
-                        </Group>
-                      )}
-                    </th>
-                  );
-                })}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {getRowModel().rows.map((row) => {
-              return (
-                <tr key={row.id}>
-                  {row.getVisibleCells().map((cell) => {
+    <>
+      <Modal opened={visible} onClose={close} title="Create API Token">
+        <TextInput
+          mt={8}
+          label="Name"
+          placeholder="Token Name"
+          withAsterisk
+          {...getInputProps('name')}
+        />
+        <Box mt={8} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <SaveButton {...saveButtonProps} />
+        </Box>
+      </Modal>
+      <ScrollArea>
+        <List
+          title={<Title order={3}>API Tokens</Title>}
+          createButtonProps={{ onClick: () => show() }}
+        >
+          <Table highlightOnHover>
+            <thead>
+              {getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
                     return (
-                      <td key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
+                      <th key={header.id}>
+                        {!header.isPlaceholder && (
+                          <Group spacing="xs" noWrap>
+                            <Box>
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                            </Box>
+                          </Group>
                         )}
-                      </td>
+                      </th>
                     );
                   })}
                 </tr>
-              );
-            })}
-          </tbody>
-        </Table>
-        <br />
-        <Pagination
-          position="right"
-          total={pageCount}
-          page={current}
-          onChange={setCurrent}
-        />
-      </List>
-    </ScrollArea>
+              ))}
+            </thead>
+            <tbody>
+              {getRowModel().rows.map((row) => {
+                return (
+                  <tr key={row.id}>
+                    {row.getVisibleCells().map((cell) => {
+                      return (
+                        <td key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+          <br />
+          <Pagination
+            position="right"
+            total={pageCount}
+            page={current}
+            onChange={setCurrent}
+          />
+        </List>
+      </ScrollArea>
+    </>
   );
 };
