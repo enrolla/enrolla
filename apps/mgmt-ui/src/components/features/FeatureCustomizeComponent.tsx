@@ -8,7 +8,7 @@ import {
   TransferListItemComponent,
   TransferListItemComponentProps,
 } from '@pankod/refine-mantine';
-import { useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 import { FeatureViewComponent } from './FeatureViewComponent';
 import { FeatureEditComponent } from './FeatureEditComponent';
 import { FeatureType, FeatureValue, Package } from '@enrolla/graphql-codegen';
@@ -24,6 +24,7 @@ type ParentConfigReceived = {
   type: 'PARENT_CONFIG_RECEIVED';
   payload: {
     parentConfig: FeatureValue[];
+    customizedFeatures: FeatureValue[];
     dispatchFunction: React.Dispatch<ReducerAction>;
   };
 };
@@ -89,6 +90,52 @@ const prepareFeatures = (
   }
 
   return [preparedAvailableFeatures, preparedCustomizedFeatures];
+};
+
+const handleAction = (
+  [available, customized]: UiState,
+  action: ReducerAction
+): UiState => {
+  switch (action.type) {
+    case 'PARENT_CONFIG_RECEIVED':
+      return prepareFeatures(
+        action.payload.parentConfig,
+        action.payload.customizedFeatures,
+        action.payload.dispatchFunction
+      );
+
+    case 'TRANSFER_LIST_UPDATED': {
+      const [newAvailable, newCustomized] = action.payload.newUiState;
+
+      return [
+        newAvailable.map((row) => ({
+          ...row,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          featureValue: { ...row.featureValue!, value: undefined },
+        })),
+        newCustomized.map((row) => ({
+          ...row,
+          featureValue: {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            ...row.featureValue!,
+            value:
+              row.featureValue?.value ?? row.featureValue?.feature.defaultValue,
+          },
+        })),
+      ];
+    }
+
+    case 'FEATURE_CUSTOMIZED':
+      return [
+        available,
+        customized.map((row) =>
+          row.featureValue?.feature.id ===
+          action.payload.customizedFeature.feature.id
+            ? { ...row, featureValue: action.payload.customizedFeature }
+            : { ...row }
+        ),
+      ];
+  }
 };
 
 const ItemComponent: TransferListItemComponent = ({
@@ -194,52 +241,6 @@ export const FeatureCustomizeComponent = ({
   customizedFeatures,
   onCustomizedFeaturesChange,
 }: FeatureCustomizeProps) => {
-  const handleAction = (
-    [available, customized]: UiState,
-    action: ReducerAction
-  ): UiState => {
-    switch (action.type) {
-      case 'PARENT_CONFIG_RECEIVED':
-        return prepareFeatures(
-          action.payload.parentConfig,
-          customizedFeatures,
-          action.payload.dispatchFunction
-        );
-
-      case 'TRANSFER_LIST_UPDATED': {
-        const [newAvailable, newCustomized] = action.payload.newUiState;
-
-        return [
-          newAvailable.map((row) => ({
-            ...row,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            featureValue: { ...row.featureValue!, value: undefined },
-          })),
-          newCustomized.map((row) => ({
-            ...row,
-            featureValue: {
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              ...row.featureValue!,
-              value:
-                row.featureValue?.value ??
-                row.featureValue?.feature.defaultValue,
-            },
-          })),
-        ];
-      }
-
-      case 'FEATURE_CUSTOMIZED':
-        return [
-          available,
-          customized.map((row) =>
-            row.featureValue?.feature.id ===
-            action.payload.customizedFeature.feature.id
-              ? { ...row, featureValue: action.payload.customizedFeature }
-              : { ...row }
-          ),
-        ];
-    }
-  };
   const reducer = (state: UiState, action: ReducerAction): UiState => {
     const [newAvailable, newCustomized] = handleAction(state, action);
 
@@ -259,7 +260,7 @@ export const FeatureCustomizeComponent = ({
 
   const [uiState, dispatch] = useReducer(reducer, [[], []]);
 
-  useOne<Package>({
+  const { data } = useOne<Package>({
     resource: 'package',
     id: parentPackageId ?? '0',
     metaData: {
@@ -272,17 +273,22 @@ export const FeatureCustomizeComponent = ({
         },
       ],
     },
-    queryOptions: {
-      onSuccess: ({ data: packagez }) =>
-        dispatch({
-          type: 'PARENT_CONFIG_RECEIVED',
-          payload: {
-            parentConfig: packagez.effectiveConfiguration,
-            dispatchFunction: dispatch,
-          },
-        }),
-    },
   });
+
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+
+    dispatch({
+      type: 'PARENT_CONFIG_RECEIVED',
+      payload: {
+        parentConfig: data?.data.effectiveConfiguration,
+        customizedFeatures,
+        dispatchFunction: dispatch,
+      },
+    });
+  }, [data, customizedFeatures]);
 
   return (
     <TransferList
