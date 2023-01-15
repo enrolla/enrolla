@@ -48,6 +48,10 @@ export const CustomerCreate: React.FC = () => {
       )?.created;
       return {
         ...values,
+        features: (values.features as FeatureValue[]).map((fv) => ({
+          featureId: fv.feature.id,
+          value: fv.value,
+        })),
         organizationId: shouldCreateOrg ? null : values['organizationId'],
         createOrganizationName: shouldCreateOrg
           ? values['organizationId']

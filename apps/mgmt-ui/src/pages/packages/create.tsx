@@ -59,6 +59,13 @@ export const PackageCreate: React.FC = () => {
       features: [],
       parentPackageId: null,
     },
+    transformValues: (values) => ({
+      ...values,
+      features: (values.features as FeatureValue[]).map((fv) => ({
+        featureId: fv.feature.id,
+        value: fv.value,
+      })),
+    }),
     validate: {
       name: (value) => {
         if (!value) {
