@@ -123,7 +123,8 @@ model Secret {
   tenantId            String      @map("tenant_id")
   key                 String
   value               String
-  iv                  String      @map("iv")
+  iv                  String?     @map("iv")
+  isSymmetric         Boolean     @default(false) @map("is_symmetric")
   customer            Customer?   @relation(fields: [customerId], references: [id])
   customerId          String?     @map("customer_id")
   createdAt           DateTime    @default(now()) @map("created_at")
@@ -131,4 +132,16 @@ model Secret {
   @@unique([id, tenantId])
   @@index([tenantId, customerId])
   @@map("secrets")
+}
+
+model EncryptionKey {
+  id         String   @id @default(cuid())
+  tenantId   String   @map("tenant_id")
+  publicKey  String   @map("private_key")
+  privateKey String   @map("public_key")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@unique([id, tenantId])
+  @@unique([tenantId])
+  @@map("encryption_keys")
 }

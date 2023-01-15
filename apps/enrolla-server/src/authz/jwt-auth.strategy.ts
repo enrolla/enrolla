@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-custom';
 import { initBaseAuth } from '@propelauth/node';
-import { TenantsService } from '../tenants/tenants.service';
+import { ApiTokenService } from '../tenants/api-tokens/service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'JwtAuth') {
@@ -10,7 +10,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'JwtAuth') {
 
   private readonly logger = new Logger(JwtStrategy.name);
 
-  constructor(private tenantsService: TenantsService) {
+  constructor(private apiTokenService: ApiTokenService) {
     super();
 
     if (!process.env.PROPELAUTH_URL) {
@@ -48,7 +48,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'JwtAuth') {
     } catch (error) {
       // If the JWT is not a PropelAuth token, we assume it's an API token, representing SDK access
       // In case of an error, the method will throw an exception and 401 unauthorized will be returned
-      const { tenantId } = await this.tenantsService.validateApiToken(
+      const { tenantId } = await this.apiTokenService.validate(
         jwt.split(' ')[1]
       );
 

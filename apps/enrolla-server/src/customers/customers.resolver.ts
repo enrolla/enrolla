@@ -19,7 +19,6 @@ import { FeatureInstancesService } from '../feature-instances/feature-instances.
 import { FeatureValue } from '../feature-instances/entities/feature-value.entity';
 import { Secret } from '../secrets/entities/secret.entity';
 import { SecretsService } from '../secrets/secrets.service';
-import { CreateSecretInput } from './dto/create-secret.input';
 
 @Resolver(() => Customer)
 @UseGuards(GraphQLAuthGuard)
@@ -37,19 +36,6 @@ export class CustomersResolver {
     @Args('input') createCustomerInput: CreateCustomerInput
   ) {
     return await this.customersService.create(createCustomerInput, tenantId);
-  }
-
-  @Mutation(() => Secret)
-  async createSecret(
-    @TenantId() tenantId: string,
-    @Args('input') createSecretInput: CreateSecretInput
-  ) {
-    return await this.secretsService.create(
-      tenantId,
-      createSecretInput.customerId,
-      createSecretInput.key,
-      createSecretInput.value
-    );
   }
 
   @Query(() => [Customer], { name: 'customers' })

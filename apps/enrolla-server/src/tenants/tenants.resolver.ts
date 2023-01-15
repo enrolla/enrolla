@@ -2,22 +2,28 @@ import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { GraphQLAuthGuard } from '../authz/graphql-auth.guard';
 import { TenantId } from '../authz/tenant.decorator';
-import { TenantsService } from './tenants.service';
-import { ApiToken } from './entities/api-token.entity';
-import { CreateApiTokenInput } from './dto/create-api-token.input';
-import { Tenant } from './entities/tenant.entity';
+import { ApiTokenService } from './api-tokens/service';
+import { ApiToken } from './api-tokens/entities/api-token.entity';
+import { CreateApiTokenInput } from './api-tokens/dto/create-api-token.input';
+import { EncryptionKeyService } from './encryption-keys/servce';
+import { Tenant } from './tenant.entity';
+import { EncryptionKey } from './encryption-keys/entities';
+import { CreateEncryptionKeyInput } from './encryption-keys/dto';
 
 @Resolver(() => Tenant)
 @UseGuards(GraphQLAuthGuard)
 export class TenantsResolver {
-  constructor(private readonly tenantsService: TenantsService) {}
+  constructor(
+    private readonly apiTokenService: ApiTokenService,
+    private readonly encryptionKeyService: EncryptionKeyService
+    ) {}
 
   @Mutation(() => ApiToken)
   async createApiToken(
     @TenantId() tenantId: string,
     @Args('input') createApiTokenInput: CreateApiTokenInput
   ) {
-    return await this.tenantsService.createApiToken(
+    return await this.apiTokenService.create(
       tenantId,
       createApiTokenInput
     );
@@ -25,11 +31,43 @@ export class TenantsResolver {
 
   @Mutation(() => ApiToken)
   async removeApiToken(@TenantId() tenantId: string, @Args('id') id: string) {
-    return await this.tenantsService.deleteApiToken(tenantId, id);
+    return await this.apiTokenService.delete(tenantId, id);
   }
 
   @Query(() => [ApiToken])
   async apiTokens(@TenantId() tenantId: string) {
-    return await this.tenantsService.getApiTokens(tenantId);
+    return await this.apiTokenService.getAllForTennant(tenantId);
+  }
+
+  @Mutation(() => EncryptionKey)
+  async createEncryptionKey(
+    @TenantId() tenantId: string,
+    @Args('input') createEncryptionKeyInput: CreateEncryptionKeyInput
+  ) {
+    return await this.encryptionKeyService.create(
+      tenantId,
+      createEncryptionKeyInput
+    );
+  }
+
+  @Mutation(() => EncryptionKey)
+  async updateEncryptionKey(
+    @TenantId() tenantId: string,
+    @Args('input') createEncryptionKeyInput: CreateEncryptionKeyInput
+  ) {
+    return await this.encryptionKeyService.update(
+      tenantId,
+      createEncryptionKeyInput
+    );
+  }
+
+  @Mutation(() => EncryptionKey)
+  async removeEncryptionKey(@TenantId() tenantId: string) {
+    return await this.encryptionKeyService.delete(tenantId);
+  }
+
+  @Query(() => String)
+  async publicEncryptionKey(@TenantId() tenantId: string) {
+    return await this.encryptionKeyService.getTennantEncryptionKey(tenantId);
   }
 }

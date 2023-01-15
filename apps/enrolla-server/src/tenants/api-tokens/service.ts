@@ -1,24 +1,24 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { env } from 'process';
-import { PrismaService } from '../prisma/prisma.service';
-import { ApiToken } from './entities/api-token.entity';
-import { CreateApiTokenInput } from './dto/create-api-token.input';
-import { decrypt, encrypt } from '../utils/encryption.utils';
+import { PrismaService } from '../../prisma/prisma.service';
+import { ApiToken } from './entities';
+import { CreateApiTokenInput } from './dto';
+import { decrypt, encrypt } from '../../utils/encryption.utils';
 
 @Injectable()
-export class TenantsService {
+export class ApiTokenService {
   private static ENCRYPTION_KEY = env.API_TOKEN_GENERATION_PRIVATE_KEY;
 
   constructor(private prismaService: PrismaService) {}
 
-  async createApiToken(
+  async create(
     tenantId: string,
     createApiTokenInput: CreateApiTokenInput
   ): Promise<ApiToken> {
     const token = jwt.sign(
       { tenantId: tenantId },
-      TenantsService.ENCRYPTION_KEY
+      ApiTokenService.ENCRYPTION_KEY
     );
 
     const { encryptedData } = await encrypt(token);
@@ -32,7 +32,7 @@ export class TenantsService {
     });
   }
 
-  async getApiTokens(tenantId: string): Promise<ApiToken[]> {
+  async getAllForTennant(tenantId: string): Promise<ApiToken[]> {
     const tokens = await this.prismaService.apiToken.findMany({
       where: {
         tenantId,
@@ -47,7 +47,7 @@ export class TenantsService {
     return tokens;
   }
 
-  async deleteApiToken(tenantId: string, id: string) {
+  async delete(tenantId: string, id: string) {
     return await this.prismaService.apiToken.delete({
       where: {
         id_tenantId: {
@@ -58,9 +58,9 @@ export class TenantsService {
     });
   }
 
-  async validateApiToken(token: string) {
+  async validate(token: string) {
     try {
-      const decoded = jwt.verify(token, TenantsService.ENCRYPTION_KEY);
+      const decoded = jwt.verify(token, ApiTokenService.ENCRYPTION_KEY);
       const { encryptedData } = await encrypt(token, 0);
 
       const apiToken = await this.prismaService.apiToken.findUnique({

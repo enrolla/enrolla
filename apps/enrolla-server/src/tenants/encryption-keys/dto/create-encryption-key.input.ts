@@ -1,13 +1,10 @@
 import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()
-export class CreateSecretInput {
+export class CreateEncryptionKeyInput {
   @Field(() => String)
-  customerId: string;
+  privateKey: string;
 
   @Field(() => String)
-  key: string;
-
-  @Field(() => String)
-  value: string;
+  publicKey: string;
 }

@@ -2,20 +2,17 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { CuidResolver } from 'graphql-scalars';
 
 @ObjectType()
-export class Secret {
+export class EncryptionKey {
   @Field(() => CuidResolver)
   id: string;
 
   @Field(() => String)
-  key: string;
+  publicKey: string;
 
   @Field(() => String)
-  value: string;
+  privateKey: string;
 
-  @Field(() => Boolean)
-  isSymmetric?: boolean;
-
-  constructor(props: Partial<Secret>) {
+  constructor(props: Partial<EncryptionKey>) {
     Object.assign(this, props);
   }
 }

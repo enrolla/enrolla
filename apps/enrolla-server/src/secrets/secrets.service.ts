@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Secret } from './entities/secret.entity';
 import { decrypt, encrypt } from '../utils/encryption.utils';
+import { CreateSecretInput, UpdateSecretInput } from './dto';
 
 @Injectable()
 export class SecretsService {
@@ -9,38 +10,36 @@ export class SecretsService {
 
   constructor(private prismaService: PrismaService) {}
 
-  async create(
-    tenantId: string,
-    customerId: string,
-    key: string,
-    value: string
-  ): Promise<Secret> {
-    const { encryptedData, iv } = await encrypt(
-      value,
-      this.ENCRYPTION_IV_LENGTH
-    );
+  async create(tenantId: string, input: CreateSecretInput): Promise<Secret> {
+    const data = { tenantId, ...input, iv: undefined };
+
+    if (input.isSymmetric) {
+      const { encryptedData, iv } = await encrypt(
+        input.value,
+        this.ENCRYPTION_IV_LENGTH
+      );
+      data.value = encryptedData;
+      data.iv = iv;
+    }
 
     return await this.prismaService.secret.create({
-      data: {
-        key: key,
-        tenantId: tenantId,
-        value: encryptedData,
-        customerId: customerId,
-        iv: iv,
-      },
+      data,
     });
   }
 
-  async update(
-    tenantId: string,
-    customerId: string,
-    id: string,
-    value: string
-  ): Promise<Secret> {
-    const { encryptedData, iv } = await encrypt(
-      value,
-      this.ENCRYPTION_IV_LENGTH
-    );
+  async update(tenantId: string, input: UpdateSecretInput): Promise<Secret> {
+    const { isSymmetric, value, id } = input;
+    const data = { value, isSymmetric, iv: undefined };
+
+    if (isSymmetric) {
+      const { encryptedData, iv } = await encrypt(
+        value,
+        this.ENCRYPTION_IV_LENGTH
+      );
+
+      data.iv = iv;
+      data.value = encryptedData;
+    }
 
     return await this.prismaService.secret.update({
       where: {
@@ -49,10 +48,7 @@ export class SecretsService {
           tenantId,
         },
       },
-      data: {
-        value: encryptedData,
-        iv,
-      },
+      data,
     });
   }
 
@@ -66,9 +62,10 @@ export class SecretsService {
         customerId,
       },
     });
-
+    
     secrets.forEach(async (secret) => {
-      secret.value = await decrypt(secret.value, secret.iv);
+      if (secret.isSymmetric)
+        secret.value = await decrypt(secret.value, secret.iv);
     });
 
     return secrets;
