@@ -67,7 +67,7 @@ export class PropelAuthOrganizationManager implements OrganizationManager {
   ): Promise<Organization> {
     const response = await firstValueFrom(
       this.httpService.post(
-        await this.tenantRequestUrl(tenantId, '/api/backend/v1/org'),
+        await this.tenantRequestUrl(tenantId, '/api/backend/v1/org/'),
         {
           name: organizationCreateInput.name,
         },

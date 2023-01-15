@@ -5,6 +5,6 @@ CHANGELOG.md
 /libs/graphql-codegen/src/output
 /docs
 /libs/node-server-sdk/graphql-codegen
-/apps/enrolla-server/src/schema.gql
+/graphql/schema.gql
 package.json
 package-lock.json
