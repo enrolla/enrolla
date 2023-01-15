@@ -17,7 +17,12 @@ import logoDark from './assets/logo_dark.png';
 import { Login } from './pages/login';
 import { ApiTokenList, ApiTokenCreate } from './pages/api-tokens';
 import { FeatureCreate, FeatureList, FeatureShow } from './pages/features';
-import { PackageCreate, PackageList, PackageShow } from './pages/packages';
+import {
+  PackageCreate,
+  PackageEdit,
+  PackageList,
+  PackageShow,
+} from './pages/packages';
 import {
   IconPackage,
   IconLayoutList,
@@ -143,6 +148,7 @@ export default function App() {
                 list: PackageList,
                 show: PackageShow,
                 create: PackageCreate,
+                edit: PackageEdit,
                 icon: <IconPackage size="16" />,
               },
               {
