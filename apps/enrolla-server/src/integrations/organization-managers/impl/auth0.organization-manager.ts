@@ -17,32 +17,32 @@ export class Auth0OrganizationManager implements OrganizationManager {
     tenantId: string,
     organizationId: string
   ): Promise<Organization> {
-    const managementClient = await this.getAuth0Client(tenantId);
-
-    return await managementClient.organizations.getByID({ id: organizationId });
+    return await this.getAuth0Client(tenantId).then((managementClient) => {
+      return managementClient.organizations.getByID({ id: organizationId });
+    });
   }
 
   async getOrganizations(tenantId: string): Promise<Organization[]> {
-    const managementClient = await this.getAuth0Client(tenantId);
-
-    return await managementClient.organizations.getAll();
+    return await this.getAuth0Client(tenantId).then((managementClient) => {
+      return managementClient.organizations.getAll();
+    });
   }
 
   async createOrganization(
     tenantId: string,
     organizationCreateInput: OrganizationCreateInput
   ): Promise<Organization> {
-    const managementClient = await this.getAuth0Client(tenantId);
-
-    return await managementClient.organizations.create({
-      name: organizationCreateInput.name,
+    return await this.getAuth0Client(tenantId).then((managementClient) => {
+      return managementClient.organizations.create({
+        name: organizationCreateInput.name,
+      });
     });
   }
 
   async removeOrganization(tenantId: string, organizationId: string) {
-    const managementClient = await this.getAuth0Client(tenantId);
-
-    return await managementClient.organizations.delete({ id: organizationId });
+    return await this.getAuth0Client(tenantId).then((managementClient) => {
+      return managementClient.organizations.delete({ id: organizationId });
+    });
   }
 
   private async getAuth0Client(tenantId: string): ManagementClient {
