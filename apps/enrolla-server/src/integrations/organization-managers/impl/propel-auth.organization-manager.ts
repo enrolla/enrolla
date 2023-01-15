@@ -10,8 +10,8 @@ export class PropelAuthOrganizationManager implements OrganizationManager {
   static PROPEL_AUTH_DOMAIN_CONGIURATION_KEY = 'propel_auth_domain';
 
   constructor(
-    private httpService: HttpService,
-    private configurationsService: ConfigurationsService
+    private configurationsService: ConfigurationsService,
+    private httpService: HttpService
   ) {}
 
   async getOrganization(

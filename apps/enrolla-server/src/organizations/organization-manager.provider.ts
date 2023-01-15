@@ -7,16 +7,21 @@ import { ConfigurationsService } from '../configurations/configurations.service'
 import { NoneOrganizationManager } from '../integrations/organization-managers/impl/none.organization-manager';
 import { Auth0OrganizationManager } from '../integrations/organization-managers/impl/auth0.organization-manager';
 import { PropelAuthOrganizationManager } from '../integrations/organization-managers/impl/propel-auth.organization-manager';
+import { HttpService } from '@nestjs/axios';
 
 function organizationManagerFactory(
   configurationsService: ConfigurationsService,
+  httpService: HttpService,
   type: OrganizationManagerType
 ) {
   switch (type) {
     case OrganizationManagerType.Auth0:
       return new Auth0OrganizationManager(configurationsService);
     case OrganizationManagerType.PropelAuth:
-      return new PropelAuthOrganizationManager(configurationsService);
+      return new PropelAuthOrganizationManager(
+        configurationsService,
+        httpService
+      );
     case OrganizationManagerType.None:
     default:
       return new NoneOrganizationManager();
@@ -28,12 +33,13 @@ function createOrganizationManagerProvider(
 ): Provider<OrganizationManager> {
   return {
     provide: `OrganizationManager${type}`,
-    useFactory: (configurationsService) =>
+    useFactory: (configurationsService, httpService) =>
       organizationManagerFactory(
         configurationsService,
+        httpService,
         OrganizationManagerType[type]
       ),
-    inject: [ConfigurationsService],
+    inject: [ConfigurationsService, HttpService],
   };
 }
 
