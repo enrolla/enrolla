@@ -2,19 +2,10 @@ import { useShow } from '@pankod/refine-core';
 import { Show, Title, Text, Table } from '@pankod/refine-mantine';
 import { FeatureViewComponent } from '../../components/features/FeatureViewComponent';
 
-import { IFeature, IPackage } from '../../interfaces';
-import { FeatureValue } from '../../interfaces/features.interface';
-
-type IPackageShowQueryResult = {
-  effectiveConfiguration: {
-    feature: IFeature;
-    value: { value: FeatureValue };
-  }[];
-  parentPackage?: IPackage;
-} & IPackage;
+import { IPackage } from '../../interfaces';
 
 export const PackageShow: React.FC = () => {
-  const { queryResult } = useShow<IPackageShowQueryResult>({
+  const { queryResult } = useShow<IPackage>({
     metaData: {
       fields: [
         'name',

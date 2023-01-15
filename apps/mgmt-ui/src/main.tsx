@@ -21,8 +21,11 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <StrictMode>
-    <AuthProvider authUrl={monkeyPatchPropelAuthUrl()}>
-      <App />
-    </AuthProvider>
+    {import.meta.env.VITE_PROPELAUTH_URL && (
+      <AuthProvider authUrl={monkeyPatchPropelAuthUrl()}>
+        <App />
+      </AuthProvider>
+    )}
+    {!import.meta.env.VITE_PROPELAUTH_URL && <App />}
   </StrictMode>
 );

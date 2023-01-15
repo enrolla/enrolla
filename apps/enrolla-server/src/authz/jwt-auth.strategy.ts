@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-custom';
 import { initBaseAuth } from '@propelauth/node';
@@ -6,17 +6,34 @@ import { TenantsService } from '../tenants/tenants.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'JwtAuth') {
-  propelAuth = initBaseAuth({
-    authUrl: process.env.PROPELAUTH_URL,
-    apiKey: process.env.PROPELAUTH_API_KEY,
-  });
+  private propelAuth;
+
+  private readonly logger = new Logger(JwtStrategy.name);
 
   constructor(private tenantsService: TenantsService) {
     super();
+
+    if (!process.env.PROPELAUTH_URL) {
+      this.logger.warn('PROPELAUTH_URL is not set, JWT validation is disabled');
+      this.propelAuth = null;
+    } else {
+      this.propelAuth = initBaseAuth({
+        authUrl: process.env.PROPELAUTH_URL,
+        apiKey: process.env.PROPELAUTH_API_KEY,
+      });
+    }
   }
 
   async validate(payload: Request) {
     const jwt = payload.headers['authorization'];
+
+    if (!this.propelAuth) {
+      return {
+        userId: '0',
+        tenantId: '0',
+        isSdk: false,
+      };
+    }
 
     try {
       // Trying to validate the JWT as a PropelAuth token by default, representing management ui access

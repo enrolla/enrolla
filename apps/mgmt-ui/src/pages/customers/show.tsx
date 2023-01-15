@@ -1,3 +1,4 @@
+import { Customer } from '@enrolla/graphql-codegen';
 import { useShow } from '@pankod/refine-core';
 import {
   Show,
@@ -11,23 +12,8 @@ import {
 import { IconAsterisk } from '@tabler/icons';
 import { FeatureViewComponent } from '../../components/features/FeatureViewComponent';
 
-import { ICustomer, IFeature, IPackage } from '../../interfaces';
-import { FeatureValue } from '../../interfaces/features.interface';
-
-type ICustomerShowQueryResult = {
-  features: {
-    feature: IFeature;
-    value: { value: FeatureValue };
-  }[];
-  effectiveConfiguration: {
-    feature: IFeature;
-    value: { value: FeatureValue };
-  }[];
-  package?: IPackage;
-} & ICustomer;
-
 export const CustomerShow: React.FC = () => {
-  const { queryResult } = useShow<ICustomerShowQueryResult>({
+  const { queryResult } = useShow<Customer>({
     metaData: {
       fields: [
         'name',

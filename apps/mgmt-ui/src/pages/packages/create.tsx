@@ -15,8 +15,6 @@ import {
 } from '@pankod/refine-mantine';
 import { List } from '@mantine/core';
 import { FeatureCustomizeComponent } from '../../components/features/FeatureCustomizeComponent';
-import { IFeature, IPackage } from '../../interfaces';
-import { CustomizedFeature } from '../../interfaces/features.interface';
 import { IconEditCircle } from '@tabler/icons';
 import { useList } from '@pankod/refine-core';
 import { FeatureViewComponent } from '../../components/features/FeatureViewComponent';
@@ -27,6 +25,7 @@ import {
   PREDEFINED_ICONS_LABELS,
 } from '../../components/packages/PackageIcon';
 import { forwardRef } from 'react';
+import { Feature, FeatureValue, Package } from '@enrolla/graphql-codegen';
 
 interface PackageIconItemProps extends React.ComponentPropsWithoutRef<'div'> {
   label: string;
@@ -54,12 +53,19 @@ export const PackageCreate: React.FC = () => {
     values,
     setValues,
     steps: { currentStep, gotoStep },
-  } = useStepsForm<IPackage>({
+  } = useStepsForm<Package>({
     initialValues: {
       icon: PredefinedIcon.Rocket,
       features: [],
       parentPackageId: null,
     },
+    transformValues: (values) => ({
+      ...values,
+      features: (values.features as FeatureValue[]).map((fv) => ({
+        featureId: fv.feature.id,
+        value: fv.value,
+      })),
+    }),
     validate: {
       name: (value) => {
         if (!value) {
@@ -78,7 +84,7 @@ export const PackageCreate: React.FC = () => {
     },
   });
 
-  const { data: featureList } = useList<IFeature>({
+  const { data: featureList } = useList<Feature>({
     resource: 'features',
     metaData: {
       fields: ['id', 'key', 'defaultValue', 'type', 'description'],
@@ -139,7 +145,8 @@ export const PackageCreate: React.FC = () => {
         </Stepper.Step>
         <Stepper.Step label="Customize Features">
           <FeatureCustomizeComponent
-            customizedFeatures={values['features'] as CustomizedFeature[]}
+            parentPackageId={values['parentPackageId'] as string}
+            customizedFeatures={values['features'] as FeatureValue[]}
             onCustomizedFeaturesChange={(newCustomizedFeatures) => {
               setValues({ features: newCustomizedFeatures });
             }}
@@ -155,28 +162,26 @@ export const PackageCreate: React.FC = () => {
               </Title>
               <List center icon={<IconEditCircle size={16} />}>
                 {featureList &&
-                  (values['features'] as CustomizedFeature[])?.map(
-                    (feature) => {
-                      const featureMetadata = featureList.data.find(
-                        (f) => f.id === feature.featureId
-                      );
-                      if (!featureMetadata) {
-                        return null;
-                      }
-
-                      return (
-                        <List.Item>
-                          <Group>
-                            <Text>{featureMetadata.key}:</Text>
-                            <FeatureViewComponent
-                              type={featureMetadata.type}
-                              value={feature.value.value}
-                            />
-                          </Group>
-                        </List.Item>
-                      );
+                  (values['features'] as FeatureValue[])?.map((feature) => {
+                    const featureMetadata = featureList.data.find(
+                      (f) => f.id === feature.feature.id
+                    );
+                    if (!featureMetadata) {
+                      return null;
                     }
-                  )}
+
+                    return (
+                      <List.Item>
+                        <Group>
+                          <Text>{featureMetadata.key}:</Text>
+                          <FeatureViewComponent
+                            type={featureMetadata.type}
+                            value={feature.value.value}
+                          />
+                        </Group>
+                      </List.Item>
+                    );
+                  })}
               </List>
             </>
           </Stack>

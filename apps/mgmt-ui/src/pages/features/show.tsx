@@ -4,11 +4,10 @@ import {
   FeatureViewComponent,
   FEATURE_TYPE_NAMES,
 } from '../../components/features/FeatureViewComponent';
-
-import { IFeature } from '../../interfaces';
+import { Feature } from '@enrolla/graphql-codegen';
 
 export const FeatureShow: React.FC = () => {
-  const { queryResult } = useShow<IFeature>({
+  const { queryResult } = useShow<Feature>({
     metaData: {
       fields: ['key', 'type', 'defaultValue', 'description', 'createdAt'],
     },

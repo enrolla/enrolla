@@ -6,7 +6,7 @@ import * as gql from 'gql-query-builder';
 import pluralize from 'pluralize';
 import camelCase from 'camelcase';
 
-const dataProvider = (client: GraphQLClient): Required<DataProvider> => {
+const dataProvider = (client: GraphQLClient): DataProvider => {
   return {
     getList: async ({
       resource,
@@ -33,29 +33,6 @@ const dataProvider = (client: GraphQLClient): Required<DataProvider> => {
       return {
         data: response[operation],
         total: response[operation].count,
-      };
-    },
-
-    getMany: async ({ resource, ids, metaData }) => {
-      const camelResource = camelCase(resource);
-
-      const operation = metaData?.operation ?? camelResource;
-
-      const { query, variables } = gql.query({
-        operation,
-        variables: {
-          where: {
-            value: { id_in: ids },
-            type: 'JSON',
-          },
-        },
-        fields: metaData?.fields,
-      });
-
-      const response = await client.request(query, variables);
-
-      return {
-        data: response[operation],
       };
     },
 
@@ -123,6 +100,9 @@ const dataProvider = (client: GraphQLClient): Required<DataProvider> => {
     update: async ({ resource, id, variables, metaData }) => {
       const singularResource = pluralize.singular(resource);
       const camelUpdateName = camelCase(`update-${singularResource}`);
+      const inputName = camelCase(`update-${singularResource}-input`, {
+        pascalCase: true,
+      });
 
       const operation = metaData?.operation ?? camelUpdateName;
 
@@ -130,8 +110,9 @@ const dataProvider = (client: GraphQLClient): Required<DataProvider> => {
         operation,
         variables: {
           input: {
-            value: { where: { id }, data: variables },
-            type: `${camelUpdateName}Input`,
+            value: { id, ...variables },
+            type: inputName,
+            required: true,
           },
         },
         fields: metaData?.fields ?? [

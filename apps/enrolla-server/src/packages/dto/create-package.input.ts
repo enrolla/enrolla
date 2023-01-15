@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Optional } from '@nestjs/common';
 import { InputType, Field } from '@nestjs/graphql';
 import { CuidResolver, GraphQLJSON } from 'graphql-scalars';
 
@@ -21,17 +20,14 @@ export class CreatePackageInput {
   name: string;
 
   @ApiProperty()
-  @Optional()
   @Field(() => String, { nullable: true })
   description?: string;
 
   @ApiProperty()
-  @Optional()
   @Field(() => String, { nullable: true })
   icon?: string;
 
   @ApiProperty()
-  @Optional()
   @Field(() => CuidResolver, { nullable: true })
   parentPackageId?: string;
 

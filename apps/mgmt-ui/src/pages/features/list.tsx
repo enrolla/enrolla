@@ -10,16 +10,15 @@ import {
   DeleteButton,
   DateField,
 } from '@pankod/refine-mantine';
-import { IFeature } from '../../interfaces';
+import { Feature, FeatureType } from '@enrolla/graphql-codegen';
 import { useMemo } from 'react';
-import { FeatureType } from '../../interfaces/features.interface';
 import {
   FeatureViewComponent,
   FEATURE_TYPE_NAMES,
 } from '../../components/features/FeatureViewComponent';
 
 export const FeatureList: React.FC = () => {
-  const columns = useMemo<ColumnDef<IFeature>[]>(
+  const columns = useMemo<ColumnDef<Feature>[]>(
     () => [
       {
         id: 'key',
@@ -40,7 +39,7 @@ export const FeatureList: React.FC = () => {
         accessorKey: 'defaultValue',
         cell: ({ getValue, row }) => (
           <FeatureViewComponent
-            value={(getValue() as IFeature['defaultValue']).value}
+            value={(getValue() as Feature['defaultValue']).value}
             type={row.getValue('type') as FeatureType}
           />
         ),
