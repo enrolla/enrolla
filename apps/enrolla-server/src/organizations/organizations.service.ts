@@ -63,8 +63,12 @@ export class OrganizationsService {
         OrganizationsService.ORGANIZATION_MANAGER_TYPE_CONFIG_KEY
       );
 
+    const enumKey = Object.keys(OrganizationManagerType)[
+      Object.values(OrganizationManagerType).indexOf(organizationManagerType)
+    ];
+
     return this.moduleRef.get(
-      `OrganizationManager${organizationManagerType}`
+      `OrganizationManager${enumKey}`
     ) as OrganizationManager;
   }
 }

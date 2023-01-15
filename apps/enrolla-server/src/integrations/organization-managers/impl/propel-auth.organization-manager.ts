@@ -103,6 +103,6 @@ export class PropelAuthOrganizationManager implements OrganizationManager {
   }
 
   private async tenantRequestUrl(tenantId: string, path: string) {
-    return `https://${await this.tenantDomain(tenantId)}/${path}`;
+    return `${await this.tenantDomain(tenantId)}/${path}`;
   }
 }
