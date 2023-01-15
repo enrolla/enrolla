@@ -57,11 +57,19 @@ export class OrganizationsService {
   private async organizationManager(
     tenantId: string
   ): Promise<OrganizationManager> {
-    const organizationManagerType =
+    let organizationManagerType: OrganizationManagerType;
+
+    try {
       await this.configurationsService.getValue<OrganizationManagerType>(
         tenantId,
         OrganizationsService.ORGANIZATION_MANAGER_TYPE_CONFIG_KEY
       );
+    } catch (error) {
+      console.log(
+        `Organization manager type not configured for tenant ${tenantId}, falling back to None`
+      );
+      organizationManagerType = OrganizationManagerType.None;
+    }
 
     const enumKey = Object.keys(OrganizationManagerType)[
       Object.values(OrganizationManagerType).indexOf(organizationManagerType)
