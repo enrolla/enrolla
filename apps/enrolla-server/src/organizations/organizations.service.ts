@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateOrganizationInput } from './dto/create-organization.input';
 import { UpdateOrganizationInput } from './dto/update-organization.input';
 import { ConfigurationsService } from '../configurations/configurations.service';
@@ -12,6 +12,8 @@ import { ModuleRef } from '@nestjs/core';
 export class OrganizationsService {
   private static ORGANIZATION_MANAGER_TYPE_CONFIG_KEY =
     'ORGANIZATION_MANAGER_TYPE';
+
+  private readonly logger = new Logger(OrganizationsService.name);
 
   constructor(
     private moduleRef: ModuleRef,
@@ -66,9 +68,10 @@ export class OrganizationsService {
           OrganizationsService.ORGANIZATION_MANAGER_TYPE_CONFIG_KEY
         );
     } catch (error) {
-      console.log(
+      this.logger.log(
         `Organization manager type not configured for tenant ${tenantId}, falling back to None`
       );
+
       organizationManagerType = OrganizationManagerType.None;
     }
 
