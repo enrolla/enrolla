@@ -24,6 +24,10 @@ import { SecretsModule } from './secrets/secrets.module';
     EventEmitterModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
+
+      // See https://www.apollographql.com/docs/apollo-server/v3/performance/cache-backends#ensuring-a-bounded-cache
+      cache: 'bounded',
+
       autoSchemaFile: join(process.cwd(), '/graphql/schema.gql'),
       resolvers: {
         JSON: GraphQLJSON,
