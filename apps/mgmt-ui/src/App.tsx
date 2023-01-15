@@ -1,4 +1,4 @@
-import { AuthProvider, Refine } from '@pankod/refine-core';
+import { Refine } from '@pankod/refine-core';
 import routerProvider from '@pankod/refine-react-router-v6';
 import {
   MantineProvider,
@@ -14,11 +14,6 @@ import {
 } from '@pankod/refine-mantine';
 import logo from './assets/logo.png';
 import logoDark from './assets/logo_dark.png';
-import {
-  useAuthInfo,
-  useRedirectFunctions,
-  useLogoutFunction,
-} from '@propelauth/react';
 import { Login } from './pages/login';
 import { ApiTokenList, ApiTokenCreate } from './pages/api-tokens';
 import { FeatureCreate, FeatureList, FeatureShow } from './pages/features';
@@ -32,27 +27,12 @@ import {
 } from '@tabler/icons';
 import { Layout } from './components/layout';
 import dataProvider from './providers/backendGraphQLProvider';
-import { GraphQLClient } from 'graphql-request';
 import { CustomerCreate, CustomerList, CustomerShow } from './pages/customers';
 import { Integrations } from './pages/integrations';
 import { Dashboard } from './pages/dashboard';
-import { useEffect, useMemo, useState } from 'react';
-
-// Yep, it's ugly, but Vercel doesn't provide an easy way to separate our staging and production environments.
-// Will refactor soon (famous last words).
-const monkeyPatchBackendUrl = () => {
-  if (window.location.href.startsWith('https://app-staging.vecinity.io')) {
-    return 'https://api-staging.vecinity.io';
-  } else {
-    return import.meta.env.VITE_BACKEND_URL;
-  }
-};
+import useAuthProvider from './providers/useAuthProvider';
 
 export default function App() {
-  const authInfo = useAuthInfo();
-  const { redirectToCreateOrgPage } = useRedirectFunctions();
-  const logoutFn = useLogoutFunction();
-
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: 'mantine-color-scheme',
     defaultValue: 'light',
@@ -62,60 +42,11 @@ export default function App() {
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
 
-  const gqlClient = useMemo(
-    () => new GraphQLClient(`${monkeyPatchBackendUrl()}/graphql`),
-    []
-  );
-
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    if (authInfo.loading) {
-      return;
-    }
-
-    if (authInfo.orgHelper?.getOrgs().length === 0) {
-      redirectToCreateOrgPage();
-      return;
-    }
-
-    setLoaded(true);
-
-    if (authInfo.isLoggedIn) {
-      gqlClient.setHeader('Authorization', `Bearer ${authInfo.accessToken}`);
-    }
-  }, [authInfo, redirectToCreateOrgPage, gqlClient]);
+  const { loaded, authProvider, gqlClient } = useAuthProvider();
 
   if (!loaded) {
     return <span>loading...</span>;
   }
-
-  const authProvider: AuthProvider = {
-    login: () => {
-      return Promise.resolve();
-    },
-    logout: () => {
-      logoutFn(true);
-      return Promise.resolve('/');
-    },
-    checkError: () => Promise.resolve(),
-    checkAuth: () => {
-      if (!authInfo.loading && authInfo.isLoggedIn) {
-        return Promise.resolve();
-      }
-
-      return Promise.reject();
-    },
-    getPermissions: () => Promise.resolve(),
-    getUserIdentity: async () => {
-      if (!authInfo.loading && authInfo.user) {
-        return {
-          ...authInfo.user,
-          avatar: authInfo.user.pictureUrl,
-        };
-      }
-    },
-  };
 
   return (
     <ColorSchemeProvider
