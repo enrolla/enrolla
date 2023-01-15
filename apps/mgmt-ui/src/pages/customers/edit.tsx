@@ -31,13 +31,16 @@ export const CustomerEdit: React.FC = () => {
       features: [],
       package: { id: '' },
     },
-    transformValues: (values) => ({
-      features: (values.features as FeatureValue[]).map((fv) => ({
-        featureId: fv.feature.id,
-        value: fv.value,
-      })),
-      packageId: (values['package'] as Record<string, unknown>)['id'],
-    }),
+    transformValues: (values) => {
+      console.log(values);
+      return {
+        features: (values.features as FeatureValue[]).map((fv) => ({
+          featureId: fv.feature.id,
+          value: fv.value,
+        })),
+        packageId: values['package.id'] as string,
+      };
+    },
   });
 
   const { selectProps: selectPackageProps } = useSelect<Package>({
