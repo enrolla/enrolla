@@ -11,7 +11,6 @@ import { FeatureCustomizeComponent } from '../../components/features/FeatureCust
 export const CustomerEdit: React.FC = () => {
   const {
     saveButtonProps,
-    getInputProps,
     values,
     setValues,
     refineCore: { queryResult },
@@ -58,11 +57,14 @@ export const CustomerEdit: React.FC = () => {
         mb={8}
         label="Package"
         placeholder="Pick one"
-        {...getInputProps('package.id')}
+        value={(values['package'] as Package | null)?.id}
+        onChange={(value) => {
+          setValues({ package: { id: value } });
+        }}
         {...selectPackageProps}
       />
       <FeatureCustomizeComponent
-        parentPackageId={values['packageId'] as string}
+        parentPackageId={values['package.id'] as string}
         customizedFeatures={values['features'] as FeatureValue[]}
         onCustomizedFeaturesChange={(newCustomizedFeatures) => {
           setValues({ features: newCustomizedFeatures });

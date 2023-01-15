@@ -127,7 +127,10 @@ export const PackageEdit: React.FC = () => {
         mb={16}
         label="Extends package"
         placeholder="Pick one"
-        {...getInputProps('parentPackage.id')}
+        value={(values['parentPackage'] as Package | null)?.id}
+        onChange={(value) => {
+          setValues({ parentPackage: { id: value } });
+        }}
         {...selectProps}
       />
       <FeatureCustomizeComponent
