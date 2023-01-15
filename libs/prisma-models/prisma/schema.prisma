@@ -80,7 +80,7 @@ model CustomerFeature {
   feature    Feature  @relation(fields: [featureId], references: [id])
   featureId  String   @map("feature_id")
   customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  customerId String   @map("package_id")
+  customerId String   @map("customer_id")
   value      Json
   createdAt  DateTime @default(now()) @map("created_at")
 
