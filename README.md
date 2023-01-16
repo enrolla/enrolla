@@ -9,7 +9,7 @@
 </a>
 </p>
 <p align="center">
-  <p align="center">Open-source client configuration platform for SaSS companies.</p>
+  <p align="center">Open-source client configuration platform for SaaS companies.</p>
 </p>
 <h4 align="center">
   <a href="https://join.slack.com/t/enrollacommunity/shared_invite/zt-1naxh3lia-wIvFcLyCEXTYzAuO1U688Q">Slack</a> |
