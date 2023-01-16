@@ -55,6 +55,13 @@
     {
       "group": "API Documentation",
       "pages": ["api-docs/authentication", "api-docs/endpoint"]
+    },
+    {
+      "group": "Contributing",
+      "pages": [
+        "contributing/overview",
+        "contributing/developing"
+      ]
     }
   ],
   "footerSocials": {
