@@ -1,45 +1,49 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Secret } from './entities/secret.entity';
-import { decrypt, encrypt } from '../utils/encryption.utils';
+import { Secret, SecretKey } from './entities';
 import { CreateSecretInput, UpdateSecretInput } from './dto';
 
 @Injectable()
 export class SecretsService {
-  ENCRYPTION_IV_LENGTH = 16;
-
   constructor(private prismaService: PrismaService) {}
 
-  async create(tenantId: string, input: CreateSecretInput): Promise<Secret> {
-    const data = { tenantId, ...input, iv: undefined };
+  async findAllKeysForTennant(tenantId: string): Promise<SecretKey[]> {
+    return await this.prismaService.secretKey.findMany({
+      where: {
+        tenantId,
+      },
+    });
+  }
+  
+  async createKey(tenantId: string, key: string): Promise<SecretKey> {
+    const data = { tenantId, key };
 
-    if (input.isSymmetric) {
-      const { encryptedData, iv } = await encrypt(
-        input.value,
-        this.ENCRYPTION_IV_LENGTH
-      );
-      data.value = encryptedData;
-      data.iv = iv;
-    }
+    return await this.prismaService.secretKey.create({
+      data,
+    });
+  }
+
+  async removeKey(tenantId: string, id: string): Promise<void> {
+    await this.prismaService.secretKey.delete({
+      where: {
+        id_tenantId: {
+          id,
+          tenantId,
+        },
+      },
+    });
+  }
+
+  async createSecret(tenantId: string, input: CreateSecretInput): Promise<Secret> {
+    const data = { tenantId, ...input };
 
     return await this.prismaService.secret.create({
       data,
     });
   }
 
-  async update(tenantId: string, input: UpdateSecretInput): Promise<Secret> {
-    const { isSymmetric, value, id } = input;
-    const data = { value, isSymmetric, iv: undefined };
-
-    if (isSymmetric) {
-      const { encryptedData, iv } = await encrypt(
-        value,
-        this.ENCRYPTION_IV_LENGTH
-      );
-
-      data.iv = iv;
-      data.value = encryptedData;
-    }
+  async updateSecret(tenantId: string, input: UpdateSecretInput): Promise<Secret> {
+    const { value, id } = input;
 
     return await this.prismaService.secret.update({
       where: {
@@ -48,11 +52,13 @@ export class SecretsService {
           tenantId,
         },
       },
-      data,
+      data: {
+        value
+      },
     });
   }
 
-  async findByCustomerId(
+  async findAllSecretsByCustomerId(
     tenantId: string,
     customerId: string
   ): Promise<Secret[]> {
@@ -62,16 +68,11 @@ export class SecretsService {
         customerId,
       },
     });
-    
-    secrets.forEach(async (secret) => {
-      if (secret.isSymmetric)
-        secret.value = await decrypt(secret.value, secret.iv);
-    });
 
     return secrets;
   }
 
-  async remove(tenantId: string, id: string): Promise<void> {
+  async removeSecret(tenantId: string, id: string): Promise<void> {
     await this.prismaService.secret.delete({
       where: {
         id_tenantId: {

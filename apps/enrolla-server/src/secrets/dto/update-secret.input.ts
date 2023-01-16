@@ -7,7 +7,4 @@ export class UpdateSecretInput {
 
   @Field(() => String)
   value: string;
-
-  @Field(() => Boolean)
-  isSymmetric?: boolean;
 }

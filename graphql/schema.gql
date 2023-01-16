@@ -22,7 +22,7 @@ scalar DateTime
 type EncryptionKey {
   id: Cuid!
   publicKey: String!
-  privateKey: String!
+  createdAt: DateTime!
 }
 
 type Feature {
@@ -74,7 +74,7 @@ type Secret {
   id: Cuid!
   key: String!
   value: String!
-  isSymmetric: Boolean!
+  createdAt: DateTime!
 }
 
 type Customer {
@@ -95,9 +95,15 @@ type Organization {
   name: String!
 }
 
+type SecretKey {
+  id: Cuid!
+  key: String!
+  createdAt: DateTime!
+}
+
 type Query {
   apiTokens: [ApiToken!]!
-  publicEncryptionKey: String!
+  encryptionKey: EncryptionKey
   features: [Feature!]!
   feature(id: String!): Feature!
   packages: [Package!]!
@@ -106,13 +112,13 @@ type Query {
   customer(id: String!): Customer!
   organizations: [Organization!]!
   organization(id: String!): Organization!
+  secretKeys: [SecretKey!]!
 }
 
 type Mutation {
   createApiToken(input: CreateApiTokenInput!): ApiToken!
   removeApiToken(id: String!): ApiToken!
   createEncryptionKey(input: CreateEncryptionKeyInput!): EncryptionKey!
-  updateEncryptionKey(input: CreateEncryptionKeyInput!): EncryptionKey!
   removeEncryptionKey: EncryptionKey!
   createFeature(input: CreateFeatureInput!): Feature!
   updateFeature(input: UpdateFeatureInput!): Feature!
@@ -126,6 +132,11 @@ type Mutation {
   createOrganization(input: CreateOrganizationInput!): Organization!
   updateOrganization(input: UpdateOrganizationInput!): Organization!
   removeOrganization(id: String!): Organization!
+  createSecret(input: CreateSecretInput!): Secret!
+  updateSecret(input: UpdateSecretInput!): Secret!
+  removeSecret(id: String!): Secret!
+  createSecretKey(key: String!): SecretKey!
+  removeSecretKey(id: String!): SecretKey!
 }
 
 input CreateApiTokenInput {
@@ -199,4 +210,15 @@ input CreateOrganizationInput {
 input UpdateOrganizationInput {
   name: String
   id: String!
+}
+
+input CreateSecretInput {
+  customerId: String!
+  key: String!
+  value: String!
+}
+
+input UpdateSecretInput {
+  id: String!
+  value: String!
 }

@@ -12,8 +12,8 @@ export class Secret {
   @Field(() => String)
   value: string;
 
-  @Field(() => Boolean)
-  isSymmetric?: boolean;
+  @Field(() => Date)
+  createdAt: Date;
 
   constructor(props: Partial<Secret>) {
     Object.assign(this, props);

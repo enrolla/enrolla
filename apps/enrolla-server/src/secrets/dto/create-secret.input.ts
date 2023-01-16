@@ -10,7 +10,4 @@ export class CreateSecretInput {
 
   @Field(() => String)
   value: string;
-
-  @Field(() => Boolean)
-  isSymmetric?: boolean;
 }

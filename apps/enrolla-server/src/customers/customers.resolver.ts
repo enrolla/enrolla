@@ -94,7 +94,7 @@ export class CustomersResolver {
   async secrets(@Parent() customer: Customer) {
     const { id, tenantId } = customer;
 
-    return await this.secretsService.findByCustomerId(tenantId, id);
+    return await this.secretsService.findAllSecretsByCustomerId(tenantId, id);
   }
 
   @ResolveField(() => [FeatureValue])

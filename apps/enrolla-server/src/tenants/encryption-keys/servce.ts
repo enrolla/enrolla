@@ -22,29 +22,10 @@ export class EncryptionKeyService {
     });
   }
 
-  async getTennantEncryptionKey(tenantId: string): Promise<String> {
-    const key = await this.prismaService.encryptionKey.findUnique({
+  async getTennantEncryptionKey(tenantId: string) {
+    return await this.prismaService.encryptionKey.findUnique({
       where: {
         tenantId,
-      },
-    });
-
-    return key?.publicKey;
-  }
-
-  async update(
-    tenantId: string,
-    input: CreateEncryptionKeyInput
-  ): Promise<EncryptionKey> {
-    const { privateKey, publicKey } = input;
-
-    return await this.prismaService.encryptionKey.update({
-      where: {
-        tenantId
-      },
-      data: {
-        privateKey,
-        publicKey,
       },
     });
   }
