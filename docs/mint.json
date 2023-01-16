@@ -32,6 +32,11 @@
       "name": "Github",
       "icon": "github",
       "url": "https://github.com/enrolla/enrolla"
+    },
+    {
+      "name": "Contributing",
+      "icon": "code",
+      "url": "contributing"
     }
   ],
   "navigation": [
