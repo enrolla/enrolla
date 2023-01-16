@@ -70,7 +70,7 @@
     "@nrwl/jest": "15.4.5",
     "@nrwl/linter": "15.4.5",
     "@nrwl/nest": "15.4.5",
-    "@nrwl/node": "15.4.5",
+    "@nrwl/node": "15.5.1",
     "@nrwl/react": "15.4.5",
     "@nrwl/vite": "15.4.5",
     "@nrwl/workspace": "15.4.5",
