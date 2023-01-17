@@ -106,7 +106,8 @@ export const SecretKeyList: React.FC = () => {
       {!publicKey && (
         <Modal
           opened={true}
-          onClose={() => {}}
+          closeOnClickOutside={false}
+          onClose={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
           title="No Encryption Keys Found"
         >
           <Text>

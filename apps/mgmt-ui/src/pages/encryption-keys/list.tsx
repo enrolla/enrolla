@@ -122,7 +122,7 @@ export const EncryptionKeyList: React.FC = () => {
   );
 
   const [hasSecrets, setHasSecrets] = useState<boolean>(false);
-  useList<Boolean>({
+  useList({
     resource: 'hasSecrets',
     queryOptions: {
       onSuccess: ({ data }) => {
