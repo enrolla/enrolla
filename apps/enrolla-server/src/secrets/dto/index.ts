@@ -1,2 +1,2 @@
-export * from './create-secret.input';
-export * from './update-secret.input';
+export * from './create-secret-key.input';
+export * from './secret.input';

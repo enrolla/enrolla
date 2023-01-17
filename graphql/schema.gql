@@ -189,11 +189,10 @@ input CreateCustomerInput {
   name: String!
   packageId: String
   features: [FeatureInstanceInput!]!
-  secrets: [CreateSecretInput!]!
+  secrets: [SecretInput!]!
 }
 
-input CreateSecretInput {
-  customerId: String!
+input SecretInput {
   key: String!
   value: String!
 }
@@ -204,7 +203,7 @@ input UpdateCustomerInput {
   name: String
   packageId: String
   features: [FeatureInstanceInput!]
-  secrets: [CreateSecretInput!]
+  secrets: [SecretInput!]
   id: String!
 }
 

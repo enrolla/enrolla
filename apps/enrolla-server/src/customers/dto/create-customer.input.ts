@@ -1,6 +1,7 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { FeatureInstanceInput } from '../../packages/dto/create-package.input';
 import { ApiProperty } from '@nestjs/swagger';
+import { SecretInput } from '../../secrets/dto';
 
 @InputType()
 export class CreateCustomerInput {
@@ -19,4 +20,8 @@ export class CreateCustomerInput {
   @ApiProperty({ type: FeatureInstanceInput, isArray: true })
   @Field(() => [FeatureInstanceInput])
   features: FeatureInstanceInput[];
+
+  @ApiProperty({ type: SecretInput, isArray: true })
+  @Field(() => [SecretInput])
+  secrets: SecretInput[];
 }

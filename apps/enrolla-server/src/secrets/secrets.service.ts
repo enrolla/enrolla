@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Secret, SecretKey } from './entities';
-import { CreateSecretInput, UpdateSecretInput } from './dto';
+import { CreateSecretKeyInput } from './dto';
 
 @Injectable()
 export class SecretsService {
@@ -14,46 +14,32 @@ export class SecretsService {
       },
     });
   }
+
+  async hasSecrets(tenantId: string): Promise<boolean> {
+    const res = await this.prismaService.secret.findFirst({
+      where: {
+        tenantId,
+      },
+    });
+
+    return !!res;
+  }
   
-  async createKey(tenantId: string, key: string): Promise<SecretKey> {
-    const data = { tenantId, key };
+  async createKey(tenantId: string, input: CreateSecretKeyInput): Promise<SecretKey> {
+    const data = { ...input, tenantId };
 
     return await this.prismaService.secretKey.create({
       data,
     });
   }
 
-  async removeKey(tenantId: string, id: string): Promise<void> {
-    await this.prismaService.secretKey.delete({
+  async removeKey(tenantId: string, id: string): Promise<SecretKey> {
+    return await this.prismaService.secretKey.delete({
       where: {
         id_tenantId: {
           id,
           tenantId,
         },
-      },
-    });
-  }
-
-  async createSecret(tenantId: string, input: CreateSecretInput): Promise<Secret> {
-    const data = { tenantId, ...input };
-
-    return await this.prismaService.secret.create({
-      data,
-    });
-  }
-
-  async updateSecret(tenantId: string, input: UpdateSecretInput): Promise<Secret> {
-    const { value, id } = input;
-
-    return await this.prismaService.secret.update({
-      where: {
-        id_tenantId: {
-          id,
-          tenantId,
-        },
-      },
-      data: {
-        value
       },
     });
   }
@@ -72,14 +58,4 @@ export class SecretsService {
     return secrets;
   }
 
-  async removeSecret(tenantId: string, id: string): Promise<void> {
-    await this.prismaService.secret.delete({
-      where: {
-        id_tenantId: {
-          id,
-          tenantId,
-        },
-      },
-    });
-  }
 }

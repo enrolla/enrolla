@@ -41,10 +41,10 @@ export type CreateCustomerInput = {
   name: Scalars['String'];
   organizationId?: InputMaybe<Scalars['String']>;
   packageId?: InputMaybe<Scalars['String']>;
+  secrets: Array<SecretInput>;
 };
 
 export type CreateEncryptionKeyInput = {
-  privateKey: Scalars['String'];
   publicKey: Scalars['String'];
 };
 
@@ -67,10 +67,8 @@ export type CreatePackageInput = {
   parentPackageId?: InputMaybe<Scalars['Cuid']>;
 };
 
-export type CreateSecretInput = {
-  customerId: Scalars['String'];
+export type CreateSecretKeyInput = {
   key: Scalars['String'];
-  value: Scalars['String'];
 };
 
 export type Customer = {
@@ -132,7 +130,6 @@ export type Mutation = {
   createFeature: Feature;
   createOrganization: Organization;
   createPackage: Package;
-  createSecret: Secret;
   createSecretKey: SecretKey;
   removeApiToken: ApiToken;
   removeCustomer: Customer;
@@ -140,13 +137,11 @@ export type Mutation = {
   removeFeature: Feature;
   removeOrganization: Organization;
   removePackage: Package;
-  removeSecret: Secret;
   removeSecretKey: SecretKey;
   updateCustomer: Customer;
   updateFeature: Feature;
   updateOrganization: Organization;
   updatePackage: Package;
-  updateSecret: Secret;
 };
 
 
@@ -180,13 +175,8 @@ export type MutationCreatePackageArgs = {
 };
 
 
-export type MutationCreateSecretArgs = {
-  input: CreateSecretInput;
-};
-
-
 export type MutationCreateSecretKeyArgs = {
-  key: Scalars['String'];
+  input: CreateSecretKeyInput;
 };
 
 
@@ -196,6 +186,11 @@ export type MutationRemoveApiTokenArgs = {
 
 
 export type MutationRemoveCustomerArgs = {
+  id: Scalars['String'];
+};
+
+
+export type MutationRemoveEncryptionKeyArgs = {
   id: Scalars['String'];
 };
 
@@ -211,11 +206,6 @@ export type MutationRemoveOrganizationArgs = {
 
 
 export type MutationRemovePackageArgs = {
-  id: Scalars['String'];
-};
-
-
-export type MutationRemoveSecretArgs = {
   id: Scalars['String'];
 };
 
@@ -242,11 +232,6 @@ export type MutationUpdateOrganizationArgs = {
 
 export type MutationUpdatePackageArgs = {
   input: UpdatePackageInput;
-};
-
-
-export type MutationUpdateSecretArgs = {
-  input: UpdateSecretInput;
 };
 
 export type Organization = {
@@ -279,9 +264,10 @@ export type Query = {
   apiTokens: Array<ApiToken>;
   customer: Customer;
   customers: Array<Customer>;
-  encryptionKey?: Maybe<EncryptionKey>;
+  encryptionKeys: Array<EncryptionKey>;
   feature: Feature;
   features: Array<Feature>;
+  hasSecrets: Scalars['Boolean'];
   organization: Organization;
   organizations: Array<Organization>;
   package: Package;
@@ -317,6 +303,11 @@ export type Secret = {
   value: Scalars['String'];
 };
 
+export type SecretInput = {
+  key: Scalars['String'];
+  value: Scalars['String'];
+};
+
 export type SecretKey = {
   __typename?: 'SecretKey';
   createdAt: Scalars['DateTime'];
@@ -331,6 +322,7 @@ export type UpdateCustomerInput = {
   name?: InputMaybe<Scalars['String']>;
   organizationId?: InputMaybe<Scalars['String']>;
   packageId?: InputMaybe<Scalars['String']>;
+  secrets?: InputMaybe<Array<SecretInput>>;
 };
 
 export type UpdateFeatureInput = {
@@ -350,11 +342,6 @@ export type UpdatePackageInput = {
   name?: InputMaybe<Scalars['String']>;
   parentPackageId?: InputMaybe<Scalars['Cuid']>;
   updateStrategy?: InputMaybe<PackageUpdateStrategy>;
-};
-
-export type UpdateSecretInput = {
-  id: Scalars['String'];
-  value: Scalars['String'];
 };
 
 export type GetAllCustomerFeaturesQueryVariables = Exact<{ [key: string]: never; }>;

@@ -23,8 +23,11 @@ import {
   Feature,
   FeatureValue,
   Organization,
+  SecretInput,
+  SecretKey,
 } from '@enrolla/graphql-codegen';
 import { useState } from 'react';
+import { SecretsCreateComponent } from '../../components/secrets/SecretsCreateComponent';
 
 export const CustomerCreate: React.FC = () => {
   const [organizationList, setOrganizationList] = useState<
@@ -38,6 +41,7 @@ export const CustomerCreate: React.FC = () => {
     steps: { currentStep, gotoStep },
   } = useStepsForm<Customer>({
     initialValues: {
+      secrets: [],
       features: [],
       packageId: null,
       createOrganizationName: null,
@@ -51,6 +55,10 @@ export const CustomerCreate: React.FC = () => {
         features: (values.features as FeatureValue[]).map((fv) => ({
           featureId: fv.feature.id,
           value: fv.value,
+        })),
+        secrets: (values.secrets as SecretInput[]).map((s) => ({
+          key: s.key,
+          value: s.value, // todo: encrypt
         })),
         organizationId: shouldCreateOrg ? null : values['organizationId'],
         createOrganizationName: shouldCreateOrg
@@ -103,6 +111,15 @@ export const CustomerCreate: React.FC = () => {
     },
   });
 
+  const { data: secretKeys } = useList<SecretKey>({
+    resource: 'secret-keys',
+    metaData: {
+      fields: ['key'],
+    },
+  });
+
+  const lastStep = 3;
+
   return (
     <Create
       // Next, previous and save buttons
@@ -113,10 +130,10 @@ export const CustomerCreate: React.FC = () => {
               Back
             </Button>
           )}
-          {currentStep !== 2 && (
-            <Button onClick={() => gotoStep(currentStep + 1)}>Next step</Button>
+          {currentStep !== lastStep && (
+            <Button onClick={() => gotoStep(currentStep + 1)}>Next Step</Button>
           )}
-          {currentStep === 2 && <SaveButton {...saveButtonProps} />}
+          {currentStep === lastStep && <SaveButton {...saveButtonProps} />}
         </Group>
       }
     >
@@ -159,6 +176,15 @@ export const CustomerCreate: React.FC = () => {
             customizedFeatures={values['features'] as FeatureValue[]}
             onCustomizedFeaturesChange={(newCustomizedFeatures) => {
               setValues({ features: newCustomizedFeatures });
+            }}
+          />
+        </Stepper.Step>
+        <Stepper.Step label="Add Secrets">
+          <SecretsCreateComponent
+            secretKeys={secretKeys?.data as SecretKey[]}
+            secrets={values['secrets'] as SecretInput[]}
+            onSecretsChange={(secrets) => {
+              setValues({ secrets });
             }}
           />
         </Stepper.Step>

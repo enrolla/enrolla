@@ -20,6 +20,7 @@ export const CustomerShow: React.FC = () => {
         'organizationId',
         {
           features: [{ feature: ['key', 'type'] }, 'value'],
+          secrets: ['key'],
           effectiveConfiguration: [{ feature: ['key', 'type'] }, 'value'],
           package: ['name'],
         },
@@ -82,6 +83,31 @@ export const CustomerShow: React.FC = () => {
                     inline
                   />
                 </Group>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+      <Title mt="xs" order={5}>
+        Secrets
+      </Title>
+      <Table mt="xs">
+        <thead>
+          <tr>
+            <th>Key</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {record?.secrets?.map((s) => (
+            <tr key={s.key}>
+              <td>
+                <Group>
+                  <Text>{s.key}</Text>
+                </Group>
+              </td>
+              <td>
+                <Text>********</Text>
               </td>
             </tr>
           ))}

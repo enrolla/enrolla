@@ -2,7 +2,6 @@ import {
   useTable,
   ColumnDef,
   flexRender,
-  ColumnSizing,
 } from '@pankod/refine-react-table';
 import {
   Box,
@@ -25,7 +24,7 @@ import {
 import { Modal } from '@mantine/core';
 import { EncryptionKey } from '@enrolla/graphql-codegen';
 import { useMemo, useState } from 'react';
-import { IconCopy, IconCheck } from '@tabler/icons';
+import { IconCopy } from '@tabler/icons';
 import { useList } from '@pankod/refine-core';
 import { generateKeyPair } from './encryption';
 
@@ -102,8 +101,7 @@ export const EncryptionKeyList: React.FC = () => {
         cell: function render({ getValue }) {
           return (
             <Tooltip
-              label="You must not have any customer secrets defined in order to delete the key pair."
-              disabled={!hasSecrets}
+              label={hasSecrets ? "You must not have any customer secrets defined in order to delete the key pair." : 'Delete Key Pair'}
             >
               <Group spacing="xs" noWrap>
                 <DeleteButton
