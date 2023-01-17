@@ -11,19 +11,19 @@ export class EncryptionKeyService {
     tenantId: string,
     createEncryptionKeyInput: CreateEncryptionKeyInput
   ): Promise<EncryptionKey> {
-    const { privateKey, publicKey } = createEncryptionKeyInput;
+    const { publicKey } = createEncryptionKeyInput;
 
     return await this.prismaService.encryptionKey.create({
       data: {
         tenantId,
-        privateKey,
         publicKey,
       },
     });
   }
 
-  async getTennantEncryptionKey(tenantId: string) {
-    return await this.prismaService.encryptionKey.findUnique({
+  // DB constraint ensures that there is only one encryption key per tenant 
+  async getTennantEncryptionKeys(tenantId: string) {
+    return await this.prismaService.encryptionKey.findMany({
       where: {
         tenantId,
       },

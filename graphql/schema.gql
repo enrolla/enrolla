@@ -103,7 +103,7 @@ type SecretKey {
 
 type Query {
   apiTokens: [ApiToken!]!
-  encryptionKey: EncryptionKey
+  encryptionKeys: [EncryptionKey!]!
   features: [Feature!]!
   feature(id: String!): Feature!
   packages: [Package!]!
@@ -113,13 +113,14 @@ type Query {
   organizations: [Organization!]!
   organization(id: String!): Organization!
   secretKeys: [SecretKey!]!
+  hasSecrets: Boolean!
 }
 
 type Mutation {
   createApiToken(input: CreateApiTokenInput!): ApiToken!
   removeApiToken(id: String!): ApiToken!
   createEncryptionKey(input: CreateEncryptionKeyInput!): EncryptionKey!
-  removeEncryptionKey: EncryptionKey!
+  removeEncryptionKey(id: String!): EncryptionKey!
   createFeature(input: CreateFeatureInput!): Feature!
   updateFeature(input: UpdateFeatureInput!): Feature!
   removeFeature(id: String!): Feature!
@@ -132,10 +133,7 @@ type Mutation {
   createOrganization(input: CreateOrganizationInput!): Organization!
   updateOrganization(input: UpdateOrganizationInput!): Organization!
   removeOrganization(id: String!): Organization!
-  createSecret(input: CreateSecretInput!): Secret!
-  updateSecret(input: UpdateSecretInput!): Secret!
-  removeSecret(id: String!): Secret!
-  createSecretKey(key: String!): SecretKey!
+  createSecretKey(input: CreateSecretKeyInput!): SecretKey!
   removeSecretKey(id: String!): SecretKey!
 }
 
@@ -144,7 +142,6 @@ input CreateApiTokenInput {
 }
 
 input CreateEncryptionKeyInput {
-  privateKey: String!
   publicKey: String!
 }
 
@@ -192,6 +189,13 @@ input CreateCustomerInput {
   name: String!
   packageId: String
   features: [FeatureInstanceInput!]!
+  secrets: [CreateSecretInput!]!
+}
+
+input CreateSecretInput {
+  customerId: String!
+  key: String!
+  value: String!
 }
 
 input UpdateCustomerInput {
@@ -200,6 +204,7 @@ input UpdateCustomerInput {
   name: String
   packageId: String
   features: [FeatureInstanceInput!]
+  secrets: [CreateSecretInput!]
   id: String!
 }
 
@@ -212,13 +217,6 @@ input UpdateOrganizationInput {
   id: String!
 }
 
-input CreateSecretInput {
-  customerId: String!
+input CreateSecretKeyInput {
   key: String!
-  value: String!
-}
-
-input UpdateSecretInput {
-  id: String!
-  value: String!
 }

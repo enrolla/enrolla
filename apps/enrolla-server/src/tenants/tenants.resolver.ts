@@ -51,12 +51,12 @@ export class TenantsResolver {
   }
 
   @Mutation(() => EncryptionKey)
-  async removeEncryptionKey(@TenantId() tenantId: string) {
+  async removeEncryptionKey(@TenantId() tenantId: string, @Args('id') id: string) {
     return await this.encryptionKeyService.delete(tenantId);
   }
 
-  @Query(() => EncryptionKey, { nullable: true })
-  async encryptionKey(@TenantId() tenantId: string) {
-    return await this.encryptionKeyService.getTennantEncryptionKey(tenantId);
+  @Query(() => [EncryptionKey])
+  async encryptionKeys(@TenantId() tenantId: string) {
+    return await this.encryptionKeyService.getTennantEncryptionKeys(tenantId);
   }
 }

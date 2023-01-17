@@ -123,8 +123,8 @@ model Secret {
   tenantId            String      @map("tenant_id")
   key                 String
   value               String
-  customer            Customer?   @relation(fields: [customerId], references: [id])
-  customerId          String?     @map("customer_id")
+  customer            Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId          String      @map("customer_id")
   createdAt           DateTime    @default(now()) @map("created_at")
 
   @@unique([id, tenantId])
@@ -146,8 +146,7 @@ model SecretKey {
 model EncryptionKey {
   id         String   @id @default(cuid())
   tenantId   String   @map("tenant_id")
-  publicKey  String   @map("private_key")
-  privateKey String   @map("public_key")
+  publicKey  String   @map("public_key")
   createdAt  DateTime @default(now()) @map("created_at")
 
   @@unique([id, tenantId])
