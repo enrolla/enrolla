@@ -16,17 +16,14 @@ export class TenantsResolver {
   constructor(
     private readonly apiTokenService: ApiTokenService,
     private readonly encryptionKeyService: EncryptionKeyService
-    ) {}
+  ) {}
 
   @Mutation(() => ApiToken)
   async createApiToken(
     @TenantId() tenantId: string,
     @Args('input') createApiTokenInput: CreateApiTokenInput
   ) {
-    return await this.apiTokenService.create(
-      tenantId,
-      createApiTokenInput
-    );
+    return await this.apiTokenService.create(tenantId, createApiTokenInput);
   }
 
   @Mutation(() => ApiToken)
@@ -51,7 +48,10 @@ export class TenantsResolver {
   }
 
   @Mutation(() => EncryptionKey)
-  async removeEncryptionKey(@TenantId() tenantId: string, @Args('id') id: string) {
+  async removeEncryptionKey(
+    @TenantId() tenantId: string,
+    @Args('id') id: string
+  ) {
     return await this.encryptionKeyService.delete(tenantId);
   }
 

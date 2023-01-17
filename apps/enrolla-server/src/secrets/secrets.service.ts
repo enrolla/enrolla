@@ -24,8 +24,11 @@ export class SecretsService {
 
     return !!res;
   }
-  
-  async createKey(tenantId: string, input: CreateSecretKeyInput): Promise<SecretKey> {
+
+  async createKey(
+    tenantId: string,
+    input: CreateSecretKeyInput
+  ): Promise<SecretKey> {
     const data = { ...input, tenantId };
 
     return await this.prismaService.secretKey.create({
@@ -57,5 +60,4 @@ export class SecretsService {
 
     return secrets;
   }
-
 }

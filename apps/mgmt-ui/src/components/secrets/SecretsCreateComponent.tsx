@@ -34,7 +34,7 @@ export const SecretsCreateComponent = ({
               value={stateMap[sk.key]?.value}
               onChange={(event) => updateValue(sk.key, event.target.value)}
             />
-            <Space h="sm"/>
+            <Space h="sm" />
           </>
         );
       })}

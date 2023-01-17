@@ -1,8 +1,4 @@
-import {
-  useTable,
-  ColumnDef,
-  flexRender,
-} from '@pankod/refine-react-table';
+import { useTable, ColumnDef, flexRender } from '@pankod/refine-react-table';
 import {
   Box,
   Text,
@@ -101,7 +97,11 @@ export const EncryptionKeyList: React.FC = () => {
         cell: function render({ getValue }) {
           return (
             <Tooltip
-              label={hasSecrets ? "You must not have any customer secrets defined in order to delete the key pair." : 'Delete Key Pair'}
+              label={
+                hasSecrets
+                  ? 'You must not have any customer secrets defined in order to delete the key pair.'
+                  : 'Delete Key Pair'
+              }
             >
               <Group spacing="xs" noWrap>
                 <DeleteButton

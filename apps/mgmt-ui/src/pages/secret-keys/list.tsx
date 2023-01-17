@@ -20,18 +20,17 @@ import { useMemo, useState } from 'react';
 import { useList, useNavigation } from '@pankod/refine-core';
 
 export const SecretKeyList: React.FC = () => {
-  
   const [publicKey, setPublicKey] = useState<string>('avoid_flash');
   useList<EncryptionKey>({
     resource: 'encryptionKeys',
-    metaData: {fields: ['publicKey'] },
+    metaData: { fields: ['publicKey'] },
     queryOptions: {
       onSuccess: ({ data }) => {
-        const key: string = data?.[0]?.publicKey
+        const key: string = data?.[0]?.publicKey;
         setPublicKey(key);
+      },
+      onError: () => setPublicKey(''),
     },
-    onError: () => setPublicKey('')
-  }
   });
 
   const { list } = useNavigation();
@@ -80,10 +79,7 @@ export const SecretKeyList: React.FC = () => {
         cell: function render({ getValue }) {
           return (
             <Group spacing="xs" noWrap>
-              <DeleteButton
-                hideText
-                recordItemId={getValue() as number}
-              />
+              <DeleteButton hideText recordItemId={getValue() as number} />
             </Group>
           );
         },
@@ -107,87 +103,100 @@ export const SecretKeyList: React.FC = () => {
 
   return (
     <>
-    {!publicKey && 
-    <Modal opened={true} onClose={() => {}} title="No Encryption Keys Found">
-      <Text>Before creating secrets you must first create your encryption key pair.</Text>
-
-      <Box mt={8} sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Button style={{ margin: '15px' }} onClick={() => list('encryption-keys')}>
-          Go To Encryption Key Panel
-        </Button>
-      </Box>
-    </Modal>}
-    
-    {publicKey && <>
-    <Modal opened={visible} onClose={close} title="Create Secret Key">
-        <TextInput
-          mt={8}
-          label="Key"
-          placeholder="secret_key"
-          withAsterisk
-          {...getInputProps('key')}
-        />
-        <Box mt={8} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <SaveButton {...saveButtonProps} />
-        </Box>
-      </Modal>
-      <ScrollArea>
-        <List
-          title={<Title order={3}>Secret Keys</Title>}
-          createButtonProps={{ onClick: () => show() }}
+      {!publicKey && (
+        <Modal
+          opened={true}
+          onClose={() => {}}
+          title="No Encryption Keys Found"
         >
-          <Table highlightOnHover>
-            <thead>
-              {getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
+          <Text>
+            Before creating secrets you must first create your encryption key
+            pair.
+          </Text>
+
+          <Box mt={8} sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Button
+              style={{ margin: '15px' }}
+              onClick={() => list('encryption-keys')}
+            >
+              Go To Encryption Key Panel
+            </Button>
+          </Box>
+        </Modal>
+      )}
+
+      {publicKey && (
+        <>
+          <Modal opened={visible} onClose={close} title="Create Secret Key">
+            <TextInput
+              mt={8}
+              label="Key"
+              placeholder="secret_key"
+              withAsterisk
+              {...getInputProps('key')}
+            />
+            <Box mt={8} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <SaveButton {...saveButtonProps} />
+            </Box>
+          </Modal>
+          <ScrollArea>
+            <List
+              title={<Title order={3}>Secret Keys</Title>}
+              createButtonProps={{ onClick: () => show() }}
+            >
+              <Table highlightOnHover>
+                <thead>
+                  {getHeaderGroups().map((headerGroup) => (
+                    <tr key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => {
+                        return (
+                          <th key={header.id}>
+                            {!header.isPlaceholder && (
+                              <Group spacing="xs" noWrap>
+                                <Box>
+                                  {flexRender(
+                                    header.column.columnDef.header,
+                                    header.getContext()
+                                  )}
+                                </Box>
+                              </Group>
+                            )}
+                          </th>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </thead>
+                <tbody>
+                  {getRowModel().rows.map((row) => {
                     return (
-                      <th key={header.id}>
-                        {!header.isPlaceholder && (
-                          <Group spacing="xs" noWrap>
-                            <Box>
+                      <tr key={row.id}>
+                        {row.getVisibleCells().map((cell) => {
+                          return (
+                            <td key={cell.id}>
                               {flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
+                                cell.column.columnDef.cell,
+                                cell.getContext()
                               )}
-                            </Box>
-                          </Group>
-                        )}
-                      </th>
+                            </td>
+                          );
+                        })}
+                      </tr>
                     );
                   })}
-                </tr>
-              ))}
-            </thead>
-            <tbody>
-              {getRowModel().rows.map((row) => {
-                return (
-                  <tr key={row.id}>
-                    {row.getVisibleCells().map((cell) => {
-                      return (
-                        <td key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </Table>
-          <br />
-          <Pagination
-            position="right"
-            total={pageCount}
-            page={current}
-            onChange={setCurrent}
-          />
-        </List>
-      </ScrollArea>
-    </>}
+                </tbody>
+              </Table>
+              <br />
+              <Pagination
+                position="right"
+                total={pageCount}
+                page={current}
+                onChange={setCurrent}
+              />
+            </List>
+          </ScrollArea>
+        </>
+      )}
     </>
   );
 };

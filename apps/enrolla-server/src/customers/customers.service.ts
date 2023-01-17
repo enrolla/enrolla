@@ -59,7 +59,7 @@ export class CustomersService {
             key: secret.key,
             value: secret.value,
           })),
-        }
+        },
       },
     });
   }
