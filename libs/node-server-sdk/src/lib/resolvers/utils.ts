@@ -1,5 +1,9 @@
 import { FeatureType } from '@enrolla/graphql-codegen';
-import { organizationExists, getCustomerFeatureValue, getCustomerSecretValue } from '../store';
+import {
+  organizationExists,
+  getCustomerFeatureValue,
+  getCustomerSecretValue,
+} from '../store';
 import { Feature, FeatureValue } from '../interfaces';
 import { Options } from './types';
 import {
@@ -17,8 +21,8 @@ import { _configuration } from '../configuration';
 const validate = (
   key: string,
   organizationId: string,
-  argumentName: string): void => {
-
+  argumentName: string
+): void => {
   if (!_configuration?.apiToken) {
     throw new NotInitializedError();
   }
@@ -36,7 +40,7 @@ const validate = (
   if (!organizationExists(organizationId)) {
     throw new OrganizationNotFoundError(key, organizationId);
   }
-}
+};
 
 export const baseResolver = (
   feature: string,

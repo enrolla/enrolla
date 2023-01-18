@@ -97,7 +97,9 @@ export class PollingError extends EnrollaError {
 
 export class PrivateKeyNotSuppliedError extends EnrollaError {
   constructor() {
-    super('You must supply a "privateKey" to the "initialize" function in order to use secrets. See the documentation for more information.');
+    super(
+      'You must supply a "privateKey" to the "initialize" function in order to use secrets. See the documentation for more information.'
+    );
     this.severity = SEVERITY.Error;
   }
 }

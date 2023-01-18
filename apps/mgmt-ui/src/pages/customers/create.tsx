@@ -60,7 +60,7 @@ export const CustomerCreate: React.FC = () => {
         })),
         secrets: (values.secrets as SecretInput[]).map((s) => ({
           key: s.key,
-          ...encrypt(encryptionKey?.data[0]?.publicKey!, s.value)
+          ...encrypt(encryptionKey?.data[0]?.publicKey!, s.value),
         })),
         organizationId: shouldCreateOrg ? null : values['organizationId'],
         createOrganizationName: shouldCreateOrg

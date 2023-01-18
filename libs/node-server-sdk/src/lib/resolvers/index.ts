@@ -110,16 +110,15 @@ export const getFeatureJsonValue = (
     unknown
   >;
 
-  /**
-   * Evaluates the secret value for the given organization and returns the result.
-   * @param key The secret name.
-   * @param organizationId The unique identifier of the organization.
-   * @param options 
-   * @returns The secret value.
-   */
-  export const getSecretValue = (
-    key: string,
-    organizationId: string,
-    options?: Options
-  ): string => secretResolver(key, organizationId, options) as string;
-  
+/**
+ * Evaluates the secret value for the given organization and returns the result.
+ * @param key The secret name.
+ * @param organizationId The unique identifier of the organization.
+ * @param options
+ * @returns The secret value.
+ */
+export const getSecretValue = (
+  key: string,
+  organizationId: string,
+  options?: Options
+): string => secretResolver(key, organizationId, options) as string;

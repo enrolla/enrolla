@@ -27,6 +27,4 @@ export const testNodeServerSdk = async () => {
   console.log('Initiated Successfully');
   console.log('k1', sdk.getSecretValue('k1', '123'));
   console.log('kk', sdk.getSecretValue('kk', '123'));
-
-
 };

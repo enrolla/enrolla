@@ -18,5 +18,4 @@ export const initializeGraphQLClient = (options: InitialzeOptions) => {
   _client = getSdk(graphQLClient);
 };
 
-export const fetchAllCustomerData = async () =>
-  _client.getAllCustomerData();
+export const fetchAllCustomerData = async () => _client.getAllCustomerData();

@@ -151,11 +151,14 @@ export const EncryptionKeyList: React.FC = () => {
 
   return (
     <>
-      <Modal opened={visible} onClose={() => {
-        setValues({ publicKey: '', privateKey: '' });
-        close();
-
-        }} title="Create Encryption Keys">
+      <Modal
+        opened={visible}
+        onClose={() => {
+          setValues({ publicKey: '', privateKey: '' });
+          close();
+        }}
+        title="Create Encryption Keys"
+      >
         <TextInput
           mt={8}
           label="Public Key:"
