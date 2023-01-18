@@ -129,7 +129,7 @@ export const EncryptionKeyList: React.FC = () => {
         },
       },
     ],
-    []
+    [hasSecrets]
   );
 
   const generateKeys = async () => {

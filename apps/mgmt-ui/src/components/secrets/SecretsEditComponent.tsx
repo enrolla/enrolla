@@ -135,7 +135,7 @@ const SecretDisplayAndEditComponent = ({
         <Button color="indigo" size="xs" compact onClick={() => show()}>
           Edit
         </Button>
-        {secret.status == STATUS.EDITED && (
+        {secret.status === STATUS.EDITED && (
           <Button
             color="orange"
             size="xs"
@@ -159,14 +159,14 @@ export const SecretsEditComponent = ({
   const editedSecretMap = arrToMap(editedSecrets, STATUS.EDITED);
 
   const displaySecretMap = arrToMap(existingSecrets, STATUS.UNCHANGED);
-  for (let sk of secretKeys) {
+  for (const sk of secretKeys) {
     // Add any missing keys, which are not in the existing secrets
     const k = sk.key;
     if (!displaySecretMap[k]) {
       displaySecretMap[k] = { key: k, value: '', status: STATUS.NOT_DEFINED };
     }
   }
-  for (let es of editedSecrets) {
+  for (const es of editedSecrets) {
     // Override with edited secrets
     displaySecretMap[es.key] = { ...es, status: STATUS.EDITED };
   }
