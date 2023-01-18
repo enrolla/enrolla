@@ -20,6 +20,7 @@ import { FeatureCustomizeComponent } from '../../components/features/FeatureCust
 import { FeatureViewComponent } from '../../components/features/FeatureViewComponent';
 import {
   Customer,
+  EncryptionKey,
   Feature,
   FeatureValue,
   Organization,
@@ -28,6 +29,7 @@ import {
 } from '@enrolla/graphql-codegen';
 import { useState } from 'react';
 import { SecretsCreateComponent } from '../../components/secrets/SecretsCreateComponent';
+import { encrypt } from '../../utils/encryption';
 
 export const CustomerCreate: React.FC = () => {
   const [organizationList, setOrganizationList] = useState<
@@ -58,7 +60,7 @@ export const CustomerCreate: React.FC = () => {
         })),
         secrets: (values.secrets as SecretInput[]).map((s) => ({
           key: s.key,
-          value: s.value, // todo: encrypt
+          ...encrypt(encryptionKey?.data[0]?.publicKey!, s.value)
         })),
         organizationId: shouldCreateOrg ? null : values['organizationId'],
         createOrganizationName: shouldCreateOrg
@@ -115,6 +117,13 @@ export const CustomerCreate: React.FC = () => {
     resource: 'secret-keys',
     metaData: {
       fields: ['key'],
+    },
+  });
+
+  const { data: encryptionKey } = useList<EncryptionKey>({
+    resource: 'encryption-keys',
+    metaData: {
+      fields: ['publicKey'],
     },
   });
 

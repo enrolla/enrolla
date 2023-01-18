@@ -298,14 +298,18 @@ export type QueryPackageArgs = {
 export type Secret = {
   __typename?: 'Secret';
   createdAt: Scalars['DateTime'];
+  ephemPubKey: Scalars['String'];
   id: Scalars['Cuid'];
   key: Scalars['String'];
+  nonce: Scalars['String'];
   value: Scalars['String'];
 };
 
 export type SecretInput = {
+  ephemPubKey: Scalars['String'];
   key: Scalars['String'];
   new?: InputMaybe<Scalars['Boolean']>;
+  nonce: Scalars['String'];
   value: Scalars['String'];
 };
 
@@ -345,14 +349,14 @@ export type UpdatePackageInput = {
   updateStrategy?: InputMaybe<PackageUpdateStrategy>;
 };
 
-export type GetAllCustomerFeaturesQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetAllCustomerDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllCustomerFeaturesQuery = { __typename?: 'Query', customers: Array<{ __typename?: 'Customer', organizationId?: string | null, effectiveConfiguration: Array<{ __typename?: 'FeatureValue', value: any, feature: { __typename?: 'Feature', key: string, type: FeatureType } }> }> };
+export type GetAllCustomerDataQuery = { __typename?: 'Query', customers: Array<{ __typename?: 'Customer', organizationId?: string | null, effectiveConfiguration: Array<{ __typename?: 'FeatureValue', value: any, feature: { __typename?: 'Feature', key: string, type: FeatureType } }>, secrets: Array<{ __typename?: 'Secret', key: string, value: string, nonce: string, ephemPubKey: string }> }> };
 
 
-export const GetAllCustomerFeaturesDocument = gql`
-    query getAllCustomerFeatures {
+export const GetAllCustomerDataDocument = gql`
+    query getAllCustomerData {
   customers {
     organizationId
     effectiveConfiguration {
@@ -361,6 +365,12 @@ export const GetAllCustomerFeaturesDocument = gql`
         type
       }
       value
+    }
+    secrets {
+      key
+      value
+      nonce
+      ephemPubKey
     }
   }
 }
@@ -373,8 +383,8 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    getAllCustomerFeatures(variables?: GetAllCustomerFeaturesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAllCustomerFeaturesQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetAllCustomerFeaturesQuery>(GetAllCustomerFeaturesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getAllCustomerFeatures', 'query');
+    getAllCustomerData(variables?: GetAllCustomerDataQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAllCustomerDataQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetAllCustomerDataQuery>(GetAllCustomerDataDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getAllCustomerData', 'query');
     }
   };
 }

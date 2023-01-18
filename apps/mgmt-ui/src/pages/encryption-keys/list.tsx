@@ -22,7 +22,7 @@ import { EncryptionKey } from '@enrolla/graphql-codegen';
 import { useMemo, useState } from 'react';
 import { IconCopy } from '@tabler/icons';
 import { useList } from '@pankod/refine-core';
-import { generateKeyPair } from './encryption';
+import { createKeyPair } from '../../utils/encryption';
 
 const keyDisplayValue = (key: string) => {
   try {
@@ -63,7 +63,6 @@ export const EncryptionKeyList: React.FC = () => {
     resource: 'hasSecrets',
     queryOptions: {
       onSuccess: ({ data }) => {
-        console.log('hasSecrets: ', data);
         setHasSecrets(data as unknown as boolean);
       },
     },
@@ -133,10 +132,8 @@ export const EncryptionKeyList: React.FC = () => {
   );
 
   const generateKeys = async () => {
-    const keyPair = await generateKeyPair();
-    console.log(keyPair.privateKey);
-    setValues({ publicKey: keyPair.publicKey, privateKey: keyPair.privateKey });
-    setValues({ publicKey: 'publicSet', privateKey: 'priv set' });
+    const { publicKey, privateKey } = createKeyPair();
+    setValues({ publicKey, privateKey });
   };
 
   const {
@@ -154,7 +151,11 @@ export const EncryptionKeyList: React.FC = () => {
 
   return (
     <>
-      <Modal opened={visible} onClose={close} title="Create Encryption Keys">
+      <Modal opened={visible} onClose={() => {
+        setValues({ publicKey: '', privateKey: '' });
+        close();
+
+        }} title="Create Encryption Keys">
         <TextInput
           mt={8}
           label="Public Key:"
@@ -171,9 +172,9 @@ export const EncryptionKeyList: React.FC = () => {
         <>
           <Button.Group mt={8} sx={{ justifyContent: 'center' }}>
             <>
-              {values.publicKey ? (
+              {values.privateKey ? (
                 <>
-                  <CopyButton value={values.publicKey as string}>
+                  <CopyButton value={values.privateKey as string}>
                     {({ copied, copy }) => (
                       <Button
                         variant="light"

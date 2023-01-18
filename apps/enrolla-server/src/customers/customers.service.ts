@@ -58,6 +58,8 @@ export class CustomersService {
             tenantId,
             key: secret.key,
             value: secret.value,
+            ephemPubKey: secret.ephemPubKey,
+            nonce: secret.nonce,
           })),
         },
       },
@@ -114,6 +116,8 @@ export class CustomersService {
               tenantId,
               key: secret.key,
               value: secret.value,
+              ephemPubKey: secret.ephemPubKey,
+              nonce: secret.nonce,
             })),
           update: updateCustomerInput.secrets
             .filter((s) => !s.new)
@@ -127,6 +131,8 @@ export class CustomersService {
               },
               data: {
                 value: secret.value,
+                ephemPubKey: secret.ephemPubKey,
+                nonce: secret.nonce,
               },
             })),
         },

@@ -8,6 +8,12 @@ export class SecretInput {
   @Field(() => String)
   value: string;
 
+  @Field(() => String)
+  ephemPubKey: string;
+
+  @Field(() => String)
+  nonce: string;
+
   @Field(() => Boolean, { nullable: true })
   new?: boolean;
 }

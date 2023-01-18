@@ -1,5 +1,6 @@
 export interface InitialzeOptions {
   apiToken: string;
+  privateKey?: string;
   url?: string;
   polling?: {
     enabled: boolean;

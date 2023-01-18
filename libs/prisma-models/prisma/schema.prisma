@@ -123,6 +123,8 @@ model Secret {
   tenantId            String      @map("tenant_id")
   key                 String
   value               String
+  ephemPubKey         String      @map("ephem_pub_key")  
+  nonce               String
   customer            Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
   customerId          String      @map("customer_id")
   createdAt           DateTime    @default(now()) @map("created_at")

@@ -3,6 +3,8 @@
 
   - You are about to drop the column `iv` on the `secrets` table. All the data in the column will be lost.
   - A unique constraint covering the columns `[key,customer_id,tenant_id]` on the table `secrets` will be added. If there are existing duplicate values, this will fail.
+  - Added the required column `ephem_pub_key` to the `secrets` table without a default value. This is not possible if the table is not empty.
+  - Added the required column `nonce` to the `secrets` table without a default value. This is not possible if the table is not empty.
   - Made the column `customer_id` on table `secrets` required. This step will fail if there are existing NULL values in that column.
 
 */
@@ -11,6 +13,8 @@ ALTER TABLE "secrets" DROP CONSTRAINT "secrets_customer_id_fkey";
 
 -- AlterTable
 ALTER TABLE "secrets" DROP COLUMN "iv",
+ADD COLUMN     "ephem_pub_key" TEXT NOT NULL,
+ADD COLUMN     "nonce" TEXT NOT NULL,
 ALTER COLUMN "customer_id" SET NOT NULL;
 
 -- CreateTable

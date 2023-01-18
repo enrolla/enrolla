@@ -12,6 +12,12 @@ export class Secret {
   @Field(() => String)
   value: string;
 
+  @Field(() => String)
+  ephemPubKey: string;
+
+  @Field(() => String)
+  nonce: string;
+
   @Field(() => Date)
   createdAt: Date;
 

@@ -74,6 +74,8 @@ type Secret {
   id: Cuid!
   key: String!
   value: String!
+  ephemPubKey: String!
+  nonce: String!
   createdAt: DateTime!
 }
 
@@ -195,6 +197,8 @@ input CreateCustomerInput {
 input SecretInput {
   key: String!
   value: String!
+  ephemPubKey: String!
+  nonce: String!
   new: Boolean
 }
 

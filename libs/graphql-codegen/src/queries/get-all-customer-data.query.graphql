@@ -1,4 +1,4 @@
-query getAllCustomerFeatures {
+query getAllCustomerData {
   customers {
     organizationId
     effectiveConfiguration {
@@ -7,6 +7,12 @@ query getAllCustomerFeatures {
         type
       }
       value
+    }
+    secrets {
+      key
+      value
+      nonce
+      ephemPubKey
     }
   }
 }
