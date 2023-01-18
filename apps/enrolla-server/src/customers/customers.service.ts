@@ -107,6 +107,25 @@ export class CustomersService {
             tenantId,
           })),
         },
+        secrets: {
+          create: updateCustomerInput.secrets.filter((s) => s.new).map((secret) => ({
+            tenantId,
+            key: secret.key,
+            value: secret.value,
+          })),
+          update: updateCustomerInput.secrets.filter((s) => !s.new).map((secret) => ({
+            where: {
+              key_customerId_tenantId: {
+                key: secret.key,
+                customerId: id,
+                tenantId,
+              }
+            },
+              data: {
+                value: secret.value,
+              },
+            })),
+        },
       },
     });
   }

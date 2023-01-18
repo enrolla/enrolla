@@ -30,11 +30,12 @@ export const SecretsCreateComponent = ({
         return (
           <>
             <TextInput
+              style={{ width: '33%' }}
               label={sk.key}
               value={stateMap[sk.key]?.value}
               onChange={(event) => updateValue(sk.key, event.target.value)}
             />
-            <Space h="sm" />
+            <Space h="md" />
           </>
         );
       })}

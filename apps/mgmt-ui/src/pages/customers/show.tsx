@@ -8,6 +8,7 @@ import {
   Group,
   ThemeIcon,
   Tooltip,
+  Space,
 } from '@pankod/refine-mantine';
 import { IconAsterisk } from '@tabler/icons';
 import { FeatureViewComponent } from '../../components/features/FeatureViewComponent';
@@ -88,6 +89,7 @@ export const CustomerShow: React.FC = () => {
           ))}
         </tbody>
       </Table>
+      <Space h='md'/>
       <Title mt="xs" order={5}>
         Secrets
       </Title>
@@ -107,7 +109,7 @@ export const CustomerShow: React.FC = () => {
                 </Group>
               </td>
               <td>
-                <Text>********</Text>
+                <Text>*****</Text>
               </td>
             </tr>
           ))}

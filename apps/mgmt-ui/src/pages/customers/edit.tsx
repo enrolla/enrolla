@@ -1,12 +1,15 @@
-import { Customer, FeatureValue, Package } from '@enrolla/graphql-codegen';
+import { Customer, FeatureValue, Package, SecretInput, SecretKey } from '@enrolla/graphql-codegen';
+import { useList } from '@pankod/refine-core';
 import {
   Select,
   useSelect,
   Edit,
   useForm,
   Title,
+  Space,
 } from '@pankod/refine-mantine';
 import { FeatureCustomizeComponent } from '../../components/features/FeatureCustomizeComponent';
+import { SecretsEditComponent } from '../../components/secrets/SecretsEditComponent';
 
 export const CustomerEdit: React.FC = () => {
   const {
@@ -23,6 +26,7 @@ export const CustomerEdit: React.FC = () => {
           {
             features: [{ feature: ['id'] }, 'value'],
             package: ['id'],
+            secrets: ['key', 'value'],
           },
         ],
       },
@@ -30,15 +34,21 @@ export const CustomerEdit: React.FC = () => {
     initialValues: {
       features: [],
       package: { id: '' },
+      secrets: [],
+      editedSecrets: [],
     },
     transformValues: (values) => {
-      console.log(values);
       return {
         features: (values.features as FeatureValue[]).map((fv) => ({
           featureId: fv.feature.id,
           value: fv.value,
         })),
         packageId: values['package.id'] as string,
+        secrets: (values.editedSecrets as SecretInput[]).map((s) => ({
+          key: s.key,
+          value: s.value, // todo: encrypt
+          new: !((values.secrets as SecretInput[])?.find((existingSecret) => existingSecret.key === s.key)),
+        })),
       };
     },
   });
@@ -50,6 +60,13 @@ export const CustomerEdit: React.FC = () => {
       fields: ['id', 'name'],
     },
     defaultValue: queryResult?.data?.data.package?.id,
+  });
+
+  const { data: secretKeys } = useList<SecretKey>({
+    resource: 'secret-keys',
+    metaData: {
+      fields: ['key'],
+    },
   });
 
   return (
@@ -66,11 +83,23 @@ export const CustomerEdit: React.FC = () => {
         }}
         {...selectPackageProps}
       />
+      <Space h='md'/>
+      <Title order={3}>Edit Features</Title>
       <FeatureCustomizeComponent
         parentPackageId={values['package.id'] as string}
         customizedFeatures={values['features'] as FeatureValue[]}
         onCustomizedFeaturesChange={(newCustomizedFeatures) => {
           setValues({ features: newCustomizedFeatures });
+        }}
+      />
+      <Space h='md'/>
+      <Title order={3}>Edit Secrets</Title>
+      <SecretsEditComponent
+        secretKeys={secretKeys?.data as SecretKey[]}
+        existingSecrets={values['secrets'] as SecretInput[]}
+        editedSecrets={values['editedSecrets'] as SecretInput[]}
+        onSecretsChange={(newSecrets) => {
+          setValues({ editedSecrets: newSecrets });
         }}
       />
     </Edit>

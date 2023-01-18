@@ -195,6 +195,7 @@ input CreateCustomerInput {
 input SecretInput {
   key: String!
   value: String!
+  new: Boolean
 }
 
 input UpdateCustomerInput {

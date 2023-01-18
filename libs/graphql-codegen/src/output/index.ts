@@ -305,6 +305,7 @@ export type Secret = {
 
 export type SecretInput = {
   key: Scalars['String'];
+  new?: InputMaybe<Scalars['Boolean']>;
   value: Scalars['String'];
 };
 

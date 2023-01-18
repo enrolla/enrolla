@@ -14,8 +14,8 @@ import {
   useStepsForm,
   SelectItem,
 } from '@pankod/refine-mantine';
-import { List } from '@mantine/core';
-import { IconEditCircle } from '@tabler/icons';
+import { List, Space } from '@mantine/core';
+import { IconChevronRight, IconEditCircle } from '@tabler/icons';
 import { FeatureCustomizeComponent } from '../../components/features/FeatureCustomizeComponent';
 import { FeatureViewComponent } from '../../components/features/FeatureViewComponent';
 import {
@@ -214,6 +214,23 @@ export const CustomerCreate: React.FC = () => {
                             type={featureMetadata.type}
                             value={feature.value.value}
                           />
+                        </Group>
+                      </List.Item>
+                    );
+                  })}
+              </List>
+              <Space h='md' />
+              <Title mt={8} order={3}>
+                Secrets
+              </Title>
+              <List center icon={<IconChevronRight size={16} />}>
+                {!!values.secrets &&
+                  (values.secrets as SecretInput[])?.map((s) => {
+                    return (
+                      <List.Item>
+                        <Group align='flex-start'>
+                          <Text>{s.key}:</Text>
+                          <Text>****</Text>
                         </Group>
                       </List.Item>
                     );

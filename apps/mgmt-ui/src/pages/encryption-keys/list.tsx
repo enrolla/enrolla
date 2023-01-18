@@ -58,6 +58,17 @@ export const EncryptionKeyList: React.FC = () => {
     },
   });
 
+  const [hasSecrets, setHasSecrets] = useState<boolean>(false);
+  useList({
+    resource: 'hasSecrets',
+    queryOptions: {
+      onSuccess: ({ data }) => {
+        console.log('hasSecrets: ', data)
+        setHasSecrets(data as unknown as boolean);
+      },
+    },
+  });
+
   const columns = useMemo<ColumnDef<EncryptionKey>[]>(
     () => [
       {
@@ -120,16 +131,6 @@ export const EncryptionKeyList: React.FC = () => {
     ],
     []
   );
-
-  const [hasSecrets, setHasSecrets] = useState<boolean>(false);
-  useList({
-    resource: 'hasSecrets',
-    queryOptions: {
-      onSuccess: ({ data }) => {
-        setHasSecrets(data as unknown as boolean);
-      },
-    },
-  });
 
   const generateKeys = async () => {
     const keyPair = await generateKeyPair();
