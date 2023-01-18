@@ -48,6 +48,7 @@
     "passport": "^0.6.0",
     "passport-custom": "^1.1.1",
     "pluralize": "^8.0.0",
+    "posthog-js": "^1.40.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "reflect-metadata": "^0.1.13",
