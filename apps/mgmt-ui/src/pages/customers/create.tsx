@@ -219,7 +219,7 @@ export const CustomerCreate: React.FC = () => {
                     );
                   })}
               </List>
-              <Space h='md' />
+              <Space h="md" />
               <Title mt={8} order={3}>
                 Secrets
               </Title>
@@ -228,7 +228,7 @@ export const CustomerCreate: React.FC = () => {
                   (values.secrets as SecretInput[])?.map((s) => {
                     return (
                       <List.Item>
-                        <Group align='flex-start'>
+                        <Group align="flex-start">
                           <Text>{s.key}:</Text>
                           <Text>****</Text>
                         </Group>

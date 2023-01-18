@@ -89,7 +89,7 @@ export const CustomerShow: React.FC = () => {
           ))}
         </tbody>
       </Table>
-      <Space h='md'/>
+      <Space h="md" />
       <Title mt="xs" order={5}>
         Secrets
       </Title>

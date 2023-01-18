@@ -1,4 +1,10 @@
-import { Customer, FeatureValue, Package, SecretInput, SecretKey } from '@enrolla/graphql-codegen';
+import {
+  Customer,
+  FeatureValue,
+  Package,
+  SecretInput,
+  SecretKey,
+} from '@enrolla/graphql-codegen';
 import { useList } from '@pankod/refine-core';
 import {
   Select,
@@ -47,7 +53,9 @@ export const CustomerEdit: React.FC = () => {
         secrets: (values.editedSecrets as SecretInput[]).map((s) => ({
           key: s.key,
           value: s.value, // todo: encrypt
-          new: !((values.secrets as SecretInput[])?.find((existingSecret) => existingSecret.key === s.key)),
+          new: !(values.secrets as SecretInput[])?.find(
+            (existingSecret) => existingSecret.key === s.key
+          ),
         })),
       };
     },
@@ -83,7 +91,7 @@ export const CustomerEdit: React.FC = () => {
         }}
         {...selectPackageProps}
       />
-      <Space h='md'/>
+      <Space h="md" />
       <Title order={3}>Edit Features</Title>
       <FeatureCustomizeComponent
         parentPackageId={values['package.id'] as string}
@@ -92,7 +100,7 @@ export const CustomerEdit: React.FC = () => {
           setValues({ features: newCustomizedFeatures });
         }}
       />
-      <Space h='md'/>
+      <Space h="md" />
       <Title order={3}>Edit Secrets</Title>
       <SecretsEditComponent
         secretKeys={secretKeys?.data as SecretKey[]}

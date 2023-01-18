@@ -63,7 +63,7 @@ export const EncryptionKeyList: React.FC = () => {
     resource: 'hasSecrets',
     queryOptions: {
       onSuccess: ({ data }) => {
-        console.log('hasSecrets: ', data)
+        console.log('hasSecrets: ', data);
         setHasSecrets(data as unknown as boolean);
       },
     },
