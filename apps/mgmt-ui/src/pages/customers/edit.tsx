@@ -54,7 +54,7 @@ export const CustomerEdit: React.FC = () => {
         packageId: values['package.id'] as string,
         secrets: (values.editedSecrets as SecretInput[]).map((s) => ({
           key: s.key,
-          ...encrypt(encryptionKey?.data[0]?.publicKey!, s.value),
+          ...encrypt(s.value, encryptionKey?.data[0]?.publicKey),
           new: !(values.secrets as SecretInput[])?.find(
             (existingSecret) => existingSecret.key === s.key
           ),

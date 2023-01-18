@@ -23,7 +23,14 @@ interface IEncryptedMsg {
  *
  * @returns encrypted message
  */
-export const encrypt = (receiverPublicKey: string, message: string) => {
+export const encrypt = (
+  message: string,
+  receiverPublicKey?: string
+): IEncryptedMsg => {
+  if (!receiverPublicKey) {
+    console.error('No public key supplied. Cannot encrypt message.');
+    return {} as IEncryptedMsg;
+  }
   const ephemeralKeyPair = nacl.box.keyPair();
   const pubKeyUInt8Array = util.decodeBase64(receiverPublicKey);
   const msgParamsUInt8Array = util.decodeUTF8(message);
