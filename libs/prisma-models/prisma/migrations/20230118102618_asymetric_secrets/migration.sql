@@ -2,6 +2,7 @@
   Warnings:
 
   - You are about to drop the column `iv` on the `secrets` table. All the data in the column will be lost.
+  - A unique constraint covering the columns `[key,customer_id,tenant_id]` on the table `secrets` will be added. If there are existing duplicate values, this will fail.
   - Made the column `customer_id` on table `secrets` required. This step will fail if there are existing NULL values in that column.
 
 */
@@ -43,6 +44,12 @@ CREATE UNIQUE INDEX "encryption_keys_id_tenant_id_key" ON "encryption_keys"("id"
 
 -- CreateIndex
 CREATE UNIQUE INDEX "encryption_keys_tenant_id_key" ON "encryption_keys"("tenant_id");
+
+-- CreateIndex
+CREATE INDEX "secrets_key_customer_id_tenant_id_idx" ON "secrets"("key", "customer_id", "tenant_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "secrets_key_customer_id_tenant_id_key" ON "secrets"("key", "customer_id", "tenant_id");
 
 -- AddForeignKey
 ALTER TABLE "secrets" ADD CONSTRAINT "secrets_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "customers"("id") ON DELETE CASCADE ON UPDATE CASCADE;
