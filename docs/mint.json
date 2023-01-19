@@ -68,5 +68,10 @@
     "github": "https://github.com/enrolla/enrolla",
     "twitter": "https://twitter.com/enrolla_io"
   },
-  "backgroundImage": "/background.png"
+  "backgroundImage": "/background.png",
+  "analytics": {
+    "posthog": {
+        "apiKey": "phc_1YZud7ewUPOiph5LeDOU2ASc0WlbNdlaS57cIwVEglj"
+    }
+  }
 }
