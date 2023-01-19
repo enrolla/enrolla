@@ -33,7 +33,13 @@ export function buildConnectionString(
     }
   }
 
-  connectionString += `${connectionOptions.host}:${connectionOptions.port}`;
+  connectionString += `${connectionOptions.host}`;
+
+  if (connectionOptions.port) {
+    connectionString += `:${connectionOptions.port}`;
+  }
+
+  console.log(connectionString);
 
   return connectionString;
 }

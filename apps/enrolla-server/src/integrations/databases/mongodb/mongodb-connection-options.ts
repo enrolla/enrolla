@@ -5,8 +5,8 @@ export class MongoDBConnectionOptions {
   @Field(() => String)
   host: string;
 
-  @Field(() => Number)
-  port: number;
+  @Field(() => Number, { nullable: true })
+  port?: number;
 
   @Field(() => Boolean, { defaultValue: false })
   isSrv: boolean;
