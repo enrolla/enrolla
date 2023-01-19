@@ -54,7 +54,7 @@ export class CustomersService {
           })),
         },
         secrets: {
-          create: createCustomerInput.secrets.map((secret) => ({
+          create: createCustomerInput.secrets?.map((secret) => ({
             tenantId,
             key: secret.key,
             value: secret.value,
