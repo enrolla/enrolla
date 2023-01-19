@@ -115,7 +115,7 @@ export const FeatureList: React.FC = () => {
             c="blue"
             inherit
             style={{ cursor: 'pointer' }}
-            onClick={() => list('customers')}
+            onClick={() => list('packages')}
           >
             Packages
           </Text>
