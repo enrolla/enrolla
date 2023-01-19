@@ -231,6 +231,7 @@ input ImportCustomersInput {
   connectionOptions: MongoDBConnectionOptions!
   idFieldName: String!
   featureFieldNames: [String!]!
+  schemaExampleId: String
 }
 
 input MongoDBConnectionOptions {

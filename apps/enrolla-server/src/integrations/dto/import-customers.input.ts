@@ -11,4 +11,7 @@ export class ImportCustomersInput {
 
   @Field(() => [String])
   featureFieldNames: [string];
+
+  @Field(() => String, { nullable: true })
+  schemaExampleId?: string;
 }

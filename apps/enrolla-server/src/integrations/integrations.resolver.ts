@@ -12,6 +12,7 @@ import {
 } from './databases/mongodb/utils';
 import { Feature } from '@prisma/client';
 import { Customer } from '../customers/entities/customer.entity';
+import { InferredCustomer } from './databases/customers-source.interface';
 
 @Resolver()
 @UseGuards(GraphQLAuthGuard)
@@ -35,8 +36,19 @@ export class IntegrationsResolver {
 
     const createdFeatures = new Array<Feature>();
 
+    let schemaCustomer: InferredCustomer;
+
+    if (importCustomersInput.schemaExampleId) {
+      schemaCustomer = customers.find(
+        (customer) =>
+          customer.organizationId === importCustomersInput.schemaExampleId
+      );
+    } else {
+      schemaCustomer = customers[0];
+    }
+
     await Promise.all(
-      customers[0].features.map(async (feature) => {
+      schemaCustomer.features.map(async (feature) => {
         const featureType = inferFeatureType(feature.value);
         const createdFeature = await this.featuresService.create(
           {
