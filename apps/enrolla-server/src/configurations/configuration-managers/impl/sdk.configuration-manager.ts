@@ -23,7 +23,7 @@ export class SdkConfigurationManager implements ConfigurationManager {
         privateKey: env.SDK_ENROLLA_PRIVATE_ENCRYPTION_KEY,
         polling: {
           enabled: this.pollingEnabled,
-          intervalSeconds: this.pollingIntervalSeconds ?? 60,
+          intervalSeconds: this.pollingIntervalSeconds,
           onError: (error) => this.logger.error('onPollingError', error),
         },
       })
