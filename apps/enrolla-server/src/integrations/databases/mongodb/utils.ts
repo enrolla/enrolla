@@ -39,8 +39,6 @@ export function buildConnectionString(
     connectionString += `:${connectionOptions.port}`;
   }
 
-  console.log(connectionString);
-
   return connectionString;
 }
 
