@@ -8,7 +8,11 @@ export class ConfigurationsService implements ConfigurationManager {
     private configurationManager: ConfigurationManager
   ) {}
 
-  async getValue<T>(tenantId: string, key: string): Promise<T | null> {
-    return await this.configurationManager.getValue(tenantId, key);
+  getValue<T>(tenantId: string, key: string): T | undefined {
+    return this.configurationManager.getValue(tenantId, key);
+  }
+
+  getSecretValue(tenantId: string, key: string): string | undefined {
+    return this.configurationManager.getSecretValue(tenantId, key);
   }
 }
