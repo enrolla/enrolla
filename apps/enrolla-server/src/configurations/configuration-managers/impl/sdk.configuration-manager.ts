@@ -1,10 +1,12 @@
 import { env } from 'process';
 import { ConfigurationManager } from '../../configuration-manager.interface';
 import * as sdk from '@enrolla/node-server-sdk';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class SdkConfigurationManager implements ConfigurationManager {
+  private readonly logger = new Logger(SdkConfigurationManager.name);
+
   DEFAULT_POLLING_INTERVAL_SECONDS = 10;
   private sdkInitialized = false;
   private url = env.SDK_ENROLLA_SERVER_GRAPHQL_ENDPOINT;
@@ -28,14 +30,13 @@ export class SdkConfigurationManager implements ConfigurationManager {
         polling: {
           enabled: this.pollingEnabled,
           intervalSeconds: 10,
-          onError: (error) => console.log('onPollingError', error),
+          onError: (error) => this.logger.error('onPollingError', error),
         },
       });
 
       this.sdkInitialized = true;
     } catch (err) {
-      console.log('SDK Initiation Failed');
-      console.log(err);
+      this.logger.error('SDK Initiation Failed', err);
       throw err;
     }
   }

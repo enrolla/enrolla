@@ -24,7 +24,7 @@ jobs:
           cache: 'npm'
           node-version-file: '.nvmrc'
 
-      - uses: ./.github/actions/npm-install-with-cache
+      - run: npm i
 
       - name: Set Affected
         id: set-affected
@@ -50,12 +50,20 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - uses: ./.github/actions/npm-install-with-cache
+      - run: npm i
 
       - name: Test
         id: test
         run: npx nx run-many --target=test --projects=${{ matrix.project }}
 
+      # There's currently a bug on nx publish, so we need to revert for npm publish
+      # - name: Publish
+      #   id: publish
+      #   run: npx nx run-many --target=publish --projects=${{ matrix.project }}
       - name: Publish
         id: publish
-        run: npx nx run-many --target=publish --projects=${{ matrix.project }}
+        run: |
+          echo "Publishing ${{ matrix.project }}"
+          npx nx build ${{ matrix.project }}
+          cd dist/libs/${{ matrix.project }}
+          npm publish --access public --tag alpha

@@ -1,0 +1,45 @@
+---
+title: 'Developing'
+description: 'This guide will help you set up and run Enrolla in development mode.'
+---
+
+Enrolla is using a monorepo (powered by [Nx Workspaces](https://nx.dev/)) with multiple apps and libraries.
+
+It's backend is based on [NestJS](https://nestjs.com/), and its front-end is React running on [Vite](https://vitejs.dev/) with [Refine app](https://refine.dev/).
+
+Follow these instructions to set up a local developement environment.
+
+1. Clone the repositoriy and install dependencies:
+
+   ```bash
+   git clone https://github.com/enrolla/enrolla.git
+   cd enrolla
+   nvm install
+   npm install
+   ```
+
+2. Set up a local Postgres Database. You can use [Postgres.app](https://postgresapp.com/) for Mac for example.
+
+3. Download [doppler](https://www.doppler.com/), our secrets manager. You can access our secrets with the following service tokens:
+
+   ```bash
+   export DOPPLER_FRONTEND=dp.st.dev.jVAVymS6QD0flaTJf3ZHgDP3WECZdCfE4Zk8gjRR1cq
+   export DOPPLER_BACKEND=dp.st.dev.wApQ3g6vcE2BlkL2mbPSOvxx3jWuCHgbykuTWcdeUFH
+   ```
+
+4. Apply database migrations:
+
+   ```bash
+   doppler run --token=$DOPPLER_BACKEND -- npx nx run prisma-models:prisma-deploy
+   ```
+
+5. To start developing, run the `serve` target on both the backend and the frontend:
+
+   ```bash
+   # This will serve the Backend in development mode
+   doppler run --token=$DOPPLER_BACKEND -- npx nx serve
+   # This will serve the Frontend in development mode
+   doppler run --token=$DOPPLER_FRONTEND -- npx nx serve mgmt-ui
+   ```
+
+That's it, you are good to go! Happy hacking! 👾

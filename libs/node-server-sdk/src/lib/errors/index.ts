@@ -25,7 +25,7 @@ export class NotInitializedError extends EnrollaError {
   }
 }
 
-export class InitilizationError extends EnrollaError {
+export class InitializationError extends EnrollaError {
   readonly cause: Error | undefined;
 
   constructor(message: string, cause?: Error) {
