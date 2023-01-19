@@ -43,6 +43,18 @@ export class FeaturesService {
     return feature;
   }
 
+  async createMany(createFeatureDtos: CreateFeatureInput[], tenantId: string) {
+    return await this.prismaService.feature.createMany({
+      data: createFeatureDtos.map((createFeatureDto) => ({
+        key: createFeatureDto.key,
+        type: createFeatureDto.type,
+        description: createFeatureDto.description,
+        defaultValue: createFeatureDto.defaultValue as Prisma.JsonObject,
+        tenantId: tenantId,
+      })),
+    });
+  }
+
   async findAll(tenantId: string) {
     return await this.prismaService.feature.findMany({
       where: {
@@ -67,6 +79,17 @@ export class FeaturesService {
       where: {
         id: {
           in: ids,
+        },
+        tenantId,
+      },
+    });
+  }
+
+  async findManyByKeys(keys: string[], tenantId: string) {
+    return await this.prismaService.feature.findMany({
+      where: {
+        key: {
+          in: keys,
         },
         tenantId,
       },

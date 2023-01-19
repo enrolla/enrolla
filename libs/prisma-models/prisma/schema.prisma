@@ -102,6 +102,7 @@ model Customer {
   createdAt      DateTime          @default(now()) @map("created_at")
 
   @@unique([id, tenantId])
+  @@unique([tenantId, organizationId])
   @@index([tenantId])
   @@map("customers")
 }
