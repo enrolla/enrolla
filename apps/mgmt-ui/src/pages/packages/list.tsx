@@ -11,6 +11,7 @@ import {
   createStyles,
   SimpleGrid,
   EditButton,
+  Space,
 } from '@pankod/refine-mantine';
 import { useMemo } from 'react';
 import {
@@ -18,6 +19,7 @@ import {
   PredefinedIcon,
 } from '../../components/packages/PackageIcon';
 import { Package } from '@enrolla/graphql-codegen';
+import { useNavigation } from '@pankod/refine-core';
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -106,10 +108,26 @@ export const PackageList: React.FC = () => {
   });
 
   const { classes } = useStyles();
+  const { list } = useNavigation();
 
   return (
     <ScrollArea>
       <List>
+        <Text>
+          Group together sets of features with specific defaults into packages,
+          and assign specific packages to different{' '}
+          <Text
+            span
+            c="blue"
+            inherit
+            style={{ cursor: 'pointer' }}
+            onClick={() => list('customers')}
+          >
+            Customers
+          </Text>
+          .
+        </Text>
+        <Space h="md" />
         <SimpleGrid
           cols={4}
           breakpoints={[

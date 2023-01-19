@@ -1,6 +1,5 @@
 import {
   Customer,
-  EncryptionKey,
   FeatureValue,
   Package,
   SecretInput,
@@ -17,7 +16,7 @@ import {
 } from '@pankod/refine-mantine';
 import { FeatureCustomizeComponent } from '../../components/features/FeatureCustomizeComponent';
 import { SecretsEditComponent } from '../../components/secrets/SecretsEditComponent';
-import { encrypt } from '../../utils/encryption';
+import { encrypt, usePublicKey } from '../../utils/encryption';
 
 export const CustomerEdit: React.FC = () => {
   const {
@@ -54,7 +53,7 @@ export const CustomerEdit: React.FC = () => {
         packageId: values['package.id'] as string,
         secrets: (values.editedSecrets as SecretInput[]).map((s) => ({
           key: s.key,
-          ...encrypt(s.value, encryptionKey?.data[0]?.publicKey),
+          ...encrypt(s.value, encryptionKey?.data.publicKey),
           new: !(values.secrets as SecretInput[])?.find(
             (existingSecret) => existingSecret.key === s.key
           ),
@@ -72,17 +71,12 @@ export const CustomerEdit: React.FC = () => {
     defaultValue: queryResult?.data?.data.package?.id,
   });
 
+  const { data: encryptionKey } = usePublicKey();
+
   const { data: secretKeys } = useList<SecretKey>({
     resource: 'secret-keys',
     metaData: {
       fields: ['key'],
-    },
-  });
-
-  const { data: encryptionKey } = useList<EncryptionKey>({
-    resource: 'encryption-keys',
-    metaData: {
-      fields: ['publicKey'],
     },
   });
 

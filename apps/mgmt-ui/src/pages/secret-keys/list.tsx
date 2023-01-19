@@ -14,7 +14,7 @@ import {
   Title,
   Text,
 } from '@pankod/refine-mantine';
-import { Button, Modal } from '@mantine/core';
+import { Button, Modal, Space } from '@mantine/core';
 import { EncryptionKey, SecretKey } from '@enrolla/graphql-codegen';
 import { useMemo, useState } from 'react';
 import { useList, useNavigation } from '@pankod/refine-core';
@@ -145,6 +145,25 @@ export const SecretKeyList: React.FC = () => {
               title={<Title order={3}>Secret Keys</Title>}
               createButtonProps={{ onClick: () => show() }}
             >
+              <Text>
+                Create or delete secret keys. Secret 'values' are defined per
+                customer in the{' '}
+                <Text
+                  span
+                  c="blue"
+                  inherit
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => list('customers')}
+                >
+                  Customer Dashboard
+                </Text>
+                .
+              </Text>
+              <Text>
+                Secret values are encrypted and can be depcrypted only by using
+                your private key (which is known only to you).
+              </Text>
+              <Space h="md" />
               <Table highlightOnHover>
                 <thead>
                   {getHeaderGroups().map((headerGroup) => (

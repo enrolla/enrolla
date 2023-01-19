@@ -38,7 +38,8 @@ const statusCompare = (a: Status, b: Status) => {
   return 0;
 };
 
-interface DisplaySecret extends SecretInput {
+interface DisplaySecret extends Partial<SecretInput> {
+  key: string;
   status: Status;
 }
 
@@ -79,7 +80,7 @@ export interface SecretsEditProps {
   secretKeys: SecretKey[];
   existingSecrets: SecretInput[];
   editedSecrets: SecretInput[];
-  onSecretsChange: (secrets: SecretInput[]) => void;
+  onSecretsChange: (secrets: Partial<SecretInput>[]) => void;
 }
 
 interface SecretDisplayAndEditProps {
@@ -193,14 +194,14 @@ export const SecretsEditComponent = ({
     <>
       {displayArr.map((secret: DisplaySecret) => {
         return (
-          <>
+          <div key={secret.key}>
             <SecretDisplayAndEditComponent
               onUndo={onUndo}
               onUpdate={onUpdate}
               secret={secret}
             />
             <Space h="md" />
-          </>
+          </div>
         );
       })}
     </>

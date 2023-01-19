@@ -1,3 +1,5 @@
+import { EncryptionKey } from '@enrolla/graphql-codegen';
+import { useApiUrl, useCustom } from '@pankod/refine-core';
 import nacl from 'tweetnacl'; // cryptographic functions
 import util from 'tweetnacl-util'; // encoding & decoding
 
@@ -47,3 +49,13 @@ export const encrypt = (
     nonce: util.encodeBase64(nonce),
   };
 };
+
+export const usePublicKey = () =>
+  useCustom<EncryptionKey>({
+    url: '', // required param, but not used. See backendGraphQLProvider.ts custom method
+    method: 'get',
+    metaData: {
+      operation: 'encryptionKey',
+      fields: ['publicKey'],
+    },
+  });

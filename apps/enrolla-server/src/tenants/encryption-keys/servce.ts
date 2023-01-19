@@ -21,9 +21,8 @@ export class EncryptionKeyService {
     });
   }
 
-  // DB constraint ensures that there is only one encryption key per tenant
-  async getTennantEncryptionKeys(tenantId: string) {
-    return await this.prismaService.encryptionKey.findMany({
+  async getTennantEncryptionKey(tenantId: string) {
+    return await this.prismaService.encryptionKey.findUnique({
       where: {
         tenantId,
       },

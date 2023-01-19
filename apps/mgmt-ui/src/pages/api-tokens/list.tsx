@@ -16,6 +16,7 @@ import {
   TextInput,
   SaveButton,
   Title,
+  Space,
 } from '@pankod/refine-mantine';
 import { Flex, Modal } from '@mantine/core';
 import { ApiToken } from '@enrolla/graphql-codegen';
@@ -160,6 +161,11 @@ export const ApiTokenList: React.FC = () => {
           title={<Title order={3}>API Tokens</Title>}
           createButtonProps={{ onClick: () => show() }}
         >
+          <Text>
+            Create and manage API tokens for authenticated communication between
+            the Enrolla SDK and server.
+          </Text>
+          <Space h="md" />
           <Table highlightOnHover>
             <thead>
               {getHeaderGroups().map((headerGroup) => (

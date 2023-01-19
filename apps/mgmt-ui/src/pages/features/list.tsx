@@ -9,6 +9,8 @@ import {
   ShowButton,
   DeleteButton,
   DateField,
+  Text,
+  Space,
 } from '@pankod/refine-mantine';
 import { Feature, FeatureType } from '@enrolla/graphql-codegen';
 import { useMemo } from 'react';
@@ -16,6 +18,7 @@ import {
   FeatureViewComponent,
   FEATURE_TYPE_NAMES,
 } from '../../components/features/FeatureViewComponent';
+import { useNavigation } from '@pankod/refine-core';
 
 export const FeatureList: React.FC = () => {
   const columns = useMemo<ColumnDef<Feature>[]>(
@@ -96,9 +99,39 @@ export const FeatureList: React.FC = () => {
     },
   });
 
+  const { list } = useNavigation();
+
   return (
     <ScrollArea>
       <List>
+        <Text>
+          Manage all of your features by assigning them types and default
+          values.
+        </Text>
+        <Text>
+          Group together sets of features with specific defaults into{' '}
+          <Text
+            span
+            c="blue"
+            inherit
+            style={{ cursor: 'pointer' }}
+            onClick={() => list('customers')}
+          >
+            Packages
+          </Text>
+          , and assign specific features and/or packages to different{' '}
+          <Text
+            span
+            c="blue"
+            inherit
+            style={{ cursor: 'pointer' }}
+            onClick={() => list('customers')}
+          >
+            Customers
+          </Text>
+          .
+        </Text>
+        <Space h="md" />
         <Table highlightOnHover>
           <thead>
             {getHeaderGroups().map((headerGroup) => (

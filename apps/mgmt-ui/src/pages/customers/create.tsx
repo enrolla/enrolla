@@ -29,7 +29,7 @@ import {
 } from '@enrolla/graphql-codegen';
 import { useState } from 'react';
 import { SecretsCreateComponent } from '../../components/secrets/SecretsCreateComponent';
-import { encrypt } from '../../utils/encryption';
+import { encrypt, usePublicKey } from '../../utils/encryption';
 
 export const CustomerCreate: React.FC = () => {
   const [organizationList, setOrganizationList] = useState<
@@ -60,7 +60,7 @@ export const CustomerCreate: React.FC = () => {
         })),
         secrets: (values.secrets as SecretInput[]).map((s) => ({
           key: s.key,
-          ...encrypt(s.value, encryptionKey?.data[0]?.publicKey),
+          ...encrypt(s.value, encryptionKey?.data.publicKey),
         })),
         organizationId: shouldCreateOrg ? null : values['organizationId'],
         createOrganizationName: shouldCreateOrg
@@ -120,12 +120,7 @@ export const CustomerCreate: React.FC = () => {
     },
   });
 
-  const { data: encryptionKey } = useList<EncryptionKey>({
-    resource: 'encryption-keys',
-    metaData: {
-      fields: ['publicKey'],
-    },
-  });
+  const { data: encryptionKey } = usePublicKey();
 
   const lastStep = 3;
 

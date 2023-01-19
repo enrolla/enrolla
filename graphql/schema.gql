@@ -106,6 +106,7 @@ type SecretKey {
 type Query {
   apiTokens: [ApiToken!]!
   encryptionKeys: [EncryptionKey!]!
+  encryptionKey: EncryptionKey!
   features: [Feature!]!
   feature(id: String!): Feature!
   packages: [Package!]!

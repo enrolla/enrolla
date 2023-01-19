@@ -17,7 +17,7 @@ import {
   Title,
   Button,
 } from '@pankod/refine-mantine';
-import { Modal } from '@mantine/core';
+import { Modal, Space } from '@mantine/core';
 import { EncryptionKey } from '@enrolla/graphql-codegen';
 import { useMemo, useState } from 'react';
 import { IconCopy } from '@tabler/icons';
@@ -223,9 +223,14 @@ export const EncryptionKeyList: React.FC = () => {
           createButtonProps={{ onClick: () => show() }}
         >
           <Text>
+            Manage yout encryption key pair to encrypt customer secrets. Your
+            private key is known only to you and is not stored on Enrolla
+            servers.
+          </Text>
+          <Text>
             Note: Only one encryption key pair can be created per account.
           </Text>
-          <br />
+          <Space h="md" />
           <Table highlightOnHover>
             <thead>
               {getHeaderGroups().map((headerGroup) => (
