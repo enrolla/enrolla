@@ -63,7 +63,7 @@ export class IntegrationsResolver {
 
               return {
                 featureId: createdFeature.id,
-                value: feature.value,
+                value: { value: feature.value },
               };
             }),
           },
