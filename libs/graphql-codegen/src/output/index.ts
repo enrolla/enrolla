@@ -227,6 +227,10 @@ export type Package = {
   version: Scalars['SemVer'];
 };
 
+export enum PackageUpdateStrategy {
+  MigrateAllChildren = 'MIGRATE_ALL_CHILDREN'
+}
+
 export type Query = {
   __typename?: 'Query';
   apiTokens: Array<ApiToken>;
@@ -285,7 +289,13 @@ export type UpdateOrganizationInput = {
 };
 
 export type UpdatePackageInput = {
+  description?: InputMaybe<Scalars['String']>;
+  features?: InputMaybe<Array<FeatureInstanceInput>>;
+  icon?: InputMaybe<Scalars['String']>;
   id: Scalars['Cuid'];
+  name?: InputMaybe<Scalars['String']>;
+  parentPackageId?: InputMaybe<Scalars['Cuid']>;
+  updateStrategy?: InputMaybe<PackageUpdateStrategy>;
 };
 
 export type GetAllCustomerFeaturesQueryVariables = Exact<{ [key: string]: never; }>;

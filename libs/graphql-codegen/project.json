@@ -18,6 +18,14 @@
         "main": "libs/graphql-codegen/src/index.ts",
         "assets": ["libs/graphql-codegen/*.md"]
       }
+    },
+    "publish": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public",
+        "tag": "alpha",
+        "distFolderPath": "dist/libs/graphql-codegen"
+      }
     }
   },
   "tags": []
