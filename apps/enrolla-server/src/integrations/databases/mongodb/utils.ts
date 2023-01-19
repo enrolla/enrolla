@@ -17,7 +17,13 @@ export function inferFeatureType(value: any): FeatureType {
 export function buildConnectionString(
   connectionOptions: MongoDBConnectionOptions
 ): string {
-  let connectionString = 'mongodb://';
+  let connectionString = 'mongodb';
+
+  if (connectionOptions.isSrv) {
+    connectionString += '+srv';
+  }
+
+  connectionString += '://';
 
   if (connectionOptions.username) {
     connectionString = `${connectionOptions.username}`;
