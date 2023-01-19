@@ -26,7 +26,7 @@ export function buildConnectionString(
   connectionString += '://';
 
   if (connectionOptions.username) {
-    connectionString = `${connectionOptions.username}`;
+    connectionString += `${connectionOptions.username}`;
 
     if (connectionOptions.password) {
       connectionString += `:${connectionOptions.password}@`;
