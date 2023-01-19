@@ -1,29 +1,29 @@
-import { InitialzeOptions } from '../interfaces';
-import { InitilizationError } from '../errors';
+import { InitializeOptions } from '../interfaces';
+import { InitializationError } from '../errors';
 
-export const validateConfiguration = (options: InitialzeOptions): void => {
+export const validateConfiguration = (options: InitializeOptions): void => {
   const { apiToken, polling, evaluationHooks } = options;
   if (!apiToken) {
-    throw new InitilizationError('"apiToken" is required');
+    throw new InitializationError('"apiToken" is required');
   }
 
   if (typeof apiToken !== 'string') {
-    throw new InitilizationError('"apiToken" must be a string');
+    throw new InitializationError('"apiToken" must be a string');
   }
 
   if (polling) {
     const { enabled, intervalSeconds, onError } = polling;
 
     if (typeof enabled !== 'boolean') {
-      throw new InitilizationError('"polling.enabled" must be a boolean.');
+      throw new InitializationError('"polling.enabled" must be a boolean.');
     }
     if (typeof intervalSeconds !== 'number' || intervalSeconds <= 0) {
-      throw new InitilizationError(
+      throw new InitializationError(
         '"polling.intervalSeconds" must be an integer greater than 0.'
       );
     }
     if (onError && typeof onError !== 'function') {
-      throw new InitilizationError('"polling.onError" must be a function.');
+      throw new InitializationError('"polling.onError" must be a function.');
     }
   }
 
@@ -31,7 +31,7 @@ export const validateConfiguration = (options: InitialzeOptions): void => {
     evaluationHooks?.beforeEvaluation &&
     typeof evaluationHooks.beforeEvaluation !== 'function'
   ) {
-    throw new InitilizationError(
+    throw new InitializationError(
       '"evaluationHooks.beforeEvaluation" must be a function.'
     );
   }
@@ -40,7 +40,7 @@ export const validateConfiguration = (options: InitialzeOptions): void => {
     evaluationHooks?.afterEvaluation &&
     typeof evaluationHooks.afterEvaluation !== 'function'
   ) {
-    throw new InitilizationError(
+    throw new InitializationError(
       '"evaluationHooks.afterEvaluation" must be a function.'
     );
   }

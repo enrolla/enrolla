@@ -50,7 +50,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - uses: ./.github/actions/npm-install-with-cache
+      - run: npm i
 
       - name: Test
         id: test
