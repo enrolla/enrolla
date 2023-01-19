@@ -1,12 +1,12 @@
 import { initializeGraphQLClient } from '../api';
-import { InitialzeOptions } from '../interfaces';
+import { InitializeOptions } from '../interfaces';
 import { refreshStore } from '../store';
-import { InitilizationError, PollingError } from '../errors';
+import { InitializationError, PollingError } from '../errors';
 import { validateConfiguration } from './validation';
 
-export let _configuration: InitialzeOptions;
+export let _configuration: InitializeOptions;
 
-const startPolling = (configuration: InitialzeOptions) => {
+const startPolling = (configuration: InitializeOptions) => {
   if (!configuration?.polling) return;
   const { enabled, intervalSeconds, onError } = configuration.polling;
 
@@ -23,9 +23,9 @@ const startPolling = (configuration: InitialzeOptions) => {
  * Initializes the Enrolla SDK. Must be called once before any other SDK methods.
  *
  * @param options
- * @throws {InitilizationError} if the configuration is invalid or if failed to fetch feature data.
+ * @throws {InitializationError} if the configuration is invalid or if failed to fetch feature data.
  */
-export const initialize = async (options: InitialzeOptions) => {
+export const initialize = async (options: InitializeOptions) => {
   validateConfiguration(options);
   _configuration = Object.freeze(options);
 
@@ -35,7 +35,7 @@ export const initialize = async (options: InitialzeOptions) => {
   try {
     await refreshStore();
   } catch (err) {
-    throw new InitilizationError(
+    throw new InitializationError(
       'Failed in initial fetch of feature data.',
       err
     );

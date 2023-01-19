@@ -1,4 +1,4 @@
-export interface InitialzeOptions {
+export interface InitializeOptions {
   apiToken: string;
   url?: string;
   polling?: {
