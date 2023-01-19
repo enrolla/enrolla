@@ -1,5 +1,5 @@
 import { EncryptionKey } from '@enrolla/graphql-codegen';
-import { useApiUrl, useCustom } from '@pankod/refine-core';
+import { useCustom } from '@pankod/refine-core';
 import nacl from 'tweetnacl'; // cryptographic functions
 import util from 'tweetnacl-util'; // encoding & decoding
 

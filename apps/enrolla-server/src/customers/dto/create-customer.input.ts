@@ -21,7 +21,7 @@ export class CreateCustomerInput {
   @Field(() => [FeatureInstanceInput])
   features: FeatureInstanceInput[];
 
-  @ApiProperty({ type: SecretInput, isArray: true })
+  @ApiProperty({ type: SecretInput, isArray: true, nullable: true })
   @Field(() => [SecretInput])
-  secrets: SecretInput[];
+  secrets?: SecretInput[];
 }

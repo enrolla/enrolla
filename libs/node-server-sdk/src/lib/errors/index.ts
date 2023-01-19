@@ -28,8 +28,8 @@ export class NotInitializedError extends EnrollaError {
 export class InitializationError extends EnrollaError {
   readonly cause: Error | undefined;
 
-  constructor(message: string, cause?: Error) {
-    super(message);
+  constructor(message?: string, cause?: Error) {
+    super(message ?? 'Failed to initialize Enrolla SDK');
     this.cause = cause;
     this.severity = SEVERITY.Critical;
   }
@@ -92,6 +92,16 @@ export class PollingError extends EnrollaError {
     super('Failed to refresh feature data.');
     this.cause = cause;
     this.severity = SEVERITY.Warning;
+  }
+}
+
+export class SecretDecryptError extends EnrollaError {
+  readonly cause: Error;
+
+  constructor(key: string, cause: Error) {
+    super(`Failed to decrypt secret "${key}".`);
+    this.cause = cause;
+    this.severity = SEVERITY.Critical;
   }
 }
 

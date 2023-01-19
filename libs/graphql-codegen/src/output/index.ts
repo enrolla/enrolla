@@ -285,7 +285,7 @@ export type Query = {
   apiTokens: Array<ApiToken>;
   customer: Customer;
   customers: Array<Customer>;
-  encryptionKey: EncryptionKey;
+  encryptionKey?: Maybe<EncryptionKey>;
   encryptionKeys: Array<EncryptionKey>;
   feature: Feature;
   features: Array<Feature>;

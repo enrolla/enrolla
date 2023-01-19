@@ -53,7 +53,7 @@ export const EncryptionKeyList: React.FC = () => {
     transformValues: (values) => {
       return {
         // dont send private key to server
-        publicKey: values.publicKey,
+        publicKey: values?.publicKey,
       };
     },
   });
@@ -174,36 +174,34 @@ export const EncryptionKeyList: React.FC = () => {
         <br />
         <>
           <Button.Group mt={8} sx={{ justifyContent: 'center' }}>
-            <>
-              {values.privateKey ? (
-                <>
-                  <CopyButton value={values.privateKey as string}>
-                    {({ copied, copy }) => (
-                      <Button
-                        variant="light"
-                        leftIcon={<IconCopy />}
-                        color={copied ? 'teal' : 'blue'}
-                        onClick={copy}
-                      >
-                        {copied ? 'Copied' : 'Copy Private Key'}
-                      </Button>
-                    )}
-                  </CopyButton>
-                  <br />
-                </>
-              ) : (
-                <Button
-                  disabled={!!values.publicKey}
-                  onClick={() => generateKeys()}
-                >
-                  Generate Keys
-                </Button>
-              )}
-            </>
+            {values.privateKey ? (
+              <>
+                <CopyButton value={values.privateKey as string}>
+                  {({ copied, copy }) => (
+                    <Button
+                      variant="light"
+                      leftIcon={<IconCopy />}
+                      color={copied ? 'teal' : 'blue'}
+                      onClick={copy}
+                    >
+                      {copied ? 'Copied' : 'Copy Private Key'}
+                    </Button>
+                  )}
+                </CopyButton>
+                <br />
+              </>
+            ) : (
+              <Button
+                disabled={!!values?.publicKey}
+                onClick={() => generateKeys()}
+              >
+                Generate Keys
+              </Button>
+            )}
           </Button.Group>
 
           <br />
-          {values.publicKey && (
+          {values?.publicKey && (
             <Text color="red">
               You must copy your private key and store it securly. It will not
               be shown again!

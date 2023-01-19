@@ -57,10 +57,14 @@ export class TenantsResolver {
 
   @Query(() => [EncryptionKey])
   async encryptionKeys(@TenantId() tenantId: string) {
-    return await [this.encryptionKeyService.getTennantEncryptionKey(tenantId)];
+    const key = await this.encryptionKeyService.getTennantEncryptionKey(
+      tenantId
+    );
+
+    return key ? [key] : [];
   }
 
-  @Query(() => EncryptionKey)
+  @Query(() => EncryptionKey, { nullable: true })
   async encryptionKey(@TenantId() tenantId: string) {
     return await this.encryptionKeyService.getTennantEncryptionKey(tenantId);
   }

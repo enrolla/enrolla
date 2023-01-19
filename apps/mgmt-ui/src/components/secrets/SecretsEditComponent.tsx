@@ -194,27 +194,26 @@ export const SecretsEditComponent = ({
   };
 
   return (
-    <>
-      <Table highlightOnHover>
-        <thead>
-          <tr>
-            <th>Secret Key</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {displayArr.map((secret: DisplaySecret) => {
-            return (
-              <SecretDisplayAndEditRowComponent
-                onUndo={onUndo}
-                onUpdate={onUpdate}
-                secret={secret}
-              />
-            );
-          })}
-        </tbody>
-      </Table>
-    </>
+    <Table highlightOnHover>
+      <thead>
+        <tr>
+          <th>Secret Key</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {displayArr.map((secret: DisplaySecret) => {
+          return (
+            <SecretDisplayAndEditRowComponent
+              key={secret.key}
+              onUndo={onUndo}
+              onUpdate={onUpdate}
+              secret={secret}
+            />
+          );
+        })}
+      </tbody>
+    </Table>
   );
 };

@@ -20,7 +20,6 @@ import { FeatureCustomizeComponent } from '../../components/features/FeatureCust
 import { FeatureViewComponent } from '../../components/features/FeatureViewComponent';
 import {
   Customer,
-  EncryptionKey,
   Feature,
   FeatureValue,
   Organization,
@@ -60,7 +59,7 @@ export const CustomerCreate: React.FC = () => {
         })),
         secrets: (values.secrets as SecretInput[]).map((s) => ({
           key: s.key,
-          ...encrypt(s.value, encryptionKey?.data.publicKey),
+          ...encrypt(s.value, encryptionKey?.data?.publicKey),
         })),
         organizationId: shouldCreateOrg ? null : values['organizationId'],
         createOrganizationName: shouldCreateOrg
