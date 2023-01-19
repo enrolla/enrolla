@@ -1,62 +1,53 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Secret } from './entities/secret.entity';
-import { decrypt, encrypt } from '../utils/encryption.utils';
+import { Secret, SecretKey } from './entities';
+import { CreateSecretKeyInput } from './dto';
 
 @Injectable()
 export class SecretsService {
-  ENCRYPTION_IV_LENGTH = 16;
-
   constructor(private prismaService: PrismaService) {}
 
-  async create(
-    tenantId: string,
-    customerId: string,
-    key: string,
-    value: string
-  ): Promise<Secret> {
-    const { encryptedData, iv } = await encrypt(
-      value,
-      this.ENCRYPTION_IV_LENGTH
-    );
-
-    return await this.prismaService.secret.create({
-      data: {
-        key: key,
-        tenantId: tenantId,
-        value: encryptedData,
-        customerId: customerId,
-        iv: iv,
+  async findAllKeysForTennant(tenantId: string): Promise<SecretKey[]> {
+    return await this.prismaService.secretKey.findMany({
+      where: {
+        tenantId,
       },
     });
   }
 
-  async update(
-    tenantId: string,
-    customerId: string,
-    id: string,
-    value: string
-  ): Promise<Secret> {
-    const { encryptedData, iv } = await encrypt(
-      value,
-      this.ENCRYPTION_IV_LENGTH
-    );
+  async hasSecrets(tenantId: string): Promise<boolean> {
+    const res = await this.prismaService.secret.findFirst({
+      where: {
+        tenantId,
+      },
+    });
 
-    return await this.prismaService.secret.update({
+    return !!res;
+  }
+
+  async createKey(
+    tenantId: string,
+    input: CreateSecretKeyInput
+  ): Promise<SecretKey> {
+    const data = { ...input, tenantId };
+
+    return await this.prismaService.secretKey.create({
+      data,
+    });
+  }
+
+  async removeKey(tenantId: string, id: string): Promise<SecretKey> {
+    return await this.prismaService.secretKey.delete({
       where: {
         id_tenantId: {
           id,
           tenantId,
         },
       },
-      data: {
-        value: encryptedData,
-        iv,
-      },
     });
   }
 
-  async findByCustomerId(
+  async findAllSecretsByCustomerId(
     tenantId: string,
     customerId: string
   ): Promise<Secret[]> {
@@ -67,21 +58,6 @@ export class SecretsService {
       },
     });
 
-    secrets.forEach(async (secret) => {
-      secret.value = await decrypt(secret.value, secret.iv);
-    });
-
     return secrets;
-  }
-
-  async remove(tenantId: string, id: string): Promise<void> {
-    await this.prismaService.secret.delete({
-      where: {
-        id_tenantId: {
-          id,
-          tenantId,
-        },
-      },
-    });
   }
 }

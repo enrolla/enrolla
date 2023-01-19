@@ -16,6 +16,7 @@ import logo from './assets/logo.png';
 import logoDark from './assets/logo_dark.png';
 import { Login } from './pages/login';
 import { ApiTokenList } from './pages/api-tokens';
+import { EncryptionKeyList } from './pages/encryption-keys';
 import { FeatureCreate, FeatureList, FeatureShow } from './pages/features';
 import {
   PackageCreate,
@@ -30,6 +31,7 @@ import {
   IconBuildingStore,
   IconShieldLock,
   IconSettings,
+  IconKey,
 } from '@tabler/icons';
 import { Layout } from './components/layout';
 import dataProvider from './providers/backendGraphQLProvider';
@@ -42,6 +44,7 @@ import {
 import { Integrations } from './pages/integrations';
 import { Dashboard } from './pages/dashboard';
 import useAuthProvider from './providers/useAuthProvider';
+import { SecretKeyList } from './pages/secret-keys';
 
 export default function App() {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
@@ -153,6 +156,13 @@ export default function App() {
                 icon: <IconPackage size="16" />,
               },
               {
+                name: 'secret-keys',
+                key: 'secretKeys',
+                list: SecretKeyList,
+                options: { label: 'Secret Keys' },
+                icon: <IconKey size="16" />,
+              },
+              {
                 name: 'integrations',
                 list: () => null,
                 icon: <IconBuildingStore size="16" />,
@@ -166,6 +176,15 @@ export default function App() {
                 canDelete: true,
                 options: { label: 'API Tokens' },
                 icon: <IconShieldLock size="16" />,
+              },
+              {
+                name: 'encryption-keys',
+                key: 'encryptionKeys',
+                parentName: 'settings',
+                list: EncryptionKeyList,
+                canDelete: true,
+                options: { label: 'Encryption Key' },
+                icon: <IconKey size="16" />,
               },
             ]}
           />

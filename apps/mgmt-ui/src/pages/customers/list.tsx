@@ -10,6 +10,8 @@ import {
   DeleteButton,
   DateField,
   EditButton,
+  Text,
+  Space,
 } from '@pankod/refine-mantine';
 import { useMemo } from 'react';
 import { Feature, Package } from '@enrolla/graphql-codegen';
@@ -84,6 +86,11 @@ export const CustomerList: React.FC = () => {
   return (
     <ScrollArea>
       <List>
+        <Text>
+          Manage your customers to override specific features and define secret
+          values.
+        </Text>
+        <Space h="md" />
         <Table highlightOnHover>
           <thead>
             {getHeaderGroups().map((headerGroup) => (

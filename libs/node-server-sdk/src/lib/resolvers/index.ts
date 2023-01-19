@@ -1,7 +1,7 @@
 import { FeatureType } from '@enrolla/graphql-codegen';
 import { Options } from './types';
 import { FeatureValue } from '../interfaces';
-import { resolver, typedResolver } from './helpers';
+import { resolver, typedResolver, secretResolver } from './utils';
 
 /**
  * Evaluates the feature value for the given organization and returns the result.
@@ -109,3 +109,16 @@ export const getFeatureJsonValue = (
     string,
     unknown
   >;
+
+/**
+ * Evaluates the secret value for the given organization and returns the result.
+ * @param key The secret name.
+ * @param organizationId The unique identifier of the organization.
+ * @param options
+ * @returns The secret value.
+ */
+export const getSecretValue = (
+  key: string,
+  organizationId: string,
+  options?: Options
+): string => secretResolver(key, organizationId, options) as string;

@@ -35,9 +35,6 @@ export const initialize = async (options: InitializeOptions) => {
   try {
     await refreshStore();
   } catch (err) {
-    throw new InitializationError(
-      'Failed in initial fetch of feature data.',
-      err
-    );
+    throw new InitializationError(err.message, err as Error);
   }
 };

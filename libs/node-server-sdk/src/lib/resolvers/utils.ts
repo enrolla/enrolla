@@ -1,39 +1,53 @@
 import { FeatureType } from '@enrolla/graphql-codegen';
-import { organizationExists, getCustomerFeatureValue } from '../store';
+import {
+  organizationExists,
+  getCustomerFeatureValue,
+  getCustomerSecretValue,
+} from '../store';
 import { Feature, FeatureValue } from '../interfaces';
 import { Options } from './types';
 import {
   FeatureNotFoundError,
-  FeatureNotProvidedError,
+  ArgumentNotProvidedError,
   FeatureTypeMismatchError,
   OrganizationNotFoundError,
   OrganizationIdNotProvidedError,
   NotInitializedError,
+  SecretNotFoundError,
+  PrivateKeyNotSuppliedError,
 } from '../errors';
 import { _configuration } from '../configuration';
 
-export const baseResolver = (
-  feature: string,
+const validate = (
+  key: string,
   organizationId: string,
-  options?: Options // eslint-disable-line @typescript-eslint/no-unused-vars
-): Feature => {
+  argumentName: string
+): void => {
   if (!_configuration?.apiToken) {
     throw new NotInitializedError();
   }
 
-  if (!feature) {
-    throw new FeatureNotProvidedError();
+  if (!key) {
+    throw new ArgumentNotProvidedError(argumentName);
   }
 
   if (!organizationId) {
     throw new OrganizationIdNotProvidedError();
   }
 
-  _configuration?.evaluationHooks?.beforeEvaluation?.(feature, organizationId);
+  _configuration?.evaluationHooks?.beforeEvaluation?.(key, organizationId);
 
   if (!organizationExists(organizationId)) {
-    throw new OrganizationNotFoundError(feature, organizationId);
+    throw new OrganizationNotFoundError(key, organizationId);
   }
+};
+
+export const baseResolver = (
+  feature: string,
+  organizationId: string,
+  options?: Options // eslint-disable-line @typescript-eslint/no-unused-vars
+): Feature => {
+  validate(feature, organizationId, 'feature');
 
   const customerFeature = getCustomerFeatureValue(feature, organizationId);
   if (!customerFeature) {
@@ -75,4 +89,22 @@ export const typedResolver = (
   );
 
   return result.value;
+};
+
+export const secretResolver = (
+  key: string,
+  organizationId: string,
+  options?: Options // eslint-disable-line @typescript-eslint/no-unused-vars
+): string => {
+  if (!_configuration?.privateKey) {
+    throw new PrivateKeyNotSuppliedError();
+  }
+  validate(key, organizationId, 'secret');
+
+  const customerSecret = getCustomerSecretValue(key, organizationId);
+  if (!customerSecret) {
+    throw new SecretNotFoundError(key);
+  }
+
+  return customerSecret;
 };

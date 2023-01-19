@@ -3,7 +3,8 @@ import * as sdk from '@enrolla/node-server-sdk';
 export const testNodeServerSdk = async () => {
   try {
     await sdk.initialize({
-      url: 'https://api-staging.vecinity.io/graphql',
+      url: 'http://localhost:3000/graphql',
+      privateKey: '9lieJsqLPcxcgHOnsFP+WPDlZ1JlsdF97WQrkrBFcb4=',
       apiToken: 'xxx',
       evaluationHooks: {
         beforeEvaluation: (feature, organizationId) =>
@@ -24,23 +25,6 @@ export const testNodeServerSdk = async () => {
   }
 
   console.log('Initiated Successfully');
-
-  console.log(
-    `getFeatureValue('customBranding', 'org_uNs3xw0NQTwUaQO6') - ${sdk.getFeatureValue(
-      'customBranding',
-      'org_uNs3xw0NQTwUaQO6'
-    )}`
-  );
-  console.log(
-    `getFeatureBooleanValue('customBranding', 'org_uNs3xw0NQTwUaQO6') - ${sdk.getFeatureBooleanValue(
-      'customBranding',
-      'org_uNs3xw0NQTwUaQO6'
-    )}`
-  );
-  console.log(
-    `getFeatureIntegerValue('maxEventsPerSec', 'org_uNs3xw0NQTwUaQO6') - ${sdk.getFeatureIntegerValue(
-      'maxEventsPerSec',
-      'org_uNs3xw0NQTwUaQO6'
-    )}`
-  );
+  console.log('k1', sdk.getSecretValue('k1', '123'));
+  console.log('kk', sdk.getSecretValue('kk', '123'));
 };

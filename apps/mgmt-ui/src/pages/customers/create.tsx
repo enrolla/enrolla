@@ -14,8 +14,8 @@ import {
   useStepsForm,
   SelectItem,
 } from '@pankod/refine-mantine';
-import { List } from '@mantine/core';
-import { IconEditCircle } from '@tabler/icons';
+import { List, Space } from '@mantine/core';
+import { IconChevronRight, IconEditCircle } from '@tabler/icons';
 import { FeatureCustomizeComponent } from '../../components/features/FeatureCustomizeComponent';
 import { FeatureViewComponent } from '../../components/features/FeatureViewComponent';
 import {
@@ -23,8 +23,12 @@ import {
   Feature,
   FeatureValue,
   Organization,
+  SecretInput,
+  SecretKey,
 } from '@enrolla/graphql-codegen';
 import { useState } from 'react';
+import { SecretsCreateComponent } from '../../components/secrets/SecretsCreateComponent';
+import { encrypt, usePublicKey } from '../../utils/encryption';
 
 export const CustomerCreate: React.FC = () => {
   const [organizationList, setOrganizationList] = useState<
@@ -38,6 +42,7 @@ export const CustomerCreate: React.FC = () => {
     steps: { currentStep, gotoStep },
   } = useStepsForm<Customer>({
     initialValues: {
+      secrets: [],
       features: [],
       packageId: null,
       createOrganizationName: null,
@@ -51,6 +56,10 @@ export const CustomerCreate: React.FC = () => {
         features: (values.features as FeatureValue[]).map((fv) => ({
           featureId: fv.feature.id,
           value: fv.value,
+        })),
+        secrets: (values.secrets as SecretInput[]).map((s) => ({
+          key: s.key,
+          ...encrypt(s.value, encryptionKey?.data?.publicKey),
         })),
         organizationId: shouldCreateOrg ? null : values['organizationId'],
         createOrganizationName: shouldCreateOrg
@@ -103,6 +112,17 @@ export const CustomerCreate: React.FC = () => {
     },
   });
 
+  const { data: secretKeys } = useList<SecretKey>({
+    resource: 'secret-keys',
+    metaData: {
+      fields: ['key'],
+    },
+  });
+
+  const { data: encryptionKey } = usePublicKey();
+
+  const lastStep = 3;
+
   return (
     <Create
       // Next, previous and save buttons
@@ -113,10 +133,10 @@ export const CustomerCreate: React.FC = () => {
               Back
             </Button>
           )}
-          {currentStep !== 2 && (
-            <Button onClick={() => gotoStep(currentStep + 1)}>Next step</Button>
+          {currentStep !== lastStep && (
+            <Button onClick={() => gotoStep(currentStep + 1)}>Next Step</Button>
           )}
-          {currentStep === 2 && <SaveButton {...saveButtonProps} />}
+          {currentStep === lastStep && <SaveButton {...saveButtonProps} />}
         </Group>
       }
     >
@@ -162,6 +182,15 @@ export const CustomerCreate: React.FC = () => {
             }}
           />
         </Stepper.Step>
+        <Stepper.Step label="Add Secrets">
+          <SecretsCreateComponent
+            secretKeys={secretKeys?.data as SecretKey[]}
+            secrets={values['secrets'] as SecretInput[]}
+            onSecretsChange={(secrets) => {
+              setValues({ secrets });
+            }}
+          />
+        </Stepper.Step>
         <Stepper.Step label="Summary">
           <Stack mt={16}>
             <>
@@ -188,6 +217,23 @@ export const CustomerCreate: React.FC = () => {
                             type={featureMetadata.type}
                             value={feature.value.value}
                           />
+                        </Group>
+                      </List.Item>
+                    );
+                  })}
+              </List>
+              <Space h="md" />
+              <Title mt={8} order={3}>
+                Secrets
+              </Title>
+              <List center icon={<IconChevronRight size={16} />}>
+                {!!values.secrets &&
+                  (values.secrets as SecretInput[])?.map((s) => {
+                    return (
+                      <List.Item>
+                        <Group align="flex-start">
+                          <Text>{s.key}:</Text>
+                          <Text>****</Text>
                         </Group>
                       </List.Item>
                     );

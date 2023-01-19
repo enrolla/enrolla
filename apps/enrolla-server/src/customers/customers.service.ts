@@ -53,6 +53,15 @@ export class CustomersService {
             tenantId,
           })),
         },
+        secrets: {
+          create: createCustomerInput.secrets.map((secret) => ({
+            tenantId,
+            key: secret.key,
+            value: secret.value,
+            ephemPubKey: secret.ephemPubKey,
+            nonce: secret.nonce,
+          })),
+        },
       },
     });
   }
@@ -99,6 +108,33 @@ export class CustomersService {
             value: feature.value,
             tenantId,
           })),
+        },
+        secrets: {
+          create: updateCustomerInput.secrets
+            .filter((s) => s.new)
+            .map((secret) => ({
+              tenantId,
+              key: secret.key,
+              value: secret.value,
+              ephemPubKey: secret.ephemPubKey,
+              nonce: secret.nonce,
+            })),
+          update: updateCustomerInput.secrets
+            .filter((s) => !s.new)
+            .map((secret) => ({
+              where: {
+                key_customerId_tenantId: {
+                  key: secret.key,
+                  customerId: id,
+                  tenantId,
+                },
+              },
+              data: {
+                value: secret.value,
+                ephemPubKey: secret.ephemPubKey,
+                nonce: secret.nonce,
+              },
+            })),
         },
       },
     });

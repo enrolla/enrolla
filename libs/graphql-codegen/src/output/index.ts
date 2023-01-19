@@ -41,6 +41,11 @@ export type CreateCustomerInput = {
   name: Scalars['String'];
   organizationId?: InputMaybe<Scalars['String']>;
   packageId?: InputMaybe<Scalars['String']>;
+  secrets: Array<SecretInput>;
+};
+
+export type CreateEncryptionKeyInput = {
+  publicKey: Scalars['String'];
 };
 
 export type CreateFeatureInput = {
@@ -62,10 +67,8 @@ export type CreatePackageInput = {
   parentPackageId?: InputMaybe<Scalars['Cuid']>;
 };
 
-export type CreateSecretInput = {
-  customerId: Scalars['String'];
+export type CreateSecretKeyInput = {
   key: Scalars['String'];
-  value: Scalars['String'];
 };
 
 export type Customer = {
@@ -80,6 +83,13 @@ export type Customer = {
   packageId?: Maybe<Scalars['String']>;
   secrets: Array<Secret>;
   tenantId: Scalars['String'];
+};
+
+export type EncryptionKey = {
+  __typename?: 'EncryptionKey';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['Cuid'];
+  publicKey: Scalars['String'];
 };
 
 export type Feature = {
@@ -112,19 +122,38 @@ export type FeatureValue = {
   value: Scalars['JSON'];
 };
 
+export type ImportCustomersInput = {
+  connectionOptions: MongoDbConnectionOptions;
+  featureFieldNames: Array<Scalars['String']>;
+  idFieldName: Scalars['String'];
+};
+
+export type MongoDbConnectionOptions = {
+  collection?: InputMaybe<Scalars['String']>;
+  database: Scalars['String'];
+  host: Scalars['String'];
+  password?: InputMaybe<Scalars['String']>;
+  port: Scalars['Float'];
+  username?: InputMaybe<Scalars['String']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createApiToken: ApiToken;
   createCustomer: Customer;
+  createEncryptionKey: EncryptionKey;
   createFeature: Feature;
   createOrganization: Organization;
   createPackage: Package;
-  createSecret: Secret;
+  createSecretKey: SecretKey;
+  importCustomers: Array<Customer>;
   removeApiToken: ApiToken;
   removeCustomer: Customer;
+  removeEncryptionKey: EncryptionKey;
   removeFeature: Feature;
   removeOrganization: Organization;
   removePackage: Package;
+  removeSecretKey: SecretKey;
   updateCustomer: Customer;
   updateFeature: Feature;
   updateOrganization: Organization;
@@ -139,6 +168,11 @@ export type MutationCreateApiTokenArgs = {
 
 export type MutationCreateCustomerArgs = {
   input: CreateCustomerInput;
+};
+
+
+export type MutationCreateEncryptionKeyArgs = {
+  input: CreateEncryptionKeyInput;
 };
 
 
@@ -157,8 +191,13 @@ export type MutationCreatePackageArgs = {
 };
 
 
-export type MutationCreateSecretArgs = {
-  input: CreateSecretInput;
+export type MutationCreateSecretKeyArgs = {
+  input: CreateSecretKeyInput;
+};
+
+
+export type MutationImportCustomersArgs = {
+  input: ImportCustomersInput;
 };
 
 
@@ -168,6 +207,11 @@ export type MutationRemoveApiTokenArgs = {
 
 
 export type MutationRemoveCustomerArgs = {
+  id: Scalars['String'];
+};
+
+
+export type MutationRemoveEncryptionKeyArgs = {
   id: Scalars['String'];
 };
 
@@ -183,6 +227,11 @@ export type MutationRemoveOrganizationArgs = {
 
 
 export type MutationRemovePackageArgs = {
+  id: Scalars['String'];
+};
+
+
+export type MutationRemoveSecretKeyArgs = {
   id: Scalars['String'];
 };
 
@@ -236,12 +285,16 @@ export type Query = {
   apiTokens: Array<ApiToken>;
   customer: Customer;
   customers: Array<Customer>;
+  encryptionKey?: Maybe<EncryptionKey>;
+  encryptionKeys: Array<EncryptionKey>;
   feature: Feature;
   features: Array<Feature>;
+  hasSecrets: Scalars['Boolean'];
   organization: Organization;
   organizations: Array<Organization>;
   package: Package;
   packages: Array<Package>;
+  secretKeys: Array<SecretKey>;
 };
 
 
@@ -266,8 +319,27 @@ export type QueryPackageArgs = {
 
 export type Secret = {
   __typename?: 'Secret';
+  createdAt: Scalars['DateTime'];
+  ephemPubKey: Scalars['String'];
+  id: Scalars['Cuid'];
   key: Scalars['String'];
+  nonce: Scalars['String'];
   value: Scalars['String'];
+};
+
+export type SecretInput = {
+  ephemPubKey: Scalars['String'];
+  key: Scalars['String'];
+  new?: InputMaybe<Scalars['Boolean']>;
+  nonce: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type SecretKey = {
+  __typename?: 'SecretKey';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['Cuid'];
+  key: Scalars['String'];
 };
 
 export type UpdateCustomerInput = {
@@ -277,6 +349,7 @@ export type UpdateCustomerInput = {
   name?: InputMaybe<Scalars['String']>;
   organizationId?: InputMaybe<Scalars['String']>;
   packageId?: InputMaybe<Scalars['String']>;
+  secrets?: InputMaybe<Array<SecretInput>>;
 };
 
 export type UpdateFeatureInput = {
@@ -298,14 +371,14 @@ export type UpdatePackageInput = {
   updateStrategy?: InputMaybe<PackageUpdateStrategy>;
 };
 
-export type GetAllCustomerFeaturesQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetAllCustomerDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllCustomerFeaturesQuery = { __typename?: 'Query', customers: Array<{ __typename?: 'Customer', organizationId?: string | null, effectiveConfiguration: Array<{ __typename?: 'FeatureValue', value: any, feature: { __typename?: 'Feature', key: string, type: FeatureType } }> }> };
+export type GetAllCustomerDataQuery = { __typename?: 'Query', customers: Array<{ __typename?: 'Customer', organizationId?: string | null, effectiveConfiguration: Array<{ __typename?: 'FeatureValue', value: any, feature: { __typename?: 'Feature', key: string, type: FeatureType } }>, secrets: Array<{ __typename?: 'Secret', key: string, value: string, nonce: string, ephemPubKey: string }> }> };
 
 
-export const GetAllCustomerFeaturesDocument = gql`
-    query getAllCustomerFeatures {
+export const GetAllCustomerDataDocument = gql`
+    query getAllCustomerData {
   customers {
     organizationId
     effectiveConfiguration {
@@ -314,6 +387,12 @@ export const GetAllCustomerFeaturesDocument = gql`
         type
       }
       value
+    }
+    secrets {
+      key
+      value
+      nonce
+      ephemPubKey
     }
   }
 }
@@ -326,8 +405,8 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    getAllCustomerFeatures(variables?: GetAllCustomerFeaturesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAllCustomerFeaturesQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetAllCustomerFeaturesQuery>(GetAllCustomerFeaturesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getAllCustomerFeatures', 'query');
+    getAllCustomerData(variables?: GetAllCustomerDataQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAllCustomerDataQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetAllCustomerDataQuery>(GetAllCustomerDataDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getAllCustomerData', 'query');
     }
   };
 }

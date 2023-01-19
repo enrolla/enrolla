@@ -28,16 +28,16 @@ export class NotInitializedError extends EnrollaError {
 export class InitializationError extends EnrollaError {
   readonly cause: Error | undefined;
 
-  constructor(message: string, cause?: Error) {
-    super(message);
+  constructor(message?: string, cause?: Error) {
+    super(message ?? 'Failed to initialize Enrolla SDK');
     this.cause = cause;
     this.severity = SEVERITY.Critical;
   }
 }
 
-export class FeatureNotProvidedError extends EnrollaError {
-  constructor() {
-    super(`The "feature" argument is required and must be a string.`);
+export class ArgumentNotProvidedError extends EnrollaError {
+  constructor(argumentName: string) {
+    super(`The "${argumentName}" argument is required and must be a string.`);
     this.severity = SEVERITY.Error;
   }
 }
@@ -65,6 +65,13 @@ export class FeatureNotFoundError extends EnrollaError {
   }
 }
 
+export class SecretNotFoundError extends EnrollaError {
+  constructor(key: string) {
+    super(`The secret "${key}" was not found.`);
+    this.severity = SEVERITY.Error;
+  }
+}
+
 export class FeatureTypeMismatchError extends EnrollaError {
   constructor(
     feature: string,
@@ -85,5 +92,24 @@ export class PollingError extends EnrollaError {
     super('Failed to refresh feature data.');
     this.cause = cause;
     this.severity = SEVERITY.Warning;
+  }
+}
+
+export class SecretDecryptError extends EnrollaError {
+  readonly cause: Error;
+
+  constructor(key: string, cause: Error) {
+    super(`Failed to decrypt secret "${key}".`);
+    this.cause = cause;
+    this.severity = SEVERITY.Critical;
+  }
+}
+
+export class PrivateKeyNotSuppliedError extends EnrollaError {
+  constructor() {
+    super(
+      'You must supply a "privateKey" to the "initialize" function in order to use secrets. See the documentation for more information.'
+    );
+    this.severity = SEVERITY.Error;
   }
 }

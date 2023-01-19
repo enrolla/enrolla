@@ -19,6 +19,12 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type EncryptionKey {
+  id: Cuid!
+  publicKey: String!
+  createdAt: DateTime!
+}
+
 type Feature {
   id: Cuid!
   tenantId: String!
@@ -65,8 +71,12 @@ type Package {
 scalar SemVer
 
 type Secret {
+  id: Cuid!
   key: String!
   value: String!
+  ephemPubKey: String!
+  nonce: String!
+  createdAt: DateTime!
 }
 
 type Customer {
@@ -87,8 +97,16 @@ type Organization {
   name: String!
 }
 
+type SecretKey {
+  id: Cuid!
+  key: String!
+  createdAt: DateTime!
+}
+
 type Query {
   apiTokens: [ApiToken!]!
+  encryptionKeys: [EncryptionKey!]!
+  encryptionKey: EncryptionKey
   features: [Feature!]!
   feature(id: String!): Feature!
   packages: [Package!]!
@@ -97,11 +115,15 @@ type Query {
   customer(id: String!): Customer!
   organizations: [Organization!]!
   organization(id: String!): Organization!
+  secretKeys: [SecretKey!]!
+  hasSecrets: Boolean!
 }
 
 type Mutation {
   createApiToken(input: CreateApiTokenInput!): ApiToken!
   removeApiToken(id: String!): ApiToken!
+  createEncryptionKey(input: CreateEncryptionKeyInput!): EncryptionKey!
+  removeEncryptionKey(id: String!): EncryptionKey!
   createFeature(input: CreateFeatureInput!): Feature!
   updateFeature(input: UpdateFeatureInput!): Feature!
   removeFeature(id: String!): Feature!
@@ -109,17 +131,22 @@ type Mutation {
   updatePackage(input: UpdatePackageInput!): Package!
   removePackage(id: String!): Package!
   createCustomer(input: CreateCustomerInput!): Customer!
-  createSecret(input: CreateSecretInput!): Secret!
   updateCustomer(input: UpdateCustomerInput!): Customer!
   removeCustomer(id: String!): Customer!
   createOrganization(input: CreateOrganizationInput!): Organization!
   updateOrganization(input: UpdateOrganizationInput!): Organization!
   removeOrganization(id: String!): Organization!
+  createSecretKey(input: CreateSecretKeyInput!): SecretKey!
+  removeSecretKey(id: String!): SecretKey!
   importCustomers(input: ImportCustomersInput!): [Customer!]!
 }
 
 input CreateApiTokenInput {
   name: String!
+}
+
+input CreateEncryptionKeyInput {
+  publicKey: String!
 }
 
 input CreateFeatureInput {
@@ -166,12 +193,15 @@ input CreateCustomerInput {
   name: String!
   packageId: String
   features: [FeatureInstanceInput!]!
+  secrets: [SecretInput!]!
 }
 
-input CreateSecretInput {
-  customerId: String!
+input SecretInput {
   key: String!
   value: String!
+  ephemPubKey: String!
+  nonce: String!
+  new: Boolean
 }
 
 input UpdateCustomerInput {
@@ -180,6 +210,7 @@ input UpdateCustomerInput {
   name: String
   packageId: String
   features: [FeatureInstanceInput!]
+  secrets: [SecretInput!]
   id: String!
 }
 
@@ -190,6 +221,10 @@ input CreateOrganizationInput {
 input UpdateOrganizationInput {
   name: String
   id: String!
+}
+
+input CreateSecretKeyInput {
+  key: String!
 }
 
 input ImportCustomersInput {
