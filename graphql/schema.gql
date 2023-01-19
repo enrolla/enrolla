@@ -236,6 +236,7 @@ input ImportCustomersInput {
 input MongoDBConnectionOptions {
   host: String!
   port: Float!
+  isSrv: Boolean! = false
   database: String!
   username: String
   password: String
