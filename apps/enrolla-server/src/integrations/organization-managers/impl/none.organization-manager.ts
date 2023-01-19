@@ -26,7 +26,7 @@ export class NoneOrganizationManager implements OrganizationManager {
 
   async removeOrganization() {
     throw new Error(
-      'None organization manager does not support creating organizations'
+      'None organization manager does not support removing organizations'
     );
   }
 }
