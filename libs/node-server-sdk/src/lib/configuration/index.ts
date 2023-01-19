@@ -26,6 +26,10 @@ const startPolling = (configuration: InitializeOptions) => {
  * @throws {InitializationError} if the configuration is invalid or if failed to fetch feature data.
  */
 export const initialize = async (options: InitializeOptions) => {
+  if (_configuration) {
+    return;
+  }
+
   validateConfiguration(options);
   _configuration = Object.freeze(options);
 
