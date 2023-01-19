@@ -8,7 +8,6 @@ export class SdkConfigurationManager implements ConfigurationManager {
   private readonly logger = new Logger(SdkConfigurationManager.name);
 
   DEFAULT_POLLING_INTERVAL_SECONDS = 10;
-  private sdkInitialized = false;
   private url = env.SDK_ENROLLA_SERVER_GRAPHQL_ENDPOINT;
   private apiToken = env.SDK_API_TOKEN;
   private pollingEnabled = env.SDK_POLLING_ENABLED
@@ -19,10 +18,6 @@ export class SdkConfigurationManager implements ConfigurationManager {
     : this.DEFAULT_POLLING_INTERVAL_SECONDS;
 
   async initialize() {
-    if (this.sdkInitialized) {
-      return;
-    }
-
     try {
       await sdk.initialize({
         url: this.url,
@@ -33,8 +28,6 @@ export class SdkConfigurationManager implements ConfigurationManager {
           onError: (error) => this.logger.error('onPollingError', error),
         },
       });
-
-      this.sdkInitialized = true;
     } catch (err) {
       this.logger.error('SDK Initiation Failed', err);
       throw err;
