@@ -223,7 +223,7 @@ export const EncryptionKeyList: React.FC = () => {
           createButtonProps={{ onClick: () => show() }}
         >
           <Text>
-            Manage yout encryption key pair to encrypt customer secrets. Your
+            Manage your encryption key pair to encrypt customer secrets. Your
             private key is known only to you and is not stored on Enrolla
             servers.
           </Text>

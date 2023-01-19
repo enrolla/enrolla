@@ -7,6 +7,7 @@ import {
   Badge,
   Button,
   Modal,
+  Table,
 } from '@pankod/refine-mantine';
 import { useModal } from '@pankod/refine-core';
 import { useState } from 'react';
@@ -69,11 +70,7 @@ const SecretBadge = ({ secret }: { secret: DisplaySecret }) => {
       badgeText = 'Unchanged';
   }
 
-  return (
-    <Badge style={{ width: '10% ' }} color={badgeColor}>
-      {badgeText}
-    </Badge>
-  );
+  return <Badge color={badgeColor}>{badgeText}</Badge>;
 };
 
 export interface SecretsEditProps {
@@ -89,7 +86,7 @@ interface SecretDisplayAndEditProps {
   secret: DisplaySecret;
 }
 
-const SecretDisplayAndEditComponent = ({
+const SecretDisplayAndEditRowComponent = ({
   onUpdate,
   onUndo,
   secret,
@@ -98,7 +95,7 @@ const SecretDisplayAndEditComponent = ({
   const [editedValue, setEditedValue] = useState('');
 
   return (
-    <>
+    <tr key={secret.key}>
       <Modal
         opened={visible}
         onClose={() => {
@@ -130,24 +127,30 @@ const SecretDisplayAndEditComponent = ({
           </Button>
         </Group>
       </Modal>
-      <Group>
-        <Text style={{ width: '25%' }}>{secret.key}</Text>
+      <td>
+        <Text>{secret.key}</Text>
+      </td>
+      <td>
         <SecretBadge secret={secret} />
-        <Button color="indigo" size="xs" compact onClick={() => show()}>
-          Edit
-        </Button>
-        {secret.status === STATUS.EDITED && (
-          <Button
-            color="orange"
-            size="xs"
-            compact
-            onClick={() => onUndo(secret.key)}
-          >
-            Undo
+      </td>
+      <td>
+        <Group>
+          <Button color="indigo" size="xs" compact onClick={() => show()}>
+            Edit
           </Button>
-        )}
-      </Group>
-    </>
+          {secret.status === STATUS.EDITED && (
+            <Button
+              color="orange"
+              size="xs"
+              compact
+              onClick={() => onUndo(secret.key)}
+            >
+              Undo
+            </Button>
+          )}
+        </Group>
+      </td>
+    </tr>
   );
 };
 
@@ -192,18 +195,26 @@ export const SecretsEditComponent = ({
 
   return (
     <>
-      {displayArr.map((secret: DisplaySecret) => {
-        return (
-          <div key={secret.key}>
-            <SecretDisplayAndEditComponent
-              onUndo={onUndo}
-              onUpdate={onUpdate}
-              secret={secret}
-            />
-            <Space h="md" />
-          </div>
-        );
-      })}
+      <Table highlightOnHover>
+        <thead>
+          <tr>
+            <th>Secret Key</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {displayArr.map((secret: DisplaySecret) => {
+            return (
+              <SecretDisplayAndEditRowComponent
+                onUndo={onUndo}
+                onUpdate={onUpdate}
+                secret={secret}
+              />
+            );
+          })}
+        </tbody>
+      </Table>
     </>
   );
 };
