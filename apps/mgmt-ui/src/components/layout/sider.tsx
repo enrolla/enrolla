@@ -30,7 +30,13 @@ import {
 import type { RefineLayoutSiderProps } from '@pankod/refine-mantine';
 
 // We use @tabler/icons for icons but you can use any icon library you want.
-import { IconList, IconMenu2, IconLogout, IconDashboard } from '@tabler/icons';
+import {
+  IconList,
+  IconMenu2,
+  IconLogout,
+  IconDashboard,
+  IconBook,
+} from '@tabler/icons';
 import { UserButton } from './UserButton';
 
 const defaultNavIcon = <IconList size={18} />;
@@ -177,6 +183,18 @@ export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
     </Tooltip>
   );
 
+  const docs = (
+    <NavLink
+      key="docs"
+      label={collapsed && !opened ? null : t('buttons.docs', 'Docs')}
+      icon={<IconBook size={18} />}
+      onClick={() => {
+        window.open('https://docs.enrolla.io', '_blank');
+      }}
+      styles={commonNavLinkStyles}
+    />
+  );
+
   const renderSider = () => {
     if (render) {
       return render({
@@ -190,6 +208,7 @@ export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
       <>
         {dashboard}
         {items}
+        {docs}
         {logout}
       </>
     );

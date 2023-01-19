@@ -42,7 +42,6 @@ import {
   CustomerShow,
 } from './pages/customers';
 import { Integrations } from './pages/integrations';
-import { Dashboard } from './pages/dashboard';
 import useAuthProvider from './providers/useAuthProvider';
 import { SecretKeyList } from './pages/secret-keys';
 
@@ -116,7 +115,6 @@ export default function App() {
             authProvider={authProvider}
             dataProvider={dataProvider(gqlClient)}
             notificationProvider={notificationProvider}
-            DashboardPage={Dashboard}
             ReadyPage={ReadyPage}
             LoginPage={Login}
             catchAll={<ErrorComponent />}
