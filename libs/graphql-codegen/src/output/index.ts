@@ -122,6 +122,21 @@ export type FeatureValue = {
   value: Scalars['JSON'];
 };
 
+export type ImportCustomersInput = {
+  connectionOptions: MongoDbConnectionOptions;
+  featureFieldNames: Array<Scalars['String']>;
+  idFieldName: Scalars['String'];
+};
+
+export type MongoDbConnectionOptions = {
+  collection?: InputMaybe<Scalars['String']>;
+  database: Scalars['String'];
+  host: Scalars['String'];
+  password?: InputMaybe<Scalars['String']>;
+  port: Scalars['Float'];
+  username?: InputMaybe<Scalars['String']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createApiToken: ApiToken;
@@ -131,6 +146,7 @@ export type Mutation = {
   createOrganization: Organization;
   createPackage: Package;
   createSecretKey: SecretKey;
+  importCustomers: Array<Customer>;
   removeApiToken: ApiToken;
   removeCustomer: Customer;
   removeEncryptionKey: EncryptionKey;
@@ -177,6 +193,11 @@ export type MutationCreatePackageArgs = {
 
 export type MutationCreateSecretKeyArgs = {
   input: CreateSecretKeyInput;
+};
+
+
+export type MutationImportCustomersArgs = {
+  input: ImportCustomersInput;
 };
 
 
@@ -264,6 +285,7 @@ export type Query = {
   apiTokens: Array<ApiToken>;
   customer: Customer;
   customers: Array<Customer>;
+  encryptionKey: EncryptionKey;
   encryptionKeys: Array<EncryptionKey>;
   feature: Feature;
   features: Array<Feature>;
