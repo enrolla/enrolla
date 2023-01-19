@@ -15,7 +15,7 @@ export class SdkConfigurationManager implements ConfigurationManager {
     Number(env.SDK_POLLING_INTERVAL_SECONDS) ??
     this.DEFAULT_POLLING_INTERVAL_SECONDS;
 
-  constructor() {
+  async initialize() {
     sdk
       .initialize({
         url: env.SDK_ENROLLA_SERVER_GRAPHQL_ENDPOINT,
@@ -33,11 +33,15 @@ export class SdkConfigurationManager implements ConfigurationManager {
       });
   }
 
-  getValue<T>(tenantId: string, key: string) {
+  async getValue<T>(tenantId: string, key: string) {
+    await this.initialize();
+
     return sdk.getFeatureValue(key, tenantId) as T;
   }
 
-  getSecretValue(tenantId: string, key: string) {
+  async getSecretValue(tenantId: string, key: string) {
+    await this.initialize();
+
     return sdk.getSecretValue(key, tenantId);
   }
 }
