@@ -41,7 +41,7 @@ import {
   CustomerList,
   CustomerShow,
 } from './pages/customers';
-import { Integrations } from './pages/ee/integrations';
+import { Integrations } from './ee/pages/integrations';
 import useAuthProvider from './providers/useAuthProvider';
 import { SecretKeyList } from './pages/secret-keys';
 

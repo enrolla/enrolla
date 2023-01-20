@@ -9,7 +9,7 @@ import {
   Title,
   Text,
   ThemeIcon,
-  Container,
+  Box,
 } from '@pankod/refine-mantine';
 import postgres from '../../../assets/integrations/postgres.svg';
 import mysql from '../../../assets/integrations/mysql.svg';
@@ -165,14 +165,16 @@ export const Integrations = () => {
         className={classes.card}
         onClick={() => setModalOpened(integration.title)}
       >
-        <Container>
-          {serverIntegration && serverIntegration.isConfigured && (
-            <ThemeIcon color="green" radius="lg">
+        <Group position="right">
+          {serverIntegration && serverIntegration.isConfigured ? (
+            <ThemeIcon color="green" size={20} radius="lg">
               <IconCheck size="16" />
             </ThemeIcon>
+          ) : (
+            <Box sx={{ height: 20 }} />
           )}
-          <Image src={integration.image} height={40} fit="contain" />
-        </Container>
+        </Group>
+        <Image src={integration.image} height={40} fit="contain" />
         <Group position="apart" mt="lg">
           <Title order={6} weight={500}>
             {integration.title}
