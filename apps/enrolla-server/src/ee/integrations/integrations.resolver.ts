@@ -28,7 +28,7 @@ export class IntegrationsResolver {
   integrations(@TenantId() tenantId: string) {
     return [
       { name: 'auth0', isConfigured: false },
-      { name: 'propelauth', isConfigured: true },
+      { name: 'propelauth', isConfigured: false },
       { name: 'mongodb', isConfigured: false },
     ];
   }
