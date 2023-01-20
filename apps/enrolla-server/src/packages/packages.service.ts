@@ -115,6 +115,10 @@ export class PackagesService {
       );
     }
 
+    if (updatePackageDto.parentPackageId === id) {
+      throw new Error(`Parent package can't point to package`);
+    }
+
     let newPackageId = id;
     switch (updatePackageDto.updateStrategy) {
       case PackageUpdateStrategy.MIGRATE_ALL_CHILDREN:

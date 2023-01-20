@@ -6,7 +6,6 @@ import {
   Textarea,
   TextInput,
   useForm,
-  useSelect,
 } from '@pankod/refine-mantine';
 import { FeatureCustomizeComponent } from '../../components/features/FeatureCustomizeComponent';
 import {
@@ -17,6 +16,7 @@ import {
 } from '../../components/packages/PackageIcon';
 import { forwardRef } from 'react';
 import { FeatureValue, Package } from '@enrolla/graphql-codegen';
+import { useSelect } from '@pankod/refine-core';
 
 interface PackageIconItemProps extends React.ComponentPropsWithoutRef<'div'> {
   label: string;
@@ -48,6 +48,7 @@ export const PackageEdit: React.FC = () => {
     refineCoreProps: {
       metaData: {
         fields: [
+          'id',
           'name',
           'icon',
           'description',
@@ -59,6 +60,7 @@ export const PackageEdit: React.FC = () => {
       },
     },
     initialValues: {
+      id: '',
       name: '',
       icon: PredefinedIcon.Rocket,
       description: '',
@@ -69,7 +71,7 @@ export const PackageEdit: React.FC = () => {
       name: values.name,
       icon: values.icon,
       description: values.description,
-      parentPackageId: values['parentPackage.id'] as string,
+      parentPackageId: (values['parentPackage'] as Package | null)?.id,
       features: (values.features as FeatureValue[]).map((fv) => ({
         featureId: fv.feature.id,
         value: fv.value,
@@ -86,7 +88,7 @@ export const PackageEdit: React.FC = () => {
     validateInputOnBlur: true,
   });
 
-  const { selectProps } = useSelect({
+  const { options: packageOptions } = useSelect({
     resource: 'packages',
     optionLabel: 'name',
     metaData: {
@@ -127,14 +129,16 @@ export const PackageEdit: React.FC = () => {
         mb={16}
         label="Extends package"
         placeholder="Pick one"
+        data={packageOptions.filter((po) => po.value !== values['id'])}
         value={(values['parentPackage'] as Package | null)?.id}
         onChange={(value) => {
           setValues({ parentPackage: { id: value } });
         }}
-        {...selectProps}
+        searchable
+        clearable
       />
       <FeatureCustomizeComponent
-        parentPackageId={(values.parentPackage as Package).id as string}
+        parentPackageId={(values['parentPackage'] as Package | null)?.id}
         customizedFeatures={values['features'] as FeatureValue[]}
         onCustomizedFeaturesChange={(newCustomizedFeatures) => {
           setValues({ features: newCustomizedFeatures });
