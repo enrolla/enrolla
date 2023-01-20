@@ -18,8 +18,8 @@
 </h4>
 
 <h4 align="center">
-   <a href="https://opensource.org/licenses/Apache-2.0">
-    <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License">
+   <a href="https://github.com/enrolla/enrolla/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Enrolla is released under the MIT License">
   </a>
   <a href="https://github.com/enrolla/enrolla/blob/main/CONTRIBUTING.md">
     <img src="https://img.shields.io/badge/PRs-Welcome-brightgreen" alt="PRs welcome!" />
@@ -44,12 +44,17 @@ Enrolla's goal is to simplify customer configuration management and provide deve
 
 ## ✨ Features
 
-- 🛂 Easily manage all your configurations - throttling, secrets, just plain JSONs
-- 🧩 Integrations with CRMs, authentication services, billing systems
-- ⏩ Typescript SDK for fetching configurations to your services with smart caching (Python and Go in developement)
+- 🔐 Easily manage customer API Tokens and other secrets
+- 🛂 Easily management entitlements and other customer configurations
+- 🧩 Integrations with authentication services
 - 📦 Built-in backoffice for non engineers
-- 😎 Headless UI templates for providing needed knobs for your customers (in developement)
 - 👩‍💻 Community driven
+
+Coming soon:
+
+- 😎 Headless UI templates for providing needed knobs for your customers
+- ⏩ Python and Go SDKs
+- 🧩 Integrations with CRMs and billing systems
 
 ## 🌱 Contributing
 

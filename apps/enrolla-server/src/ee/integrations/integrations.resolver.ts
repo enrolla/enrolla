@@ -1,18 +1,19 @@
 import { UseGuards } from '@nestjs/common';
-import { GraphQLAuthGuard } from '../authz/graphql-auth.guard';
-import { CustomersService } from '../customers/customers.service';
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { TenantId } from '../authz/tenant.decorator';
+import { GraphQLAuthGuard } from '../../authz/graphql-auth.guard';
+import { CustomersService } from '../../customers/customers.service';
+import { Args, Query, Mutation, Resolver } from '@nestjs/graphql';
+import { TenantId } from '../../authz/tenant.decorator';
 import { ImportCustomersInput } from './dto/import-customers.input';
 import { MongoDBService } from './databases/mongodb/mongodb.service';
-import { FeaturesService } from '../features/features.service';
+import { FeaturesService } from '../../features/features.service';
 import {
   defaultValueForFeatureType,
   inferFeatureType,
 } from './databases/mongodb/utils';
 import { Feature } from '@prisma/client';
-import { Customer } from '../customers/entities/customer.entity';
+import { Customer } from '../../customers/entities/customer.entity';
 import { InferredCustomer } from './databases/customers-source.interface';
+import { Integration } from './dto/integration.entity';
 
 @Resolver()
 @UseGuards(GraphQLAuthGuard)
@@ -22,6 +23,15 @@ export class IntegrationsResolver {
     private readonly mongodbService: MongoDBService,
     private readonly customersService: CustomersService
   ) {}
+
+  @Query(() => [Integration])
+  integrations(@TenantId() tenantId: string) {
+    return [
+      { name: 'auth0', isConfigured: false },
+      { name: 'propelauth', isConfigured: false },
+      { name: 'mongodb', isConfigured: false },
+    ];
+  }
 
   @Mutation(() => [Customer])
   async importCustomers(

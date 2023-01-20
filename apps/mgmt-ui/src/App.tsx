@@ -41,7 +41,7 @@ import {
   CustomerList,
   CustomerShow,
 } from './pages/customers';
-import { Integrations } from './pages/integrations';
+import { Integrations } from './ee/pages/integrations';
 import useAuthProvider from './providers/useAuthProvider';
 import { SecretKeyList } from './pages/secret-keys';
 
@@ -107,7 +107,7 @@ export default function App() {
               routes: [
                 {
                   element: <Integrations />,
-                  path: 'integrations',
+                  path: 'settings/integrations',
                   layout: true,
                 },
               ],
@@ -160,12 +160,13 @@ export default function App() {
                 options: { label: 'Secret Keys' },
                 icon: <IconKey size="16" />,
               },
+              { name: 'settings', icon: <IconSettings size="16" /> },
               {
                 name: 'integrations',
+                parentName: 'settings',
                 list: () => null,
                 icon: <IconBuildingStore size="16" />,
               },
-              { name: 'settings', icon: <IconSettings size="16" /> },
               {
                 name: 'api-tokens',
                 key: 'apiTokens',

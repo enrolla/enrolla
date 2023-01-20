@@ -5,7 +5,7 @@ import { ConfigurationsService } from '../configurations/configurations.service'
 import {
   OrganizationManager,
   OrganizationManagerType,
-} from '../integrations/organization-managers/organization-manager.interface';
+} from '../ee/integrations/organization-managers/organization-manager.interface';
 import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
