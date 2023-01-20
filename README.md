@@ -18,8 +18,8 @@
 </h4>
 
 <h4 align="center">
-   <a href="https://opensource.org/licenses/Apache-2.0">
-    <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License">
+   <a href="https://github.com/enrolla/enrolla/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Enrolla is released under the MIT License">
   </a>
   <a href="https://github.com/enrolla/enrolla/blob/main/CONTRIBUTING.md">
     <img src="https://img.shields.io/badge/PRs-Welcome-brightgreen" alt="PRs welcome!" />
