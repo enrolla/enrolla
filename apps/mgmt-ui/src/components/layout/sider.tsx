@@ -283,6 +283,7 @@ export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
             position: 'fixed',
             top: 0,
             height: '100vh',
+            zIndex: 0,
           }}
         >
           <Navbar.Section px="xs">
