@@ -1,4 +1,4 @@
-import { ConfigurationsService } from '../../../configurations/configurations.service';
+import { ConfigurationsService } from '../../../../configurations/configurations.service';
 import { Organization } from '../entities/organization.entity';
 import { OrganizationManager } from '../organization-manager.interface';
 import { OrganizationCreateInput } from '../dto/organization-create.input';

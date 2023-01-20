@@ -2,11 +2,11 @@ import { Provider } from '@nestjs/common';
 import {
   OrganizationManager,
   OrganizationManagerType,
-} from '../integrations/organization-managers/organization-manager.interface';
+} from '../ee/integrations/organization-managers/organization-manager.interface';
 import { ConfigurationsService } from '../configurations/configurations.service';
-import { NoneOrganizationManager } from '../integrations/organization-managers/impl/none.organization-manager';
-import { Auth0OrganizationManager } from '../integrations/organization-managers/impl/auth0.organization-manager';
-import { PropelAuthOrganizationManager } from '../integrations/organization-managers/impl/propel-auth.organization-manager';
+import { NoneOrganizationManager } from '../ee/integrations/organization-managers/impl/none.organization-manager';
+import { Auth0OrganizationManager } from '../ee/integrations/organization-managers/impl/auth0.organization-manager';
+import { PropelAuthOrganizationManager } from '../ee/integrations/organization-managers/impl/propel-auth.organization-manager';
 import { HttpService } from '@nestjs/axios';
 
 function organizationManagerFactory(

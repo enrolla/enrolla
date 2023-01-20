@@ -103,6 +103,11 @@ type SecretKey {
   createdAt: DateTime!
 }
 
+type Integration {
+  name: String!
+  isConfigured: Boolean!
+}
+
 type Query {
   apiTokens: [ApiToken!]!
   encryptionKeys: [EncryptionKey!]!
@@ -117,6 +122,7 @@ type Query {
   organization(id: String!): Organization!
   secretKeys: [SecretKey!]!
   hasSecrets: Boolean!
+  integrations: [Integration!]!
 }
 
 type Mutation {

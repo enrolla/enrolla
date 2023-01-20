@@ -126,14 +126,22 @@ export type ImportCustomersInput = {
   connectionOptions: MongoDbConnectionOptions;
   featureFieldNames: Array<Scalars['String']>;
   idFieldName: Scalars['String'];
+  schemaExampleId?: InputMaybe<Scalars['String']>;
+};
+
+export type Integration = {
+  __typename?: 'Integration';
+  isConfigured: Scalars['Boolean'];
+  name: Scalars['String'];
 };
 
 export type MongoDbConnectionOptions = {
   collection?: InputMaybe<Scalars['String']>;
   database: Scalars['String'];
   host: Scalars['String'];
+  isSrv?: Scalars['Boolean'];
   password?: InputMaybe<Scalars['String']>;
-  port: Scalars['Float'];
+  port?: InputMaybe<Scalars['Float']>;
   username?: InputMaybe<Scalars['String']>;
 };
 
@@ -290,6 +298,7 @@ export type Query = {
   feature: Feature;
   features: Array<Feature>;
   hasSecrets: Scalars['Boolean'];
+  integrations: Array<Integration>;
   organization: Organization;
   organizations: Array<Organization>;
   package: Package;

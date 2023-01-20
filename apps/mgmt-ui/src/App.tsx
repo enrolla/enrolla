@@ -41,7 +41,7 @@ import {
   CustomerList,
   CustomerShow,
 } from './pages/customers';
-import { Integrations } from './pages/integrations';
+import { Integrations } from './pages/ee/integrations';
 import useAuthProvider from './providers/useAuthProvider';
 import { SecretKeyList } from './pages/secret-keys';
 
@@ -153,7 +153,6 @@ export default function App() {
                 edit: PackageEdit,
                 icon: <IconPackage size="16" />,
               },
-              { name: 'settings', icon: <IconSettings size="16" /> },
               {
                 name: 'secret-keys',
                 key: 'secretKeys',
@@ -161,6 +160,7 @@ export default function App() {
                 options: { label: 'Secret Keys' },
                 icon: <IconKey size="16" />,
               },
+              { name: 'settings', icon: <IconSettings size="16" /> },
               {
                 name: 'integrations',
                 parentName: 'settings',

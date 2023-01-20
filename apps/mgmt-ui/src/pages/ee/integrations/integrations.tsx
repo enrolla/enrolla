@@ -1,4 +1,4 @@
-import { Authenticated } from '@pankod/refine-core';
+import { Authenticated, useCustom } from '@pankod/refine-core';
 import {
   Card,
   createStyles,
@@ -11,20 +11,21 @@ import {
   ThemeIcon,
   Container,
 } from '@pankod/refine-mantine';
-import postgres from '../../assets/integrations/postgres.svg';
-import mysql from '../../assets/integrations/mysql.svg';
-import mongodb from '../../assets/integrations/mongodb.svg';
-import auth0 from '../../assets/integrations/auth0.svg';
-import propelauth from '../../assets/integrations/propelauth.svg';
-import workos from '../../assets/integrations/workos.svg';
-import firebase from '../../assets/integrations/firebase.svg';
-import salesforce from '../../assets/integrations/salesforce.svg';
-import hubspot from '../../assets/integrations/hubspot.svg';
+import postgres from '../../../assets/integrations/postgres.svg';
+import mysql from '../../../assets/integrations/mysql.svg';
+import mongodb from '../../../assets/integrations/mongodb.svg';
+import auth0 from '../../../assets/integrations/auth0.svg';
+import propelauth from '../../../assets/integrations/propelauth.svg';
+import workos from '../../../assets/integrations/workos.svg';
+import firebase from '../../../assets/integrations/firebase.svg';
+import salesforce from '../../../assets/integrations/salesforce.svg';
+import hubspot from '../../../assets/integrations/hubspot.svg';
 import { Auth0ConfigModal } from './Auth0ConfigModal';
 import { PropelAuthConfigModal } from './PropelAuthConfigModal';
 import { useState } from 'react';
 import { MongoDBConfigModal } from './MongoDBConfigModal';
 import { IconCheck } from '@tabler/icons';
+import { Integration } from '@enrolla/graphql-codegen';
 
 enum IntegrationType {
   CRM = 'CRM',
@@ -32,66 +33,67 @@ enum IntegrationType {
   Authentication = 'Authentication',
 }
 
-type Integration = {
+type UiIntegration = {
+  name: string;
   title: string;
   image: string;
   type: IntegrationType;
-  comingSoon?: boolean;
-  configured?: boolean;
 };
 
-const integrations: Integration[] = [
+const uiIntegrations: UiIntegration[] = [
   {
+    name: 'auth0',
     title: 'Auth0',
     image: auth0,
     type: IntegrationType.Authentication,
   },
   {
+    name: 'propelauth',
     title: 'PropelAuth',
     image: propelauth,
     type: IntegrationType.Authentication,
-    configured: true,
   },
   {
+    name: 'mongodb',
     title: 'MongoDB',
     image: mongodb,
     type: IntegrationType.Database,
   },
   {
+    name: 'postgresql',
     title: 'PostgreSQL',
     image: postgres,
     type: IntegrationType.Database,
-    comingSoon: true,
   },
   {
+    name: 'mysql',
     title: 'MySQL',
     image: mysql,
     type: IntegrationType.Database,
-    comingSoon: true,
   },
   {
+    name: 'workos',
     title: 'WorkOS',
     image: workos,
     type: IntegrationType.Authentication,
-    comingSoon: true,
   },
   {
+    name: 'firebase',
     title: 'Firebase',
     image: firebase,
     type: IntegrationType.Authentication,
-    comingSoon: true,
   },
   {
+    name: 'salesforce',
     title: 'Salesforce',
     image: salesforce,
     type: IntegrationType.CRM,
-    comingSoon: true,
   },
   {
+    name: 'hubspot',
     title: 'HubSpot',
     image: hubspot,
     type: IntegrationType.CRM,
-    comingSoon: true,
   },
 ];
 
@@ -133,38 +135,56 @@ export const Integrations = () => {
 
   const [modalOpened, setModalOpened] = useState('');
 
+  const { data, isLoading } = useCustom<Integration[]>({
+    url: '', // required param, but not used. See backendGraphQLProvider.ts custom method
+    method: 'get',
+    metaData: {
+      operation: 'integrations',
+      fields: ['name', 'isConfigured'],
+    },
+  });
+
   const colors: { [key in IntegrationType]: string } = {
     Authentication: 'violet',
     Database: 'green',
     CRM: 'blue',
   };
 
-  const cards = integrations.map((integration: Integration) => (
-    <Card
-      withBorder
-      radius="md"
-      className={classes.card}
-      onClick={() => setModalOpened(integration.title)}
-    >
-      <Container>
-        {integration.configured && (
-          <ThemeIcon color="green" radius="lg">
-            <IconCheck size="16" />
-          </ThemeIcon>
-        )}
-        <Image src={integration.image} height={40} fit="contain" />
-      </Container>
-      <Group position="apart" mt="lg">
-        <Title order={6} weight={500}>
-          {integration.title}
-        </Title>
-        {integration.comingSoon && <Badge color="gray">Coming Soon</Badge>}
-        {!integration.comingSoon && (
-          <Badge color={colors[integration.type]}>{integration.type}</Badge>
-        )}
-      </Group>
-    </Card>
-  ));
+  const cards = uiIntegrations.map((integration: UiIntegration) => {
+    if (isLoading || !data) {
+      return null;
+    }
+    const serverIntegration = data.data.find(
+      (i) => i.name === integration.name
+    );
+
+    return (
+      <Card
+        withBorder
+        radius="md"
+        className={classes.card}
+        onClick={() => setModalOpened(integration.title)}
+      >
+        <Container>
+          {serverIntegration && serverIntegration.isConfigured && (
+            <ThemeIcon color="green" radius="lg">
+              <IconCheck size="16" />
+            </ThemeIcon>
+          )}
+          <Image src={integration.image} height={40} fit="contain" />
+        </Container>
+        <Group position="apart" mt="lg">
+          <Title order={6} weight={500}>
+            {integration.title}
+          </Title>
+          {!serverIntegration && <Badge color="gray">Coming Soon</Badge>}
+          {serverIntegration && (
+            <Badge color={colors[integration.type]}>{integration.type}</Badge>
+          )}
+        </Group>
+      </Card>
+    );
+  });
 
   return (
     <Authenticated>
@@ -196,7 +216,7 @@ export const Integrations = () => {
           from the list and following the prompts.
         </Text>
         <SimpleGrid mt={80} cols={4}>
-          {cards}
+          {!isLoading && cards}
         </SimpleGrid>
       </Card>
     </Authenticated>

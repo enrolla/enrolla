@@ -11,7 +11,7 @@ import { join } from 'path';
 import { GraphQLJSON } from 'graphql-scalars';
 import { FeatureInstancesModule } from './feature-instances/feature-instances.module';
 import { CustomersModule } from './customers/customers.module';
-import { IntegrationsModule } from './integrations/integrations.module';
+import { IntegrationsModule } from './ee/integrations/integrations.module';
 import { OrganizationsModule } from './organizations/organizations.module';
 import { ConfigurationsModule } from './configurations/configurations.module';
 import { PrismaModule } from './prisma/prisma.module';
