@@ -1,26 +1,20 @@
 import { UseGuards } from '@nestjs/common';
 import { GraphQLAuthGuard } from '../../authz/graphql-auth.guard';
 import { CustomersService } from '../../customers/customers.service';
-import { Args, Query, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Query, Resolver } from '@nestjs/graphql';
 import { TenantId } from '../../authz/tenant.decorator';
-import { ImportCustomersInput } from './dto/import-customers.input';
-import { MongoDBService } from './databases/mongodb/mongodb.service';
+import { MongoDBCustomersService } from './databases/mongodb/mongodb.service';
 import { FeaturesService } from '../../features/features.service';
-import {
-  defaultValueForFeatureType,
-  inferFeatureType,
-} from './databases/mongodb/utils';
-import { Feature } from '@prisma/client';
-import { Customer } from '../../customers/entities/customer.entity';
-import { InferredCustomer } from './databases/customers-source.interface';
 import { Integration } from './dto/integration.entity';
+import { DBFeatureMetadata } from './databases/entities/db-feature-metadata.entity';
+import { MongoDBConnectionOptions } from './databases/mongodb/mongodb-connection-options';
 
 @Resolver()
 @UseGuards(GraphQLAuthGuard)
 export class IntegrationsResolver {
   constructor(
     private readonly featuresService: FeaturesService,
-    private readonly mongodbService: MongoDBService,
+    private readonly mongodbCustomersService: MongoDBCustomersService,
     private readonly customersService: CustomersService
   ) {}
 
@@ -33,65 +27,39 @@ export class IntegrationsResolver {
     ];
   }
 
-  @Mutation(() => [Customer])
-  async importCustomers(
+  @Query(() => [DBFeatureMetadata])
+  async mongoSchema(
     @TenantId() tenantId: string,
-    @Args('input') importCustomersInput: ImportCustomersInput
+    @Args('input') connectionOptions: MongoDBConnectionOptions
   ) {
-    const customers = await this.mongodbService.getCustomers(
-      importCustomersInput.connectionOptions,
-      importCustomersInput.idFieldName,
-      importCustomersInput.featureFieldNames
-    );
+    return await this.mongodbCustomersService.fetchSchema(connectionOptions);
+  }
 
-    const createdFeatures = new Array<Feature>();
-
-    let schemaCustomer: InferredCustomer;
-
-    if (importCustomersInput.schemaExampleId) {
-      schemaCustomer = customers.find(
-        (customer) =>
-          customer.organizationId === importCustomersInput.schemaExampleId
-      );
-    } else {
-      schemaCustomer = customers[0];
-    }
-
-    await Promise.all(
-      schemaCustomer.features.map(async (feature) => {
-        const featureType = inferFeatureType(feature.value);
-        const createdFeature = await this.featuresService.create(
-          {
-            key: feature.key,
-            type: featureType,
-            defaultValue: defaultValueForFeatureType(featureType),
-          },
-          tenantId
-        );
-        createdFeatures.push(createdFeature);
-      })
-    );
-
-    return await Promise.all(
-      customers.map(async (customer) => {
-        return await this.customersService.create(
-          {
-            organizationId: customer.organizationId,
-            name: customer.organizationId,
-            features: customer.features.map((feature) => {
-              const createdFeature = createdFeatures.find(
-                (createdFeature) => createdFeature.key === feature.key
-              );
-
-              return {
-                featureId: createdFeature.id,
-                value: { value: feature.value },
-              };
-            }),
-          },
-          tenantId
-        );
-      })
+  @Query(() => [String])
+  async mongoCustomerIds(
+    @TenantId() tenantId: string,
+    @Args('input') connectionOptions: MongoDBConnectionOptions,
+    @Args('idFieldName') idFieldName: string
+  ) {
+    return await this.mongodbCustomersService.getCustomerIds(
+      idFieldName,
+      connectionOptions
     );
   }
+
+  // @Query(() => [DBFeature])
+  // async mongoCustomerFeatures(
+  //   @TenantId() tenantId: string,
+  //   @Args('id') id: string,
+  //   @Args('idFieldName') idFieldName: string,
+  //   @Args('featureFields') featureFields: string[],
+  //   @Args('input') connectionOptions: MongoDBConnectionOptions
+  // ) {
+  //   return await this.mongodbService.fetchCustomerFeatures(
+  //     id,
+  //     idFieldName,
+  //     featureFields,
+  //     connectionOptions
+  //   );
+  // }
 }

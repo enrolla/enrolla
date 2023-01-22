@@ -17,6 +17,7 @@ enum FeatureType {
   STRING
   BOOLEAN
   JSON
+  ARRAY
 
   @@map("feature_type")
 }

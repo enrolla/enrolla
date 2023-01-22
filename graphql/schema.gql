@@ -41,6 +41,7 @@ enum FeatureType {
   STRING
   BOOLEAN
   JSON
+  ARRAY
 }
 
 """
@@ -103,6 +104,11 @@ type SecretKey {
   createdAt: DateTime!
 }
 
+type DBFeatureMetadata {
+  name: String!
+  type: FeatureType!
+}
+
 type Integration {
   name: String!
   isConfigured: Boolean!
@@ -123,6 +129,18 @@ type Query {
   secretKeys: [SecretKey!]!
   hasSecrets: Boolean!
   integrations: [Integration!]!
+  mongoSchema(input: MongoDBConnectionOptions!): [DBFeatureMetadata!]!
+  mongoCustomerIds(input: MongoDBConnectionOptions!, idFieldName: String!): [String!]!
+}
+
+input MongoDBConnectionOptions {
+  host: String!
+  port: Float
+  isSrv: Boolean! = false
+  database: String!
+  username: String
+  password: String
+  collection: String
 }
 
 type Mutation {
@@ -144,7 +162,6 @@ type Mutation {
   removeOrganization(id: String!): Organization!
   createSecretKey(input: CreateSecretKeyInput!): SecretKey!
   removeSecretKey(id: String!): SecretKey!
-  importCustomers(input: ImportCustomersInput!): [Customer!]!
 }
 
 input CreateApiTokenInput {
@@ -231,21 +248,4 @@ input UpdateOrganizationInput {
 
 input CreateSecretKeyInput {
   key: String!
-}
-
-input ImportCustomersInput {
-  connectionOptions: MongoDBConnectionOptions!
-  idFieldName: String!
-  featureFieldNames: [String!]!
-  schemaExampleId: String
-}
-
-input MongoDBConnectionOptions {
-  host: String!
-  port: Float
-  isSrv: Boolean! = false
-  database: String!
-  username: String
-  password: String
-  collection: String
 }

@@ -1,74 +1,95 @@
-import { Injectable } from '@nestjs/common';
-import { FeaturesSource } from '../features-source.interface';
-import { MongoDBConnectionOptions } from './mongodb-connection-options';
-import parseSchema from 'mongodb-schema';
-import {
-  CustomersSource,
-  InferredCustomer,
-} from '../customers-source.interface';
-import { MongoClient } from 'mongodb';
-import { buildConnectionString } from './utils';
+import { Injectable, Logger } from '@nestjs/common';
+import { DBFeatureMetadata } from '../entities/db-feature-metadata.entity';
+import { DBFeature } from '../entities/db-feature.entity';
+import { ConnectionOptions } from '../connection-options.interface';
+import * as parseSchema from 'mongodb-schema';
+import { DBCustomer } from '../entities/db-customer.entity';
+import { getFeatureType, useCollection } from './utils';
+import { DBCustomersService } from '../db-customers-service.interface';
 
 @Injectable()
-export class MongoDBService implements FeaturesSource, CustomersSource {
-  async getCustomers(
-    connectionOptions: MongoDBConnectionOptions,
+export class MongoDBCustomersService implements DBCustomersService {
+  private readonly logger = new Logger();
+
+  async findOne(
+    id: string,
     idFieldName: string,
-    feautreFields: string[]
-  ): Promise<InferredCustomer[]> {
-    const client = new MongoClient(buildConnectionString(connectionOptions));
+    featureFields: string[],
+    options: ConnectionOptions
+  ): Promise<DBCustomer> {
+    return await useCollection(
+      async (collection) => {
+        const customer = await collection.findOne({ [idFieldName]: id });
 
-    await client.connect();
+        const features = featureFields.map((featureFieldName) => {
+          const type = getFeatureType(typeof customer[featureFieldName]);
 
-    const cursor = await client
-      .db(connectionOptions.database)
-      .collection(connectionOptions.collection)
-      .find({});
-
-    const customers = [];
-
-    await cursor.forEach((doc) => {
-      const customer = {
-        organizationId: doc[idFieldName],
-        features: [],
-      };
-
-      feautreFields.forEach((featureFieldName) => {
-        customer.features.push({
-          key: featureFieldName,
-          value: doc[featureFieldName],
+          return new DBFeature(
+            featureFieldName,
+            type,
+            customer[featureFieldName]
+          );
         });
-      });
 
-      customers.push(customer);
-    });
-
-    client.close();
-
-    return customers;
+        return new DBCustomer(id, features);
+      },
+      options,
+      this.logger
+    );
   }
 
-  async retrieveSchema(
-    connectionOptions: MongoDBConnectionOptions
-  ): Promise<object> {
-    // const client = new MongoClient(buildConnectionString(connectionOptions));
+  async findAll(
+    idFieldName: string,
+    featureFields: string[],
+    options: ConnectionOptions
+  ): Promise<DBCustomer[]> {
+    return await useCollection(
+      async (collection) => {
+        const customers = await collection.find().toArray();
 
-    // await client.connect();
+        return customers.map((customer) => {
+          const features = featureFields.map((featureFieldName) => {
+            const type = getFeatureType(typeof customer[featureFieldName]);
 
-    // parseSchema(
-    //   client
-    //     .db(connectionOptions.database)
-    //     .collection(connectionOptions.database)
-    //     .find(),
-    //   function (err, schema) {
-    //     if (err) return console.error(err);
+            return new DBFeature(
+              featureFieldName,
+              type,
+              customer[featureFieldName]
+            );
+          });
 
-    //     console.log(JSON.stringify(schema, null, 2));
-    //     client.close();
-    //   }
-    // );
+          return new DBCustomer(customer[idFieldName], features);
+        });
+      },
+      options,
+      this.logger
+    );
+  }
 
-    // return {};
-    return null;
+  async fetchSchema(options: ConnectionOptions): Promise<DBFeatureMetadata[]> {
+    return await useCollection(
+      async (collection) => {
+        const schema = await parseSchema(collection.find());
+
+        return schema.fields.map((field) => {
+          return new DBFeatureMetadata(field.name, getFeatureType(field.type));
+        });
+      },
+      options,
+      this.logger
+    );
+  }
+
+  async getCustomerIds(
+    idFieldName: string,
+    options: ConnectionOptions
+  ): Promise<string[]> {
+    return await useCollection(
+      async (collection) => {
+        return await collection.distinct(idFieldName);
+      },
+      options,
+      this.logger
+    );
   }
 }
