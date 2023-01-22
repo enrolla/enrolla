@@ -9,6 +9,7 @@ import {
 import { env } from 'process';
 import * as winston from 'winston';
 import { AppModule } from './app.module';
+import { SdkConfigurationManager } from './configurations/configuration-managers/impl/sdk.configuration-manager';
 
 function createLogger(
   serviceName: string,
@@ -43,6 +44,10 @@ function createLogger(
   });
 }
 
+const onServerStart = async () => {
+  await SdkConfigurationManager.initialize();
+};
+
 async function bootstrap() {
   const logger = createLogger('enrolla-server', env.VERSION_TAG);
   const app = await NestFactory.create(AppModule, {
@@ -70,5 +75,6 @@ async function bootstrap() {
   SwaggerModule.setup('swagger-ui', app, document);
 
   await app.listen(env.SERVER_PORT);
+  await onServerStart();
 }
 bootstrap();

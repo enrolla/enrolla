@@ -5,17 +5,17 @@ import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class SdkConfigurationManager implements ConfigurationManager {
-  private readonly logger = new Logger(SdkConfigurationManager.name);
+  private static readonly logger = new Logger(SdkConfigurationManager.name);
 
-  private readonly pollingEnabled = env.SDK_POLLING_ENABLED
+  private static readonly pollingEnabled = env.SDK_POLLING_ENABLED
     ? env.SDK_POLLING_ENABLED === true.toString()
     : true;
-  private readonly DEFAULT_POLLING_INTERVAL_SECONDS = 60;
-  private pollingIntervalSeconds =
+  private static readonly DEFAULT_POLLING_INTERVAL_SECONDS = 60;
+  private static readonly pollingIntervalSeconds =
     Number(env.SDK_POLLING_INTERVAL_SECONDS) ??
-    this.DEFAULT_POLLING_INTERVAL_SECONDS;
+    SdkConfigurationManager.DEFAULT_POLLING_INTERVAL_SECONDS;
 
-  async initialize() {
+  static async initialize() {
     sdk
       .initialize({
         url: env.SDK_ENROLLA_SERVER_GRAPHQL_ENDPOINT,
@@ -33,15 +33,11 @@ export class SdkConfigurationManager implements ConfigurationManager {
       });
   }
 
-  async getValue<T>(tenantId: string, key: string) {
-    await this.initialize();
-
+  getValue<T>(tenantId: string, key: string) {
     return sdk.getFeatureValue(key, tenantId) as T;
   }
 
-  async getSecretValue(tenantId: string, key: string) {
-    await this.initialize();
-
+  getSecretValue(tenantId: string, key: string) {
     return sdk.getSecretValue(key, tenantId);
   }
 }
