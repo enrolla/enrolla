@@ -17,49 +17,45 @@ export class Auth0OrganizationManager implements OrganizationManager {
     tenantId: string,
     organizationId: string
   ): Promise<Organization> {
-    return await this.getAuth0Client(tenantId).then((managementClient) => {
-      return managementClient.organizations.getByID({ id: organizationId });
+    return this.getAuth0Client(tenantId).organizations.getByID({
+      id: organizationId,
     });
   }
 
   async getOrganizations(tenantId: string): Promise<Organization[]> {
-    return await this.getAuth0Client(tenantId).then((managementClient) => {
-      return managementClient.organizations.getAll();
-    });
+    return this.getAuth0Client(tenantId).organizations.getAll();
   }
 
   async createOrganization(
     tenantId: string,
     organizationCreateInput: OrganizationCreateInput
   ): Promise<Organization> {
-    return await this.getAuth0Client(tenantId).then((managementClient) => {
-      return managementClient.organizations.create({
-        name: organizationCreateInput.name,
-      });
+    return this.getAuth0Client(tenantId).organizations.create({
+      name: organizationCreateInput.name,
     });
   }
 
   async removeOrganization(tenantId: string, organizationId: string) {
-    return await this.getAuth0Client(tenantId).then((managementClient) => {
-      return managementClient.organizations.delete({ id: organizationId });
+    return this.getAuth0Client(tenantId).organizations.delete({
+      id: organizationId,
     });
   }
 
-  private async getAuth0Client(tenantId: string): ManagementClient {
+  private getAuth0Client(tenantId: string): ManagementClient {
     if (this.auth0Clients.has(tenantId)) {
       return this.auth0Clients.get(tenantId);
     }
 
     const auth0Client = new ManagementClient({
-      domain: await this.configurationsService.getValue<string>(
+      domain: this.configurationsService.getValue<string>(
         tenantId,
         Auth0OrganizationManager.AUTH0_DOMAIN_CONFIGURATION_KEY
       ),
-      clientId: await this.configurationsService.getValue<string>(
+      clientId: this.configurationsService.getValue<string>(
         tenantId,
         Auth0OrganizationManager.AUTH0_CLIENT_ID_CONFIGURATION_KEY
       ),
-      clientSecret: await this.configurationsService.getSecretValue(
+      clientSecret: this.configurationsService.getSecretValue(
         tenantId,
         Auth0OrganizationManager.AUTH0_CLIENT_SECRET_CONFIGURATION_KEY
       ),

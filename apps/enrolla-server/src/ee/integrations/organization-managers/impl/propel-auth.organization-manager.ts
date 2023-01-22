@@ -20,11 +20,11 @@ export class PropelAuthOrganizationManager implements OrganizationManager {
   ): Promise<Organization> {
     const response = await firstValueFrom(
       this.httpService.get(
-        await this.tenantRequestUrl(
+        this.tenantRequestUrl(
           tenantId,
           `/api/backend/v1/org/${organizationId}`
         ),
-        { headers: await this.tenantHeaders(tenantId) }
+        { headers: this.tenantHeaders(tenantId) }
       )
     );
 
@@ -39,13 +39,13 @@ export class PropelAuthOrganizationManager implements OrganizationManager {
     while (hasMore) {
       const response = await firstValueFrom(
         this.httpService.get(
-          await this.tenantRequestUrl(tenantId, '/api/backend/v1/org/query'),
+          this.tenantRequestUrl(tenantId, '/api/backend/v1/org/query'),
           {
             params: {
               current_page: page,
               page_size: 100,
             },
-            headers: await this.tenantHeaders(tenantId),
+            headers: this.tenantHeaders(tenantId),
           }
         )
       );
@@ -67,11 +67,11 @@ export class PropelAuthOrganizationManager implements OrganizationManager {
   ): Promise<Organization> {
     const response = await firstValueFrom(
       this.httpService.post(
-        await this.tenantRequestUrl(tenantId, '/api/backend/v1/org/'),
+        this.tenantRequestUrl(tenantId, '/api/backend/v1/org/'),
         {
           name: organizationCreateInput.name,
         },
-        { headers: await this.tenantHeaders(tenantId) }
+        { headers: this.tenantHeaders(tenantId) }
       )
     );
 
@@ -82,27 +82,27 @@ export class PropelAuthOrganizationManager implements OrganizationManager {
     throw new Error('Method not implemented.');
   }
 
-  private async tenantDomain(tenantId: string) {
-    return await this.configurationsService.getValue<string>(
+  private tenantDomain(tenantId: string): string {
+    return this.configurationsService.getValue<string>(
       tenantId,
       PropelAuthOrganizationManager.PROPEL_AUTH_DOMAIN_CONGIURATION_KEY
     );
   }
 
-  private async tenantApiKey(tenantId: string) {
-    return await this.configurationsService.getSecretValue(
+  private tenantApiKey(tenantId: string): string {
+    return this.configurationsService.getSecretValue(
       tenantId,
       PropelAuthOrganizationManager.PROPEL_AUTH_API_KEY_CONGIURATION_KEY
     );
   }
 
-  private async tenantHeaders(tenantId: string) {
+  private tenantHeaders(tenantId: string) {
     return {
-      Authorization: `Bearer ${await this.tenantApiKey(tenantId)}`,
+      Authorization: `Bearer ${this.tenantApiKey(tenantId)}`,
     };
   }
 
-  private async tenantRequestUrl(tenantId: string, path: string) {
-    return `${await this.tenantDomain(tenantId)}/${path}`;
+  private tenantRequestUrl(tenantId: string, path: string) {
+    return `${this.tenantDomain(tenantId)}/${path}`;
   }
 }
