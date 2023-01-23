@@ -2,6 +2,7 @@ import { env } from 'process';
 import { ConfigurationManager } from '../../configuration-manager.interface';
 import * as sdk from '@enrolla/node-server-sdk';
 import { Injectable, Logger } from '@nestjs/common';
+import { EnrollaError } from '@enrolla/node-server-sdk';
 
 @Injectable()
 export class SdkConfigurationManager implements ConfigurationManager {
@@ -24,11 +25,12 @@ export class SdkConfigurationManager implements ConfigurationManager {
         polling: {
           enabled: this.pollingEnabled,
           intervalSeconds: this.pollingIntervalSeconds,
-          onError: (error) => this.logger.error('onPollingError', error),
+          onError: (error) =>
+            this.logger.error('onPollingError', error.cause?.stack),
         },
       })
-      .catch((err) => {
-        this.logger.error('SDK Initiation Failed', err);
+      .catch((err: EnrollaError) => {
+        this.logger.error('SDK Initiation Failed', err.cause?.stack);
         throw err;
       });
   }

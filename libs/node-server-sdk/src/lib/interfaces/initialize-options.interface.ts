@@ -1,3 +1,5 @@
+import { EnrollaError } from '../errors';
+
 export interface InitializeOptions {
   apiToken: string;
   privateKey?: string;
@@ -5,7 +7,7 @@ export interface InitializeOptions {
   polling?: {
     enabled: boolean;
     intervalSeconds: number;
-    onError?: (error: Error) => void;
+    onError?: (error: EnrollaError) => void;
   };
   evaluationHooks?: {
     beforeEvaluation?: (feature: string, organizationId: string) => void;
