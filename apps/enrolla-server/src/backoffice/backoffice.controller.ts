@@ -1,6 +1,4 @@
-import { Controller, Post, Body, UseGuards, Logger, Get } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { Controller, Post, Body, UseGuards, Logger } from '@nestjs/common';
 import * as sdk from '@enrolla/node-server-sdk';
 
 import { OrganizationCreatedInput } from './dto';
