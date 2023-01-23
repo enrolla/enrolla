@@ -105,7 +105,7 @@
     "husky": "^8.0.2",
     "jest": "28.1.1",
     "jest-environment-jsdom": "29.3.1",
-    "jsdom": "~20.0.3",
+    "jsdom": "~21.1.0",
     "ngx-deploy-npm": "^4.3.10",
     "nx": "15.5.2",
     "prettier": "^2.8.0",
