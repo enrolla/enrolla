@@ -17,6 +17,7 @@ import { ConfigurationsModule } from './configurations/configurations.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { SecretsModule } from './secrets/secrets.module';
+import { BackOfficeModule } from './backoffice/backoffice.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { SecretsModule } from './secrets/secrets.module';
     ConfigurationsModule,
     TenantsModule,
     SecretsModule,
+    BackOfficeModule,
   ],
   controllers: [AppController],
 })

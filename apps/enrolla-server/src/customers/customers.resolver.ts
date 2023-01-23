@@ -8,8 +8,11 @@ import {
 } from '@nestjs/graphql';
 import { CustomersService } from './customers.service';
 import { Customer } from './entities/customer.entity';
-import { CreateCustomerInput } from './dto/create-customer.input';
-import { UpdateCustomerInput } from './dto/update-customer.input';
+import {
+  UpdateCustomerInput,
+  CreateCustomerInput,
+  UpdateCustomerByOrgIdInput,
+} from './dto';
 import { TenantId } from '../authz/tenant.decorator';
 import { GraphQLAuthGuard } from '../authz/graphql-auth.guard';
 import { UseGuards } from '@nestjs/common';
@@ -58,6 +61,18 @@ export class CustomersResolver {
   ) {
     return await this.customersService.update(
       updateCustomerInput.id,
+      updateCustomerInput,
+      tenantId
+    );
+  }
+
+  @Mutation(() => Customer)
+  async updateCustomerByOrgId(
+    @TenantId() tenantId: string,
+    @Args('input') updateCustomerInput: UpdateCustomerByOrgIdInput
+  ) {
+    return await this.customersService.updateByOrgId(
+      updateCustomerInput.organizationId,
       updateCustomerInput,
       tenantId
     );

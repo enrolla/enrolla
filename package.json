@@ -54,6 +54,7 @@
     "react-dom": "18.2.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.5.7",
+    "svix": "^0.74.1",
     "tslib": "^2.4.1",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1",

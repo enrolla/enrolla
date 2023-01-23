@@ -17,11 +17,11 @@ export class CreateCustomerInput {
   @Field(() => String, { nullable: true })
   packageId?: string;
 
-  @ApiProperty({ type: FeatureInstanceInput, isArray: true })
-  @Field(() => [FeatureInstanceInput])
-  features: FeatureInstanceInput[];
+  @ApiProperty({ type: FeatureInstanceInput, isArray: true, nullable: true })
+  @Field(() => [FeatureInstanceInput], { nullable: true })
+  features?: FeatureInstanceInput[];
 
   @ApiProperty({ type: SecretInput, isArray: true, nullable: true })
-  @Field(() => [SecretInput])
+  @Field(() => [SecretInput], { nullable: true })
   secrets?: SecretInput[];
 }
