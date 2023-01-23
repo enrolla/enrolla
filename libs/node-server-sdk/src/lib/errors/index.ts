@@ -8,8 +8,9 @@ export const SEVERITY = {
 
 export type Severity = typeof SEVERITY[keyof typeof SEVERITY];
 
-class EnrollaError extends Error {
+export class EnrollaError extends Error {
   severity: Severity;
+  cause?: Error;
 
   constructor(message: string) {
     super(message);
@@ -26,8 +27,6 @@ export class NotInitializedError extends EnrollaError {
 }
 
 export class InitializationError extends EnrollaError {
-  readonly cause: Error | undefined;
-
   constructor(message?: string, cause?: Error) {
     super(message ?? 'Failed to initialize Enrolla SDK');
     this.cause = cause;
@@ -86,8 +85,6 @@ export class FeatureTypeMismatchError extends EnrollaError {
 }
 
 export class PollingError extends EnrollaError {
-  readonly cause: Error;
-
   constructor(cause: Error) {
     super('Failed to refresh feature data.');
     this.cause = cause;
@@ -96,8 +93,6 @@ export class PollingError extends EnrollaError {
 }
 
 export class SecretDecryptError extends EnrollaError {
-  readonly cause: Error;
-
   constructor(key: string, cause: Error) {
     super(`Failed to decrypt secret "${key}".`);
     this.cause = cause;
