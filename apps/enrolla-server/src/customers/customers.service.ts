@@ -47,7 +47,7 @@ export class CustomersService {
         tenantId,
         packageId: createCustomerInput.packageId,
         features: {
-          create: createCustomerInput.features.map((feature) => ({
+          create: createCustomerInput.features?.map((feature) => ({
             featureId: feature.featureId,
             value: feature.value,
             tenantId,
@@ -85,9 +85,44 @@ export class CustomersService {
     });
   }
 
+  private static updateCustomerData(
+    tenantId: string,
+    customerInput: Partial<CreateCustomerInput>
+  ) {
+    return {
+      name: customerInput.name,
+      tenantId,
+      packageId: customerInput.packageId,
+      features: {
+        deleteMany: {
+          featureId: {
+            in: customerInput.features.map((feature) => feature.featureId),
+          },
+        },
+        create: customerInput.features.map((feature) => ({
+          featureId: feature.featureId,
+          value: feature.value,
+          tenantId,
+        })),
+      },
+      secrets: {
+        deleteMany: {
+          key: { in: customerInput.secrets.map((secret) => secret.key) },
+        },
+        create: customerInput.secrets?.map((secret) => ({
+          tenantId,
+          key: secret.key,
+          value: secret.value,
+          ephemPubKey: secret.ephemPubKey,
+          nonce: secret.nonce,
+        })),
+      },
+    };
+  }
+
   async update(
     id: string,
-    updateCustomerInput: UpdateCustomerInput,
+    customerInput: Partial<CreateCustomerInput>,
     tenantId: string
   ) {
     return await this.prismaService.customer.update({
@@ -97,46 +132,23 @@ export class CustomersService {
           tenantId,
         },
       },
-      data: {
-        name: updateCustomerInput.name,
-        tenantId,
-        packageId: updateCustomerInput.packageId,
-        features: {
-          deleteMany: {},
-          create: updateCustomerInput.features.map((feature) => ({
-            featureId: feature.featureId,
-            value: feature.value,
-            tenantId,
-          })),
-        },
-        secrets: {
-          create: updateCustomerInput.secrets
-            .filter((s) => s.new)
-            .map((secret) => ({
-              tenantId,
-              key: secret.key,
-              value: secret.value,
-              ephemPubKey: secret.ephemPubKey,
-              nonce: secret.nonce,
-            })),
-          update: updateCustomerInput.secrets
-            .filter((s) => !s.new)
-            .map((secret) => ({
-              where: {
-                key_customerId_tenantId: {
-                  key: secret.key,
-                  customerId: id,
-                  tenantId,
-                },
-              },
-              data: {
-                value: secret.value,
-                ephemPubKey: secret.ephemPubKey,
-                nonce: secret.nonce,
-              },
-            })),
+      data: CustomersService.updateCustomerData(tenantId, customerInput),
+    });
+  }
+
+  async updateByOrgId(
+    organizationId: string,
+    customerInput: Partial<CreateCustomerInput>,
+    tenantId: string
+  ) {
+    return await this.prismaService.customer.update({
+      where: {
+        tenantId_organizationId: {
+          organizationId,
+          tenantId,
         },
       },
+      data: CustomersService.updateCustomerData(tenantId, customerInput),
     });
   }
 

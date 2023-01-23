@@ -51,6 +51,7 @@ const onServerStart = async () => {
 async function bootstrap() {
   const logger = createLogger('enrolla-server', env.VERSION_TAG);
   const app = await NestFactory.create(AppModule, {
+    rawBody: true,
     logger,
   });
 
