@@ -31,7 +31,7 @@
     "@tabler/icons": "^1.118.0",
     "ajv": "^8.11.2",
     "apollo-server-express": "^3.11.1",
-    "auth0": "^3.0.1",
+    "auth0": "^3.1.1",
     "axios": "^1.2.3",
     "camelcase": "^7.0.1",
     "class-transformer": "^0.5.1",
