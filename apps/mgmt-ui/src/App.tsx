@@ -32,7 +32,6 @@ import {
   IconShieldLock,
   IconSettings,
   IconKey,
-  IconDatabase,
 } from '@tabler/icons';
 import { Layout } from './components/layout';
 import dataProvider from './providers/backendGraphQLProvider';
@@ -45,7 +44,6 @@ import {
 import { Integrations } from './ee/pages/integrations';
 import useAuthProvider from './providers/useAuthProvider';
 import { SecretKeyList } from './pages/secret-keys';
-import { MongoDB } from './ee/pages/integrations/mongodb/MongoDB';
 
 export default function App() {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({

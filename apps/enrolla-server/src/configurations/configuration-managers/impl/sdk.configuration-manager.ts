@@ -12,7 +12,7 @@ export class SdkConfigurationManager implements ConfigurationManager {
     : true;
   private static readonly DEFAULT_POLLING_INTERVAL_SECONDS = 60;
   private static readonly pollingIntervalSeconds =
-    Number(env.SDK_POLLING_INTERVAL_SECONDS) ??
+    Number(env.SDK_POLLING_INTERVAL_SECONDS) ||
     SdkConfigurationManager.DEFAULT_POLLING_INTERVAL_SECONDS;
 
   static async initialize() {
@@ -23,7 +23,7 @@ export class SdkConfigurationManager implements ConfigurationManager {
         privateKey: env.SDK_ENROLLA_PRIVATE_ENCRYPTION_KEY,
         polling: {
           enabled: this.pollingEnabled,
-          intervalSeconds: this.pollingIntervalSeconds,
+          intervalSeconds: 60,
           onError: (error) => this.logger.error('onPollingError', error),
         },
       })

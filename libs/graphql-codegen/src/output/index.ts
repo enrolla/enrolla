@@ -85,6 +85,12 @@ export type Customer = {
   tenantId: Scalars['String'];
 };
 
+export type DbFeatureMetadata = {
+  __typename?: 'DBFeatureMetadata';
+  name: Scalars['String'];
+  type: FeatureType;
+};
+
 export type EncryptionKey = {
   __typename?: 'EncryptionKey';
   createdAt: Scalars['DateTime'];
@@ -109,6 +115,7 @@ export type FeatureInstanceInput = {
 };
 
 export enum FeatureType {
+  Array = 'ARRAY',
   Boolean = 'BOOLEAN',
   Float = 'FLOAT',
   Integer = 'INTEGER',
@@ -120,13 +127,6 @@ export type FeatureValue = {
   __typename?: 'FeatureValue';
   feature: Feature;
   value: Scalars['JSON'];
-};
-
-export type ImportCustomersInput = {
-  connectionOptions: MongoDbConnectionOptions;
-  featureFieldNames: Array<Scalars['String']>;
-  idFieldName: Scalars['String'];
-  schemaExampleId?: InputMaybe<Scalars['String']>;
 };
 
 export type Integration = {
@@ -154,7 +154,6 @@ export type Mutation = {
   createOrganization: Organization;
   createPackage: Package;
   createSecretKey: SecretKey;
-  importCustomers: Array<Customer>;
   removeApiToken: ApiToken;
   removeCustomer: Customer;
   removeEncryptionKey: EncryptionKey;
@@ -201,11 +200,6 @@ export type MutationCreatePackageArgs = {
 
 export type MutationCreateSecretKeyArgs = {
   input: CreateSecretKeyInput;
-};
-
-
-export type MutationImportCustomersArgs = {
-  input: ImportCustomersInput;
 };
 
 
@@ -299,6 +293,8 @@ export type Query = {
   features: Array<Feature>;
   hasSecrets: Scalars['Boolean'];
   integrations: Array<Integration>;
+  mongoCustomerIds: Array<Scalars['String']>;
+  mongoSchema: Array<DbFeatureMetadata>;
   organization: Organization;
   organizations: Array<Organization>;
   package: Package;
@@ -314,6 +310,17 @@ export type QueryCustomerArgs = {
 
 export type QueryFeatureArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryMongoCustomerIdsArgs = {
+  idFieldName: Scalars['String'];
+  input: MongoDbConnectionOptions;
+};
+
+
+export type QueryMongoSchemaArgs = {
+  input: MongoDbConnectionOptions;
 };
 
 
