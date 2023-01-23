@@ -19,7 +19,10 @@ export class SvixWebhookAuthGuard implements CanActivate {
       SvixWebhookAuthGuard.wh.verify(payload, request.headers);
       return true;
     } catch (error) {
-      SvixWebhookAuthGuard.logger.error('Failed to verify Svix webhook', error);
+      SvixWebhookAuthGuard.logger.error(
+        'Failed to verify Svix webhook',
+        error.stack
+      );
       return false;
     }
   }
