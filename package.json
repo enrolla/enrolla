@@ -60,7 +60,7 @@
     "winston": "^3.8.2"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.3.0",
+    "@commitlint/cli": "^17.4.2",
     "@commitlint/config-conventional": "^17.3.0",
     "@emotion/babel-plugin": "11.10.5",
     "@graphql-codegen/cli": "2.16.3",
