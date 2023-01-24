@@ -3,6 +3,7 @@ import { ConfigurationManager } from '../../configuration-manager.interface';
 import * as sdk from '@enrolla/node-server-sdk';
 import { Injectable, Logger } from '@nestjs/common';
 import { EnrollaError } from '@enrolla/node-server-sdk';
+import axios from 'axios';
 
 @Injectable()
 export class SdkConfigurationManager implements ConfigurationManager {
@@ -17,6 +18,16 @@ export class SdkConfigurationManager implements ConfigurationManager {
     SdkConfigurationManager.DEFAULT_POLLING_INTERVAL_SECONDS;
 
   static async initialize() {
+    try {
+      // temp for testing
+      const { data: hostname } = await axios.get(
+        'http://169.254.169.254/latest/meta-data/local-ipv4'
+      );
+      SdkConfigurationManager.logger.warn(`datadog host: ${hostname}`);
+    } catch (err) {
+      SdkConfigurationManager.logger.error('datadog host error', err.stack);
+    }
+
     sdk
       .initialize({
         url: env.SDK_ENROLLA_SERVER_GRAPHQL_ENDPOINT,
