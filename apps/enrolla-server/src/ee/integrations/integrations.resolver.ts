@@ -3,12 +3,14 @@ import { GraphQLAuthGuard } from '../../authz/graphql-auth.guard';
 import { CustomersService } from '../../customers/customers.service';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { TenantId } from '../../authz/tenant.decorator';
-import { MongoDBCustomersService } from './databases/mongodb/mongodb.service';
+import { MongoDBCustomersService } from './databases/mongodb/mongodb-customers.service';
 import { FeaturesService } from '../../features/features.service';
 import { Integration } from './dto/integration.entity';
 import { DBFeatureMetadata } from './databases/entities/db-feature-metadata.entity';
-import { MongoDBConnectionOptions } from './databases/mongodb/mongodb-connection-options';
-import { ImportCustomersInput } from './dto/import-customers.input';
+import { MongoDBConnectionOptions } from './databases/mongodb/dto/mongodb-connection-options.input';
+import { ImportMongoCustomersInput } from './databases/mongodb/dto/import-mongo-customers.input';
+import { FetchMongoCustomersInput } from './databases/mongodb/dto/fetch-mongo-customers.input';
+import { DBCustomer } from './databases/entities/db-customer.entity';
 
 @Resolver()
 @UseGuards(GraphQLAuthGuard)
@@ -29,35 +31,26 @@ export class IntegrationsResolver {
   }
 
   @Query(() => [DBFeatureMetadata])
-  async mongoSchema(
+  async fetchMongoSchema(
     @TenantId() tenantId: string,
     @Args('input') connectionOptions: MongoDBConnectionOptions
   ) {
     return await this.mongodbCustomersService.fetchSchema(connectionOptions);
   }
 
-  @Query(() => [String])
-  async mongoCustomerIds(
+  @Query(() => [DBCustomer])
+  async fetchMongoCustomers(
     @TenantId() tenantId: string,
-    @Args('input') connectionOptions: MongoDBConnectionOptions,
-    @Args('idFieldName') idFieldName: string
+    @Args('input') input: FetchMongoCustomersInput
   ) {
-    return await this.mongodbCustomersService.getCustomerIds(
-      idFieldName,
-      connectionOptions
-    );
+    return await this.mongodbCustomersService.fetchCustomers(input);
   }
 
   @Mutation(() => Boolean)
-  async mongoImportCustomers(
+  async importMongoCustomers(
     @TenantId() tenantId: string,
-    @Args('input') input: ImportCustomersInput
+    @Args('input') input: ImportMongoCustomersInput
   ) {
-    return await this.mongodbService.fetchCustomerFeatures(
-      id,
-      idFieldName,
-      featureFields,
-      connectionOptions
-    );
+    return await this.mongodbCustomersService.importCustomers(tenantId, input);
   }
 }

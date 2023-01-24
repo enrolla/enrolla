@@ -1,5 +1,5 @@
 import { FeatureType } from '@prisma/client';
-import { MongoDBConnectionOptions } from './mongodb-connection-options';
+import { MongoDBConnectionOptions } from './dto/mongodb-connection-options.input';
 import { ConnectionOptions } from '../connection-options.interface';
 import { Collection, MongoClient } from 'mongodb';
 import { Logger } from '@nestjs/common';

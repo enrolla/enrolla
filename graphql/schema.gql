@@ -109,6 +109,11 @@ type DBFeatureMetadata {
   type: FeatureType!
 }
 
+type DBCustomer {
+  organizationId: String!
+  name: String!
+}
+
 type Integration {
   name: String!
   isConfigured: Boolean!
@@ -129,8 +134,8 @@ type Query {
   secretKeys: [SecretKey!]!
   hasSecrets: Boolean!
   integrations: [Integration!]!
-  mongoSchema(input: MongoDBConnectionOptions!): [DBFeatureMetadata!]!
-  mongoCustomerIds(input: MongoDBConnectionOptions!, idFieldName: String!): [String!]!
+  fetchMongoSchema(input: MongoDBConnectionOptions!): [DBFeatureMetadata!]!
+  fetchMongoCustomers(input: FetchMongoCustomersInput!): [DBCustomer!]!
 }
 
 input MongoDBConnectionOptions {
@@ -141,6 +146,12 @@ input MongoDBConnectionOptions {
   username: String
   password: String
   collection: String
+}
+
+input FetchMongoCustomersInput {
+  connectionOptions: MongoDBConnectionOptions!
+  organizationIdField: String!
+  customerNameField: String!
 }
 
 type Mutation {
@@ -163,7 +174,7 @@ type Mutation {
   removeOrganization(id: String!): Organization!
   createSecretKey(input: CreateSecretKeyInput!): SecretKey!
   removeSecretKey(id: String!): SecretKey!
-  mongoImportCustomers(input: ImportCustomersInput!): Boolean!
+  importMongoCustomers(input: ImportMongoCustomersInput!): Boolean!
 }
 
 input CreateApiTokenInput {
@@ -177,7 +188,7 @@ input CreateEncryptionKeyInput {
 input CreateFeatureInput {
   key: String!
   type: FeatureType!
-  defaultValue: JSON!
+  defaultValue: JSON
   description: String
 }
 
@@ -261,14 +272,16 @@ input CreateSecretKeyInput {
   key: String!
 }
 
-input ImportCustomersInput {
+input ImportMongoCustomersInput {
   connectionOptions: MongoDBConnectionOptions!
-  idFieldName: String!
-  customerIds: [String!]!
+  organizationIdField: String!
+  customerNameField: String!
+  organizationIds: [String!]!
   features: [FeatureMappingInput!]!
 }
 
 input FeatureMappingInput {
   sourceName: String!
   destinationName: String!
+  type: FeatureType!
 }

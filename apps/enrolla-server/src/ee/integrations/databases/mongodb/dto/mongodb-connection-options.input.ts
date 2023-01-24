@@ -1,5 +1,8 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { ConnectionOptions, Database } from '../connection-options.interface';
+import {
+  ConnectionOptions,
+  Database,
+} from '../../connection-options.interface';
 
 @InputType()
 export class MongoDBConnectionOptions implements ConnectionOptions {

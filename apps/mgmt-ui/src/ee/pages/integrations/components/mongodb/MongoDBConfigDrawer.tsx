@@ -14,6 +14,7 @@ import {
   IntegrationSetupDrawerProps,
 } from '../IntegrationSetupDrawer';
 import {
+  DbCustomer,
   DbFeatureMetadata,
   MongoDbConnectionOptions,
 } from '@enrolla/graphql-codegen';
@@ -31,8 +32,16 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       collection: '',
     });
   const [schema, setSchema] = useState<DbFeatureMetadata[]>([]);
-  const [idFieldName, setIdFieldName] = useState<string | undefined>();
-  const [customerIds, setCustomerIds] = useState<string[]>([]);
+  const [organizationIdField, setOrganizationIdField] = useState<
+    string | undefined
+  >();
+  const [customerNameField, setCustomerNameField] = useState<
+    string | undefined
+  >();
+  const [customers, setCustomers] = useState<DbCustomer[]>([]);
+  const [organizationIdsToImport, setOrganizationIdsToImport] = useState<
+    string[]
+  >([]);
 
   const nextStep = () =>
     setActive((current) => (current < 4 ? current + 1 : current));
@@ -46,7 +55,7 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       url: '',
       method: 'get',
       metaData: {
-        operation: 'mongoSchema',
+        operation: 'fetchMongoSchema',
         fields: ['name', 'type'],
         variables: {
           input: {
@@ -61,27 +70,27 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       nextStep();
     });
 
-  const getCustomerIds = async () =>
-    custom?.<string[]>({
+  const fetchCusomters = async () =>
+    custom?.<DbCustomer[]>({
       url: '',
       method: 'get',
       metaData: {
-        operation: 'mongoCustomerIds',
+        operation: 'fetchMongoCustomers',
         variables: {
           input: {
-            value: connectionOptions,
-            type: 'MongoDBConnectionOptions',
-            required: true,
-          },
-          idFieldName: {
-            value: idFieldName,
-            type: 'String',
+            value: {
+              connectionOptions,
+              organizationIdField,
+              customerNameField,
+            },
+            type: 'FetchMongoCustomersInput',
             required: true,
           },
         },
+        fields: ['organizationId', 'name'],
       },
     }).then((res) => {
-      setCustomerIds(res.data);
+      setCustomers(res.data);
       nextStep();
     });
 
@@ -94,7 +103,7 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
           </Button>
         );
       case 1:
-        return <Button onClick={() => getCustomerIds()}>Next</Button>;
+        return <Button onClick={() => fetchCusomters()}>Next</Button>;
       case 2:
         return <Button onClick={() => nextStep()}>Next</Button>;
       case 3:
@@ -187,9 +196,16 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
           icon={<IconId size={18} />}
         >
           <Select
+            label="Organization ID Field"
             defaultValue={schema[0]?.name}
             data={schema.map((featureMetadata) => featureMetadata.name)}
-            onChange={(value) => value && setIdFieldName(value)}
+            onChange={(value) => value && setOrganizationIdField(value)}
+          />
+          <Select
+            label="Organization Name Field"
+            defaultValue={schema[0]?.name}
+            data={schema.map((featureMetadata) => featureMetadata.name)}
+            onChange={(value) => value && setCustomerNameField(value)}
           />
         </Stepper.Step>
 
@@ -198,7 +214,16 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
           description="Select the customers that you want to import."
           icon={<IconUsers size={18} />}
         >
-          <MultiSelect defaultValue={customerIds} data={customerIds} />
+          <MultiSelect
+            label="Select customers"
+            data={customers.map((customer) => {
+              return {
+                label: customer.name,
+                value: customer.organizationId,
+              };
+            })}
+            onChange={(value) => value && setOrganizationIdsToImport(value)}
+          />
         </Stepper.Step>
 
         <Stepper.Step
@@ -207,8 +232,13 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
           icon={<IconDatabaseImport size={18} />}
         >
           <MultiSelect
+            label="Select feature fields"
             data={schema
-              .filter((feature) => feature.name !== idFieldName)
+              .filter(
+                (feature) =>
+                  feature.name !== organizationIdField &&
+                  feature.name !== customerNameField
+              )
               .map((feature) => feature.name)}
           />
         </Stepper.Step>
