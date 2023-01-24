@@ -16,9 +16,11 @@ import {
 import {
   DbCustomer,
   DbFeatureMetadata,
+  FeatureMappingInput,
   MongoDbConnectionOptions,
 } from '@enrolla/graphql-codegen';
-import { useDataProvider } from '@pankod/refine-core';
+import { useDataProvider, useNavigation } from '@pankod/refine-core';
+import { FeaturesMapping } from '../FeaturesMapper';
 
 export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
   const [active, setActive] = useState(0);
@@ -42,6 +44,10 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
   const [organizationIdsToImport, setOrganizationIdsToImport] = useState<
     string[]
   >([]);
+  const [featuresMapping, setFeaturesMapping] = useState<Map<string, string>>(
+    new Map()
+  );
+  const { list } = useNavigation();
 
   const nextStep = () =>
     setActive((current) => (current < 4 ? current + 1 : current));
@@ -94,6 +100,46 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       nextStep();
     });
 
+  const getFeaturesMapping = (): FeatureMappingInput[] => {
+    const features: FeatureMappingInput[] = [];
+
+    featuresMapping.forEach((value, key) => {
+      features.push({
+        sourceName: key,
+        destinationName: value,
+        type: schema.find((feature) => feature.name === key)!.type,
+      });
+    });
+
+    return features;
+  };
+
+  const importCusomters = async () =>
+    custom?.({
+      url: '',
+      method: 'post',
+      metaData: {
+        operation: 'importMongoCustomers',
+        variables: {
+          input: {
+            value: {
+              connectionOptions,
+              organizationIdField,
+              customerNameField,
+              organizationIds: organizationIdsToImport,
+              features: getFeaturesMapping(),
+            },
+            type: 'ImportMongoCustomersInput',
+            required: true,
+          },
+        },
+      },
+    }).then((res) => {
+      if (res.data) {
+        list?.('customers');
+      }
+    });
+
   const NextStepButton = () => {
     switch (active) {
       case 0:
@@ -107,7 +153,9 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       case 2:
         return <Button onClick={() => nextStep()}>Next</Button>;
       case 3:
-        return <Button onClick={() => nextStep()}>Import & Finish</Button>;
+        return (
+          <Button onClick={() => importCusomters()}>Import & Finish</Button>
+        );
       default:
         return <Button onClick={() => nextStep()}>Next</Button>;
     }
@@ -231,15 +279,16 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
           description="Select the fields that you want to import as features and import them."
           icon={<IconDatabaseImport size={18} />}
         >
-          <MultiSelect
-            label="Select feature fields"
-            data={schema
+          <FeaturesMapping
+            featureNames={schema
               .filter(
                 (feature) =>
                   feature.name !== organizationIdField &&
                   feature.name !== customerNameField
               )
               .map((feature) => feature.name)}
+            featureNamesMapping={featuresMapping}
+            setFeaturesMapping={setFeaturesMapping}
           />
         </Stepper.Step>
       </Stepper>

@@ -75,27 +75,38 @@ export class MongoDBCustomersService {
 
     const tenantFeatureIds = (
       await this.featuresService.findAll(tenantId)
-    ).reduce((acc, feature) => (acc[feature.key] = feature.id), {});
+    ).reduce((acc, feature) => {
+      acc[feature.key] = feature.id;
+      return acc;
+    }, {});
 
     return await useCollection(
       async (collection) => {
-        await collection
-          .find({ [organizationIdField]: { $in: organizationIds } })
-          .forEach((customer) => {
-            this.customersService.create(
-              {
-                organizationId: customer[organizationIdField],
-                name: customer[customerNameField],
-                features: features.map((feature) => {
-                  return {
-                    featureId: tenantFeatureIds[feature.destinationName],
-                    value: customer[feature.sourceName],
-                  };
-                }),
-              },
-              tenantId
-            );
-          });
+        try {
+          await collection
+            .find({ [organizationIdField]: { $in: organizationIds } })
+            .forEach((customer) => {
+              this.customersService.create(
+                {
+                  organizationId: customer[organizationIdField],
+                  name: customer[customerNameField],
+                  features: features.map((feature) => {
+                    return {
+                      featureId: tenantFeatureIds[feature.destinationName],
+                      value: customer[feature.sourceName],
+                    };
+                  }),
+                },
+                tenantId
+              );
+            });
+
+          return true;
+        } catch (error) {
+          this.logger.error(error);
+
+          return false;
+        }
       },
       input.connectionOptions,
       this.logger

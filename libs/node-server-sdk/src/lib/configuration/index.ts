@@ -13,7 +13,6 @@ const startPolling = (configuration: InitializeOptions) => {
   if (enabled) {
     setInterval(() => {
       refreshStore().catch((err) => {
-        console.log('XXX', err);
         onError?.(new PollingError(err));
       });
     }, intervalSeconds * 1000);
