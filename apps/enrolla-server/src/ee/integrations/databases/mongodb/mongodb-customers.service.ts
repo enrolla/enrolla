@@ -56,7 +56,12 @@ export class MongoDBCustomersService {
   }
 
   async importCustomers(tenantId: string, input: ImportMongoCustomersInput) {
-    const { organizationIdField, nameField, organizationIds, features } = input;
+    const {
+      organizationIdField,
+      customerNameField,
+      organizationIds,
+      features,
+    } = input;
 
     await this.featuresService.createMany(
       features.map((feature) => {
@@ -80,7 +85,7 @@ export class MongoDBCustomersService {
             this.customersService.create(
               {
                 organizationId: customer[organizationIdField],
-                name: customer[nameField],
+                name: customer[customerNameField],
                 features: features.map((feature) => {
                   return {
                     featureId: tenantFeatureIds[feature.destinationName],
