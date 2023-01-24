@@ -1,4 +1,4 @@
-import { UseGuards } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
 import { GraphQLAuthGuard } from '../../authz/graphql-auth.guard';
 import { CustomersService } from '../../customers/customers.service';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
@@ -24,9 +24,9 @@ export class IntegrationsResolver {
   @Query(() => [Integration])
   integrations(@TenantId() tenantId: string) {
     return [
-      { name: 'auth0', isConfigured: false },
-      { name: 'propelauth', isConfigured: false },
-      { name: 'mongodb', isConfigured: false },
+      { name: 'auth0', isAvailable: false, isConfigured: false },
+      { name: 'propelauth', isAvailable: false, isConfigured: false },
+      { name: 'mongodb', isAvailable: false, isConfigured: false },
     ];
   }
 

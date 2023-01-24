@@ -5,8 +5,10 @@ import { ConfigurationsService } from '../configurations/configurations.service'
 import {
   OrganizationManager,
   OrganizationManagerType,
-} from '../ee/integrations/organization-managers/organization-manager.interface';
+} from './organization-managers/organization-manager.interface';
 import { ModuleRef } from '@nestjs/core';
+import { NoneOrganizationManager } from './organization-managers/none.organization-manager';
+import { IntegrationType } from '../ee/integrations/integration.interface';
 
 @Injectable()
 export class OrganizationsService {
@@ -75,12 +77,30 @@ export class OrganizationsService {
       organizationManagerType = OrganizationManagerType.None;
     }
 
-    const enumKey = Object.keys(OrganizationManagerType)[
-      Object.values(OrganizationManagerType).indexOf(organizationManagerType)
-    ];
+    if (organizationManagerType === OrganizationManagerType.None) {
+      return this.moduleRef.get(NoneOrganizationManager);
+    }
+
+    if (!process.env.EE) {
+      throw new Error(
+        'Organization managers is an enterprise edition only feature'
+      );
+    }
 
     return this.moduleRef.get(
-      `OrganizationManager${enumKey}`
-    ) as OrganizationManager;
+      `Integration${
+        IntegrationType[getIntegrationType(organizationManagerType)]
+      }`
+    );
+  }
+}
+
+function getIntegrationType(organizationManagerType: OrganizationManagerType) {
+  switch (organizationManagerType) {
+    case OrganizationManagerType.Auth0:
+      return IntegrationType.Auth0;
+
+    case OrganizationManagerType.PropelAuth:
+      return IntegrationType.PropelAuth;
   }
 }

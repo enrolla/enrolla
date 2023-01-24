@@ -104,21 +104,6 @@ type SecretKey {
   createdAt: DateTime!
 }
 
-type DBFeatureMetadata {
-  name: String!
-  type: FeatureType!
-}
-
-type DBCustomer {
-  organizationId: String!
-  name: String!
-}
-
-type Integration {
-  name: String!
-  isConfigured: Boolean!
-}
-
 type Query {
   apiTokens: [ApiToken!]!
   encryptionKeys: [EncryptionKey!]!
@@ -133,25 +118,6 @@ type Query {
   organization(id: String!): Organization!
   secretKeys: [SecretKey!]!
   hasSecrets: Boolean!
-  integrations: [Integration!]!
-  fetchMongoSchema(input: MongoDBConnectionOptions!): [DBFeatureMetadata!]!
-  fetchMongoCustomers(input: FetchMongoCustomersInput!): [DBCustomer!]!
-}
-
-input MongoDBConnectionOptions {
-  host: String!
-  port: Float
-  isSrv: Boolean! = false
-  database: String!
-  username: String
-  password: String
-  collection: String
-}
-
-input FetchMongoCustomersInput {
-  connectionOptions: MongoDBConnectionOptions!
-  organizationIdField: String!
-  customerNameField: String!
 }
 
 type Mutation {
@@ -174,7 +140,6 @@ type Mutation {
   removeOrganization(id: String!): Organization!
   createSecretKey(input: CreateSecretKeyInput!): SecretKey!
   removeSecretKey(id: String!): SecretKey!
-  importMongoCustomers(input: ImportMongoCustomersInput!): Boolean!
 }
 
 input CreateApiTokenInput {
@@ -270,18 +235,4 @@ input UpdateOrganizationInput {
 
 input CreateSecretKeyInput {
   key: String!
-}
-
-input ImportMongoCustomersInput {
-  connectionOptions: MongoDBConnectionOptions!
-  organizationIdField: String!
-  customerNameField: String!
-  organizationIds: [String!]!
-  features: [FeatureMappingInput!]!
-}
-
-input FeatureMappingInput {
-  sourceName: String!
-  destinationName: String!
-  type: FeatureType!
 }
