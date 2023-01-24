@@ -7,7 +7,7 @@ import {
 import {
   IntegrationSetupDrawer,
   IntegrationSetupDrawerProps,
-} from './IntegrationSetupDrawer';
+} from '../IntegrationSetupDrawer';
 
 export const PropelAuthConfigDrawer = (props: IntegrationSetupDrawerProps) => {
   return (
