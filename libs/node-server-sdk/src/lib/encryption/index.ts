@@ -26,5 +26,6 @@ export const decrypt = (privateKey: string, encryptedData: IEncryptedMsg) => {
     receiverSecretKeyUint8Array
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return encodeUTF8(decryptedMessage!);
 };
