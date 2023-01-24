@@ -9,7 +9,7 @@ import { useState } from 'react';
 import {
   IntegrationSetupDrawer,
   IntegrationSetupDrawerProps,
-} from '../IntegrationSetupDrawer';
+} from '../../IntegrationSetupDrawer';
 
 export const PostgresQLConfigDrawer = (props: IntegrationSetupDrawerProps) => {
   const [active, setActive] = useState(0);

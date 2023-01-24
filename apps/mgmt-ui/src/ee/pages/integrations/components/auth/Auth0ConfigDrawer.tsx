@@ -2,7 +2,7 @@ import { Button, Center, TextInput } from '@pankod/refine-mantine';
 import {
   IntegrationSetupDrawer,
   IntegrationSetupDrawerProps,
-} from './IntegrationSetupDrawer';
+} from '../IntegrationSetupDrawer';
 
 export const Auth0ConfigDrawer = (props: IntegrationSetupDrawerProps) => {
   return (

@@ -23,10 +23,10 @@ import hubspot from '../../../assets/integrations/hubspot.svg';
 import { useState } from 'react';
 import { IconCheck } from '@tabler/icons';
 import { Integration } from '@enrolla/graphql-codegen';
-import { MongoDBConfigDrawer } from './components/mongodb/MongoDBConfigDrawer';
-import { Auth0ConfigDrawer } from './components/Auth0ConfigDrawer';
+import { MongoDBConfigDrawer } from './components/database/mongodb/MongoDBConfigDrawer';
+import { Auth0ConfigDrawer } from './components/auth/Auth0ConfigDrawer';
 import { PropelAuthConfigDrawer } from './components/PropelAuthConfigDrawer';
-import { PostgresQLConfigDrawer } from './components/postgresql/PostgresQLConfigDrawer';
+import { PostgresQLConfigDrawer } from './components/database/postgresql/PostgresQLConfigDrawer';
 
 enum IntegrationType {
   CRM = 'CRM',

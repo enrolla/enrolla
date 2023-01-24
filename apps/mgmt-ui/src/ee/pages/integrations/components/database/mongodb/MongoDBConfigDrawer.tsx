@@ -12,7 +12,7 @@ import { useState } from 'react';
 import {
   IntegrationSetupDrawer,
   IntegrationSetupDrawerProps,
-} from '../IntegrationSetupDrawer';
+} from '../../IntegrationSetupDrawer';
 import {
   DbCustomer,
   DbFeatureMetadata,
