@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCustomerInput } from './dto/create-customer.input';
-import { UpdateCustomerInput } from './dto/update-customer.input';
 import { OrganizationsService } from '../organizations/organizations.service';
 import { Organization } from '../organizations/entities/organization.entity';
 import { PrismaService } from '../prisma/prisma.service';

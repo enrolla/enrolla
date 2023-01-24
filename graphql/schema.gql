@@ -41,6 +41,7 @@ enum FeatureType {
   STRING
   BOOLEAN
   JSON
+  ARRAY
 }
 
 """
@@ -103,6 +104,16 @@ type SecretKey {
   createdAt: DateTime!
 }
 
+type DBFeatureMetadata {
+  name: String!
+  type: FeatureType!
+}
+
+type DBCustomer {
+  organizationId: String!
+  name: String!
+}
+
 type Integration {
   name: String!
   isConfigured: Boolean!
@@ -123,6 +134,24 @@ type Query {
   secretKeys: [SecretKey!]!
   hasSecrets: Boolean!
   integrations: [Integration!]!
+  fetchMongoSchema(input: MongoDBConnectionOptions!): [DBFeatureMetadata!]!
+  fetchMongoCustomers(input: FetchMongoCustomersInput!): [DBCustomer!]!
+}
+
+input MongoDBConnectionOptions {
+  host: String!
+  port: Float
+  isSrv: Boolean! = false
+  database: String!
+  username: String
+  password: String
+  collection: String
+}
+
+input FetchMongoCustomersInput {
+  connectionOptions: MongoDBConnectionOptions!
+  organizationIdField: String!
+  customerNameField: String!
 }
 
 type Mutation {
@@ -145,7 +174,7 @@ type Mutation {
   removeOrganization(id: String!): Organization!
   createSecretKey(input: CreateSecretKeyInput!): SecretKey!
   removeSecretKey(id: String!): SecretKey!
-  importCustomers(input: ImportCustomersInput!): [Customer!]!
+  importMongoCustomers(input: ImportMongoCustomersInput!): Boolean!
 }
 
 input CreateApiTokenInput {
@@ -159,7 +188,7 @@ input CreateEncryptionKeyInput {
 input CreateFeatureInput {
   key: String!
   type: FeatureType!
-  defaultValue: JSON!
+  defaultValue: JSON
   description: String
 }
 
@@ -243,19 +272,16 @@ input CreateSecretKeyInput {
   key: String!
 }
 
-input ImportCustomersInput {
+input ImportMongoCustomersInput {
   connectionOptions: MongoDBConnectionOptions!
-  idFieldName: String!
-  featureFieldNames: [String!]!
-  schemaExampleId: String
+  organizationIdField: String!
+  customerNameField: String!
+  organizationIds: [String!]!
+  features: [FeatureMappingInput!]!
 }
 
-input MongoDBConnectionOptions {
-  host: String!
-  port: Float
-  isSrv: Boolean! = false
-  database: String!
-  username: String
-  password: String
-  collection: String
+input FeatureMappingInput {
+  sourceName: String!
+  destinationName: String!
+  type: FeatureType!
 }

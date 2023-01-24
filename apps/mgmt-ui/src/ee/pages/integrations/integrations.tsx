@@ -20,12 +20,13 @@ import workos from '../../../assets/integrations/workos.svg';
 import firebase from '../../../assets/integrations/firebase.svg';
 import salesforce from '../../../assets/integrations/salesforce.svg';
 import hubspot from '../../../assets/integrations/hubspot.svg';
-import { Auth0ConfigModal } from './Auth0ConfigModal';
-import { PropelAuthConfigModal } from './PropelAuthConfigModal';
 import { useState } from 'react';
-import { MongoDBConfigModal } from './MongoDBConfigModal';
 import { IconCheck } from '@tabler/icons';
 import { Integration } from '@enrolla/graphql-codegen';
+import { MongoDBConfigDrawer } from './components/database/mongodb/MongoDBConfigDrawer';
+import { Auth0ConfigDrawer } from './components/auth/Auth0ConfigDrawer';
+import { PropelAuthConfigDrawer } from './components/auth/PropelAuthConfigDrawer';
+import { PostgresQLConfigDrawer } from './components/database/postgresql/PostgresQLConfigDrawer';
 
 enum IntegrationType {
   CRM = 'CRM',
@@ -61,7 +62,7 @@ const uiIntegrations: UiIntegration[] = [
   },
   {
     name: 'postgresql',
-    title: 'PostgreSQL',
+    title: 'PostgresQL',
     image: postgres,
     type: IntegrationType.Database,
   },
@@ -133,7 +134,7 @@ const useStyles = createStyles((theme) => ({
 export const Integrations = () => {
   const { classes } = useStyles();
 
-  const [modalOpened, setModalOpened] = useState('');
+  const [drawerOpened, setDrawerOpened] = useState('');
 
   const { data, isLoading } = useCustom<Integration[]>({
     url: '', // required param, but not used. See backendGraphQLProvider.ts custom method
@@ -163,7 +164,7 @@ export const Integrations = () => {
         withBorder
         radius="md"
         className={classes.card}
-        onClick={() => setModalOpened(integration.title)}
+        onClick={() => setDrawerOpened(integration.title)}
       >
         <Group position="right">
           {serverIntegration && serverIntegration.isConfigured ? (
@@ -190,17 +191,21 @@ export const Integrations = () => {
 
   return (
     <Authenticated>
-      <Auth0ConfigModal
-        opened={modalOpened === 'Auth0'}
-        onClose={() => setModalOpened('')}
+      <Auth0ConfigDrawer
+        opened={drawerOpened === 'Auth0'}
+        onClose={() => setDrawerOpened('')}
       />
-      <PropelAuthConfigModal
-        opened={modalOpened === 'PropelAuth'}
-        onClose={() => setModalOpened('')}
+      <PropelAuthConfigDrawer
+        opened={drawerOpened === 'PropelAuth'}
+        onClose={() => setDrawerOpened('')}
       />
-      <MongoDBConfigModal
-        opened={modalOpened === 'MongoDB'}
-        onClose={() => setModalOpened('')}
+      <MongoDBConfigDrawer
+        opened={drawerOpened === 'MongoDB'}
+        onClose={() => setDrawerOpened('')}
+      />
+      <PostgresQLConfigDrawer
+        opened={drawerOpened === 'PostgresQL'}
+        onClose={() => setDrawerOpened('')}
       />
       <Card>
         <Title order={2} className={classes.title} align="center" mt={80}>

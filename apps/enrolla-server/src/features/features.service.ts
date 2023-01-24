@@ -7,7 +7,7 @@ import { FeatureCreatedEvent } from './events/feature-created.event';
 import { FeatureUpdatedEvent } from './events/feature-updated.event';
 import { FeatureRemovedEvent } from './events/feature-removed.event';
 import { Events } from '../constants';
-import { Prisma } from '@prisma/client';
+import { FeatureType, Prisma } from '@prisma/client';
 
 @Injectable()
 export class FeaturesService {
@@ -41,6 +41,23 @@ export class FeaturesService {
     );
 
     return feature;
+  }
+
+  async createMany(createFeatureDtos: CreateFeatureInput[], tenantId: string) {
+    const features = await this.prismaService.feature.createMany({
+      data: createFeatureDtos.map((feature) => ({
+        key: feature.key,
+        type: feature.type,
+        description: feature.description,
+        defaultValue: feature.defaultValue
+          ? (feature.defaultValue as Prisma.JsonObject)
+          : defaultValueByType(feature.type),
+        tenantId: tenantId,
+      })),
+      skipDuplicates: true,
+    });
+
+    return features;
   }
 
   async findAll(tenantId: string) {
@@ -113,4 +130,30 @@ export class FeaturesService {
 
     return feature;
   }
+}
+
+function defaultValueByType(type: FeatureType): object {
+  let value: unknown;
+
+  switch (type) {
+    case FeatureType.BOOLEAN:
+      value = false;
+      break;
+    case FeatureType.INTEGER:
+      value = 0;
+      break;
+    case FeatureType.STRING:
+      value = '';
+      break;
+    case FeatureType.ARRAY:
+      value = [];
+      break;
+    case FeatureType.JSON:
+    default:
+      value = {};
+  }
+
+  return {
+    value: value,
+  };
 }
