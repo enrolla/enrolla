@@ -156,6 +156,7 @@ type Mutation {
   removePackage(id: String!): Package!
   createCustomer(input: CreateCustomerInput!): Customer!
   updateCustomer(input: UpdateCustomerInput!): Customer!
+  updateCustomerByOrgId(input: UpdateCustomerByOrgIdInput!): Customer!
   removeCustomer(id: String!): Customer!
   createOrganization(input: CreateOrganizationInput!): Organization!
   updateOrganization(input: UpdateOrganizationInput!): Organization!
@@ -216,8 +217,8 @@ input CreateCustomerInput {
   createOrganizationName: String
   name: String!
   packageId: String
-  features: [FeatureInstanceInput!]!
-  secrets: [SecretInput!]!
+  features: [FeatureInstanceInput!]
+  secrets: [SecretInput!]
 }
 
 input SecretInput {
@@ -236,6 +237,15 @@ input UpdateCustomerInput {
   features: [FeatureInstanceInput!]
   secrets: [SecretInput!]
   id: String!
+}
+
+input UpdateCustomerByOrgIdInput {
+  organizationId: String!
+  createOrganizationName: String
+  name: String
+  packageId: String
+  features: [FeatureInstanceInput!]
+  secrets: [SecretInput!]
 }
 
 input CreateOrganizationInput {
