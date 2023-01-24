@@ -4,7 +4,6 @@ import {
   Group,
   PasswordInput,
   Stepper,
-  Text,
   TextInput,
 } from '@pankod/refine-mantine';
 import { MultiSelect, Select } from '@mantine/core';
@@ -18,7 +17,7 @@ import {
   DbFeatureMetadata,
   MongoDbConnectionOptions,
 } from '@enrolla/graphql-codegen';
-import { useCustom, useDataProvider } from '@pankod/refine-core';
+import { useDataProvider } from '@pankod/refine-core';
 
 export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
   const [active, setActive] = useState(0);
@@ -39,21 +38,6 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
     setActive((current) => (current < 4 ? current + 1 : current));
   const prevStep = () =>
     setActive((current) => (current > 0 ? current - 1 : current));
-
-  const nextStepButton = () => {
-    switch (active) {
-      case 0:
-        return 'Fetch Schema';
-      case 1:
-        return 'Select';
-      case 2:
-        return 'Next';
-      case 3:
-        return 'Import & Finish';
-      default:
-        return 'Next';
-    }
-  };
 
   const dataProvider = useDataProvider();
   const { custom } = dataProvider();
@@ -101,7 +85,7 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       nextStep();
     });
 
-  const NextButton = () => {
+  const NextStepButton = () => {
     switch (active) {
       case 0:
         return (
@@ -234,7 +218,7 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
         <Button variant="default" onClick={prevStep}>
           Back
         </Button>
-        <NextButton />
+        <NextStepButton />
       </Group>
     </IntegrationSetupDrawer>
   );

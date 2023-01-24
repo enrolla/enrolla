@@ -2,6 +2,15 @@ import { Field, InputType } from '@nestjs/graphql';
 import { MongoDBConnectionOptions } from '../databases/mongodb/mongodb-connection-options';
 
 @InputType()
+export class FeatureMappingInput {
+  @Field(() => String)
+  sourceName: string;
+
+  @Field(() => String)
+  destinationName: string;
+}
+
+@InputType()
 export class ImportCustomersInput {
   @Field(() => MongoDBConnectionOptions)
   connectionOptions: MongoDBConnectionOptions;
@@ -10,8 +19,8 @@ export class ImportCustomersInput {
   idFieldName: string;
 
   @Field(() => [String])
-  featureFieldNames: [string];
+  customerIds: string[];
 
-  @Field(() => String, { nullable: true })
-  schemaExampleId?: string;
+  @Field(() => [FeatureMappingInput])
+  features: FeatureMappingInput[];
 }

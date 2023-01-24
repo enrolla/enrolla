@@ -1,13 +1,14 @@
 import { UseGuards } from '@nestjs/common';
 import { GraphQLAuthGuard } from '../../authz/graphql-auth.guard';
 import { CustomersService } from '../../customers/customers.service';
-import { Args, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { TenantId } from '../../authz/tenant.decorator';
 import { MongoDBCustomersService } from './databases/mongodb/mongodb.service';
 import { FeaturesService } from '../../features/features.service';
 import { Integration } from './dto/integration.entity';
 import { DBFeatureMetadata } from './databases/entities/db-feature-metadata.entity';
 import { MongoDBConnectionOptions } from './databases/mongodb/mongodb-connection-options';
+import { ImportCustomersInput } from './dto/import-customers.input';
 
 @Resolver()
 @UseGuards(GraphQLAuthGuard)
@@ -47,19 +48,16 @@ export class IntegrationsResolver {
     );
   }
 
-  // @Query(() => [DBFeature])
-  // async mongoCustomerFeatures(
-  //   @TenantId() tenantId: string,
-  //   @Args('id') id: string,
-  //   @Args('idFieldName') idFieldName: string,
-  //   @Args('featureFields') featureFields: string[],
-  //   @Args('input') connectionOptions: MongoDBConnectionOptions
-  // ) {
-  //   return await this.mongodbService.fetchCustomerFeatures(
-  //     id,
-  //     idFieldName,
-  //     featureFields,
-  //     connectionOptions
-  //   );
-  // }
+  @Mutation(() => Boolean)
+  async mongoImportCustomers(
+    @TenantId() tenantId: string,
+    @Args('input') input: ImportCustomersInput
+  ) {
+    return await this.mongodbService.fetchCustomerFeatures(
+      id,
+      idFieldName,
+      featureFields,
+      connectionOptions
+    );
+  }
 }

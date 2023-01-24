@@ -162,6 +162,7 @@ type Mutation {
   removeOrganization(id: String!): Organization!
   createSecretKey(input: CreateSecretKeyInput!): SecretKey!
   removeSecretKey(id: String!): SecretKey!
+  mongoImportCustomers(input: ImportCustomersInput!): Boolean!
 }
 
 input CreateApiTokenInput {
@@ -248,4 +249,16 @@ input UpdateOrganizationInput {
 
 input CreateSecretKeyInput {
   key: String!
+}
+
+input ImportCustomersInput {
+  connectionOptions: MongoDBConnectionOptions!
+  idFieldName: String!
+  customerIds: [String!]!
+  features: [FeatureMappingInput!]!
+}
+
+input FeatureMappingInput {
+  sourceName: String!
+  destinationName: String!
 }
