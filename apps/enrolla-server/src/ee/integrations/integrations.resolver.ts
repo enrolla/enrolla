@@ -1,10 +1,8 @@
-import { Inject, UseGuards } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { GraphQLAuthGuard } from '../../authz/graphql-auth.guard';
-import { CustomersService } from '../../customers/customers.service';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { TenantId } from '../../authz/tenant.decorator';
 import { MongoDBCustomersService } from './databases/mongodb/mongodb-customers.service';
-import { FeaturesService } from '../../features/features.service';
 import { Integration } from './dto/integration.entity';
 import { DBFeatureMetadata } from './databases/entities/db-feature-metadata.entity';
 import { MongoDBConnectionOptions } from './databases/mongodb/dto/mongodb-connection-options.input';
@@ -16,9 +14,7 @@ import { DBCustomer } from './databases/entities/db-customer.entity';
 @UseGuards(GraphQLAuthGuard)
 export class IntegrationsResolver {
   constructor(
-    private readonly featuresService: FeaturesService,
-    private readonly mongodbCustomersService: MongoDBCustomersService,
-    private readonly customersService: CustomersService
+    private readonly mongodbCustomersService: MongoDBCustomersService
   ) {}
 
   @Query(() => [Integration])

@@ -11,7 +11,7 @@ const integrationsProviders = createIntegrationsProviders();
 
 @Module({})
 export class IntegrationsModule {
-  static register(): DynamicModule {
+  static forRoot(): DynamicModule {
     if (process.env.EE) {
       return {
         module: IntegrationsModule,

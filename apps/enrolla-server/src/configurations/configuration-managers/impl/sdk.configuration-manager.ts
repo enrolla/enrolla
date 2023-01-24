@@ -19,7 +19,7 @@ export class SdkConfigurationManager implements ConfigurationManager {
 
   static async initialize() {
     try {
-      let req = {
+      const req = {
         url: 'http://169.254.169.254/latest/api/token',
         method: 'PUT',
         headers: {
@@ -35,6 +35,7 @@ export class SdkConfigurationManager implements ConfigurationManager {
       );
       SdkConfigurationManager.logger.warn(`datadog host: ${hostname}`);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(err);
       SdkConfigurationManager.logger.error('datadog host error', err.stack);
     }

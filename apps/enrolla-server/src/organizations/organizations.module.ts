@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { OrganizationsService } from './organizations.service';
 import { OrganizationsResolver } from './organizations.resolver';
 import { ConfigurationsModule } from '../configurations/configurations.module';
@@ -11,7 +11,10 @@ import { IntegrationsModule } from '../ee/integrations/integrations.module';
     OrganizationsService,
     NoneOrganizationManager,
   ],
-  imports: [ConfigurationsModule, IntegrationsModule],
+  imports: [
+    ConfigurationsModule,
+    forwardRef(() => IntegrationsModule.forRoot()),
+  ],
   exports: [OrganizationsService],
 })
 export class OrganizationsModule {}
