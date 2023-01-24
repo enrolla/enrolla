@@ -20,11 +20,19 @@ export class SdkConfigurationManager implements ConfigurationManager {
   static async initialize() {
     try {
       // temp for testing
+      const { data: token } = await axios.put(
+        'http://169.254.169.254/latest/api/token',
+        undefined,
+        { headers: { 'X-aws-ec2-metadata-token-ttl-seconds': '21600' } }
+      );
+      SdkConfigurationManager.logger.warn(`datadog token: ${token}`);
       const { data: hostname } = await axios.get(
-        'http://169.254.169.254/latest/meta-data/local-ipv4'
+        'http://169.254.169.254/latest/meta-data/local-ipv4',
+        { headers: { 'X-aws-ec2-metadata-token': token } }
       );
       SdkConfigurationManager.logger.warn(`datadog host: ${hostname}`);
     } catch (err) {
+      console.log(err);
       SdkConfigurationManager.logger.error('datadog host error', err.stack);
     }
 
