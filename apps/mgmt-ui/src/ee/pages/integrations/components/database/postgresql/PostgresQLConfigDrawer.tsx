@@ -204,7 +204,6 @@ export const PostgresDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
               })
             }
           />
-          <Checkbox mt={8} label="SRV" />
           <TextInput
             mt={8}
             label="Username"

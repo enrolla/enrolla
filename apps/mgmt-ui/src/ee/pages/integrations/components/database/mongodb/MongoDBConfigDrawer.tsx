@@ -25,15 +25,14 @@ import { FeaturesMapping } from '../FeaturesMapper';
 
 export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
   const [active, setActive] = useState(0);
-  const [connectionOptions, setConnectionOptions] =
-    useState<MongoDbOptions>({
-      host: '',
-      isSrv: false,
-      username: null,
-      password: null,
-      database: '',
-      collection: '',
-    });
+  const [connectionOptions, setConnectionOptions] = useState<MongoDbOptions>({
+    host: '',
+    isSrv: false,
+    username: null,
+    password: null,
+    database: '',
+    collection: '',
+  });
   const [schema, setSchema] = useState<DbFeatureMetadata[]>([]);
   const [organizationIdField, setOrganizationIdField] = useState<
     string | undefined
@@ -203,7 +202,16 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
               })
             }
           />
-          <Checkbox mt={8} label="SRV" />
+          <Checkbox
+            mt={8}
+            label="SRV"
+            onChange={(event) =>
+              setConnectionOptions({
+                ...connectionOptions,
+                isSrv: event.currentTarget.checked,
+              })
+            }
+          />
           <TextInput
             mt={8}
             label="Username"
