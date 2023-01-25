@@ -149,8 +149,8 @@ export type FetchMongoCustomersInput = {
 
 export type ImportMongoCustomersInput = {
   connectionOptions: MongoDbConnectionOptions;
+  customerNameField: Scalars['String'];
   features: Array<FeatureMappingInput>;
-  nameField: Scalars['String'];
   organizationIdField: Scalars['String'];
   organizationIds: Array<Scalars['String']>;
 };
@@ -445,6 +445,18 @@ export type GetAllCustomerDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAllCustomerDataQuery = { __typename?: 'Query', customers: Array<{ __typename?: 'Customer', organizationId?: string | null, effectiveConfiguration: Array<{ __typename?: 'FeatureValue', value: any, feature: { __typename?: 'Feature', key: string, type: FeatureType } }>, secrets: Array<{ __typename?: 'Secret', key: string, value: string, nonce: string, ephemPubKey: string }> }> };
 
+export type GetAllFeaturesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllFeaturesQuery = { __typename?: 'Query', features: Array<{ __typename?: 'Feature', id: any, key: string, type: FeatureType }> };
+
+export type UpdateCustomerByOrgIdMutationVariables = Exact<{
+  input: UpdateCustomerByOrgIdInput;
+}>;
+
+
+export type UpdateCustomerByOrgIdMutation = { __typename?: 'Mutation', updateCustomerByOrgId: { __typename?: 'Customer', id: any, name: string, organizationId?: string | null } };
+
 
 export const CreateCustomerDocument = gql`
     mutation createCustomer($input: CreateCustomerInput!) {
@@ -475,6 +487,24 @@ export const GetAllCustomerDataDocument = gql`
   }
 }
     `;
+export const GetAllFeaturesDocument = gql`
+    query getAllFeatures {
+  features {
+    id
+    key
+    type
+  }
+}
+    `;
+export const UpdateCustomerByOrgIdDocument = gql`
+    mutation updateCustomerByOrgId($input: UpdateCustomerByOrgIdInput!) {
+  updateCustomerByOrgId(input: $input) {
+    id
+    name
+    organizationId
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 
@@ -488,6 +518,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getAllCustomerData(variables?: GetAllCustomerDataQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAllCustomerDataQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetAllCustomerDataQuery>(GetAllCustomerDataDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getAllCustomerData', 'query');
+    },
+    getAllFeatures(variables?: GetAllFeaturesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAllFeaturesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetAllFeaturesQuery>(GetAllFeaturesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getAllFeatures', 'query');
+    },
+    updateCustomerByOrgId(variables: UpdateCustomerByOrgIdMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateCustomerByOrgIdMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateCustomerByOrgIdMutation>(UpdateCustomerByOrgIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateCustomerByOrgId', 'mutation');
     }
   };
 }

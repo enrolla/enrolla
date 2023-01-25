@@ -1,0 +1,7 @@
+mutation updateCustomerByOrgId($input: UpdateCustomerByOrgIdInput!) {
+  updateCustomerByOrgId(input: $input) {
+    id
+    name
+    organizationId
+  }
+}
