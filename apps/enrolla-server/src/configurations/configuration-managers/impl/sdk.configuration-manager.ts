@@ -18,28 +18,6 @@ export class SdkConfigurationManager implements ConfigurationManager {
     SdkConfigurationManager.DEFAULT_POLLING_INTERVAL_SECONDS;
 
   static async initialize() {
-    try {
-      const req = {
-        url: 'http://169.254.169.254/latest/api/token',
-        method: 'PUT',
-        headers: {
-          'X-aws-ec2-metadata-token-ttl-seconds': '21600',
-        },
-      };
-      // temp for testing
-      const { data: token } = await axios(req);
-      SdkConfigurationManager.logger.warn(`datadog token: ${token}`);
-      const { data: hostname } = await axios.get(
-        'http://169.254.169.254/latest/meta-data/local-ipv4',
-        { headers: { 'X-aws-ec2-metadata-token': token } }
-      );
-      SdkConfigurationManager.logger.warn(`datadog host: ${hostname}`);
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(err);
-      SdkConfigurationManager.logger.error('datadog host error', err.stack);
-    }
-
     sdk
       .initialize({
         url: env.SDK_ENROLLA_SERVER_GRAPHQL_ENDPOINT,
