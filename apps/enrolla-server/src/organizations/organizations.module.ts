@@ -11,10 +11,7 @@ import { IntegrationsModule } from '../ee/integrations/integrations.module';
     OrganizationsService,
     NoneOrganizationManager,
   ],
-  imports: [
-    ConfigurationsModule,
-    forwardRef(() => IntegrationsModule.forRoot()),
-  ],
+  imports: [ConfigurationsModule, forwardRef(() => IntegrationsModule)],
   exports: [OrganizationsService],
 })
 export class OrganizationsModule {}
