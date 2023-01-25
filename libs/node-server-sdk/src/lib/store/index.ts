@@ -11,37 +11,45 @@ export const refreshStore = async () => {
   const { customers } = await fetchAllCustomerData();
 
   customers.forEach((customer) => {
-    if (!_customerFeatureStore[customer.organizationId]) {
-      _customerFeatureStore[customer.organizationId] = {};
-    }
+    updateCustomerFeatures(customer);
 
-    const customerFeatures = _customerFeatureStore[customer.organizationId];
-    customer.effectiveConfiguration.forEach((featureValue) => {
-      customerFeatures[featureValue.feature.key] = new Feature(
-        featureValue.feature.type,
-        featureValue.value.value
-      );
-    });
 
-    if (_configuration.privateKey) {
-      if (!_customerSecretStore[customer.organizationId]) {
-        _customerSecretStore[customer.organizationId] = {};
-      }
-
-      const customerSecrets = _customerSecretStore[customer.organizationId];
-      customer.secrets.forEach((secret) => {
-        try {
-          customerSecrets[secret.key] = decrypt(
-            _configuration.privateKey,
-            secret
-          );
-        } catch (e) {
-          throw new SecretDecryptError(secret.key, e);
-        }
-      });
-    }
   });
 };
+
+export const updateCustomerSecrets = (customer) => {
+  if (_configuration.privateKey) {
+    if (!_customerSecretStore[customer.organizationId]) {
+      _customerSecretStore[customer.organizationId] = {};
+    }
+
+    const customerSecrets = _customerSecretStore[customer.organizationId];
+    customer.secrets.forEach((secret) => {
+      try {
+        customerSecrets[secret.key] = decrypt(
+          _configuration.privateKey,
+          secret
+        );
+      } catch (e) {
+        throw new SecretDecryptError(secret.key, e);
+      }
+    });
+  }
+};
+
+export const updateCustomerFeatures = (customer) => {
+  if (!_customerFeatureStore[customer.organizationId]) {
+    _customerFeatureStore[customer.organizationId] = {};
+  }
+
+  const customerFeatures = _customerFeatureStore[customer.organizationId];
+  customer.effectiveConfiguration.forEach((featureValue) => {
+    customerFeatures[featureValue.feature.key] = new Feature(
+      featureValue.feature.type,
+      featureValue.value.value
+    );
+  });
+}
 
 export const organizationExists = (organizationId: string): boolean =>
   !!_customerFeatureStore[organizationId];
