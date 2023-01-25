@@ -3,12 +3,13 @@ import { CreateOrganizationInput } from './dto/create-organization.input';
 import { UpdateOrganizationInput } from './dto/update-organization.input';
 import { ConfigurationsService } from '../configurations/configurations.service';
 import {
+  ORGANIZATION_MANAGER_TYPE,
   OrganizationManager,
   OrganizationManagerType,
 } from './organization-managers/organization-manager.interface';
 import { ModuleRef } from '@nestjs/core';
 import { NoneOrganizationManager } from './organization-managers/none.organization-manager';
-import { IntegrationType } from '../ee/integrations/integration.interface';
+import { INTEGRATION_TYPE } from '../ee/integrations/integration.interface';
 
 @Injectable()
 export class OrganizationsService {
@@ -74,10 +75,10 @@ export class OrganizationsService {
         `Organization manager type not configured for tenant ${tenantId}, falling back to None`
       );
 
-      organizationManagerType = OrganizationManagerType.None;
+      organizationManagerType = ORGANIZATION_MANAGER_TYPE.None;
     }
 
-    if (organizationManagerType === OrganizationManagerType.None) {
+    if (organizationManagerType === ORGANIZATION_MANAGER_TYPE.None) {
       return this.moduleRef.get(NoneOrganizationManager);
     }
 
@@ -88,19 +89,17 @@ export class OrganizationsService {
     }
 
     return this.moduleRef.get(
-      `Integration${
-        IntegrationType[getIntegrationType(organizationManagerType)]
-      }`
+      `Integration${getIntegrationType(organizationManagerType)}`
     );
   }
 }
 
 function getIntegrationType(organizationManagerType: OrganizationManagerType) {
   switch (organizationManagerType) {
-    case OrganizationManagerType.Auth0:
-      return IntegrationType.Auth0;
+    case ORGANIZATION_MANAGER_TYPE.Auth0:
+      return INTEGRATION_TYPE.Auth0;
 
-    case OrganizationManagerType.PropelAuth:
-      return IntegrationType.PropelAuth;
+    case ORGANIZATION_MANAGER_TYPE.PropelAuth:
+      return INTEGRATION_TYPE.PropelAuth;
   }
 }

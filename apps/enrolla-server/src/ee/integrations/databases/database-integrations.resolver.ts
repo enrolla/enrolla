@@ -1,18 +1,20 @@
 import { UseGuards } from '@nestjs/common';
-import { GraphQLAuthGuard } from '../../authz/graphql-auth.guard';
+import { GraphQLAuthGuard } from '../../../authz/graphql-auth.guard';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { TenantId } from '../../authz/tenant.decorator';
-import { MongoDBCustomersService } from './databases/mongodb/mongodb-customers.service';
-import { Integration } from './dto/integration.entity';
-import { DBFeatureMetadata } from './databases/entities/db-feature-metadata.entity';
-import { MongoDBConnectionOptions } from './databases/mongodb/dto/mongodb-connection-options.input';
-import { ImportMongoCustomersInput } from './databases/mongodb/dto/import-mongo-customers.input';
-import { FetchMongoCustomersInput } from './databases/mongodb/dto/fetch-mongo-customers.input';
-import { DBCustomer } from './databases/entities/db-customer.entity';
+import { TenantId } from '../../../authz/tenant.decorator';
+import { MongoDBCustomersService } from '../databases/mongodb/mongodb-customers.service';
+import { Integration } from '../dto/integration.entity';
+import { DBFeatureMetadata } from '../databases/entities/db-feature-metadata.entity';
+import {
+  MongoDBConnectionOptions,
+  ImportMongoCustomersInput,
+  FetchMongoCustomersInput,
+} from './mongodb/dto';
+import { DBCustomer } from '../databases/entities/db-customer.entity';
 
 @Resolver()
 @UseGuards(GraphQLAuthGuard)
-export class IntegrationsResolver {
+export class DatabaseIntegrationsResolver {
   constructor(
     private readonly mongodbCustomersService: MongoDBCustomersService
   ) {}

@@ -14,8 +14,11 @@ export interface OrganizationManager {
   removeOrganization(tenantId: string, organizationId: string): Promise<void>;
 }
 
-export enum OrganizationManagerType {
-  None = 'NONE',
-  Auth0 = 'AUTH0',
-  PropelAuth = 'PROPEL_AUTH',
-}
+export const ORGANIZATION_MANAGER_TYPE = {
+  None: 'NONE',
+  Auth0: 'AUTH0',
+  PropelAuth: 'PROPEL_AUTH',
+} as const;
+
+export type OrganizationManagerType =
+  typeof ORGANIZATION_MANAGER_TYPE[keyof typeof ORGANIZATION_MANAGER_TYPE];

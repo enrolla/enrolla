@@ -3,7 +3,7 @@ import { OrganizationsService } from './organizations.service';
 import { OrganizationsResolver } from './organizations.resolver';
 import { ConfigurationsModule } from '../configurations/configurations.module';
 import { NoneOrganizationManager } from './organization-managers/none.organization-manager';
-import { IntegrationsModule } from '../ee/integrations/integrations.module';
+import { OrganizationManagerIntegrationsModule } from '../ee/integrations/organization-managers/organization-manager-integrations.module';
 
 @Module({
   providers: [
@@ -13,7 +13,7 @@ import { IntegrationsModule } from '../ee/integrations/integrations.module';
   ],
   imports: [
     ConfigurationsModule,
-    forwardRef(() => IntegrationsModule.forRoot()),
+    OrganizationManagerIntegrationsModule.forRoot(),
   ],
   exports: [OrganizationsService],
 })

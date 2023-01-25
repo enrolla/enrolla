@@ -11,7 +11,8 @@ import { join } from 'path';
 import { GraphQLJSON } from 'graphql-scalars';
 import { FeatureInstancesModule } from './feature-instances/feature-instances.module';
 import { CustomersModule } from './customers/customers.module';
-import { IntegrationsModule } from './ee/integrations/integrations.module';
+import { OrganizationManagerIntegrationsModule } from './ee/integrations/organization-managers/organization-manager-integrations.module';
+import { DatabaseIntegrationsModule } from './ee/integrations/databases/database-integrations.module';
 import { OrganizationsModule } from './organizations/organizations.module';
 import { ConfigurationsModule } from './configurations/configurations.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -41,7 +42,8 @@ import { BackOfficeModule } from './backoffice/backoffice.module';
     PackagesModule,
     FeatureInstancesModule,
     CustomersModule,
-    IntegrationsModule.forRoot(),
+    OrganizationManagerIntegrationsModule.forRoot(),
+    DatabaseIntegrationsModule,
     OrganizationsModule,
     ConfigurationsModule,
     TenantsModule,
