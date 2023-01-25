@@ -18,7 +18,7 @@ export class CustomersService {
     private prismaService: PrismaService,
     private organizationsService: OrganizationsService,
     private featureInstancesService: FeatureInstancesService,
-    private packagesService: PackagesService,
+    private packagesService: PackagesService
   ) {}
 
   async create(createCustomerInput: CreateCustomerInput, tenantId: string) {

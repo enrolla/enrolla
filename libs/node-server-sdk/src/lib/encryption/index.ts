@@ -1,5 +1,10 @@
 import { box, randomBytes } from 'tweetnacl';
-import { decodeBase64, encodeUTF8, decodeUTF8, encodeBase64 } from 'tweetnacl-util';
+import {
+  decodeBase64,
+  encodeUTF8,
+  decodeUTF8,
+  encodeBase64,
+} from 'tweetnacl-util';
 
 /* Decrypt a message with a base64 encoded secretKey (privateKey) */
 interface IEncryptedMsg {
@@ -30,7 +35,6 @@ export const decrypt = (privateKey: string, encryptedData: IEncryptedMsg) => {
   return encodeUTF8(decryptedMessage!);
 };
 
-
 /**
  *
  * @param privateKey Private key from which a new public key is generated for encryption
@@ -39,12 +43,11 @@ export const decrypt = (privateKey: string, encryptedData: IEncryptedMsg) => {
  *
  * @returns encrypted message
  */
-export const encrypt = (
-  message: string,
-  privateKey: string
-): IEncryptedMsg => {
+export const encrypt = (message: string, privateKey: string): IEncryptedMsg => {
   const ephemeralKeyPair = box.keyPair();
-  const pubKeyUInt8Array = box.keyPair.fromSecretKey(decodeBase64(privateKey)).publicKey
+  const pubKeyUInt8Array = box.keyPair.fromSecretKey(
+    decodeBase64(privateKey)
+  ).publicKey;
   const msgParamsUInt8Array = decodeUTF8(message);
   const nonce = randomBytes(box.nonceLength);
   const encryptedMessage = box(

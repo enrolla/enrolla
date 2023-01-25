@@ -4,28 +4,37 @@ import { Organization } from '../entities/organization.entity';
 import { OrganizationManager } from '../../../../organizations/organization-managers/organization-manager.interface';
 import { OrganizationCreateInput } from '../../../../organizations/organization-managers/dto/organization-create.input';
 import { Integration } from '../../integration.interface';
+import {
+  ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY,
+  ORGANIZATION_MANAGER_TYPE,
+  OrganizationManagerType,
+  ORGANIZATION_MANAGER_CONFIGURATION_KEY,
+  ORGANIZATION_MANAGER_SECRET_CONFIGURATION_KEY,
+} from '../constants';
+import * as sdk from '@enrolla/node-server-sdk';
+import { ConfigureAuth0OrganizationManagerInput } from '../dto';
+import { Logger } from '@nestjs/common';
 
 export class Auth0OrganizationManager
   implements OrganizationManager, Integration
 {
-  static readonly AUTH0_ENABLED_CONFIGURATION_KEY = 'auth0';
-  static readonly AUTH0_CLIENT_ID_CONFIGURATION_KEY = 'auth0_client_id';
-  static readonly AUTH0_CLIENT_SECRET_CONFIGURATION_KEY = 'auth0_client_secret';
-  static readonly AUTH0_DOMAIN_CONFIGURATION_KEY = 'auth0_domain';
-
   private auth0Clients: Map<string, ManagementClient> = new Map();
+  private static logger = new Logger(Auth0OrganizationManager.name);
 
   constructor(private configurationsService: ConfigurationsService) {}
 
   async isEnabled(tenantId: string): Promise<boolean> {
-    return await this.configurationsService.getValue(
-      tenantId,
-      Auth0OrganizationManager.AUTH0_ENABLED_CONFIGURATION_KEY
-    );
+    const enabledManager =
+      await this.configurationsService.getValue<OrganizationManagerType>(
+        tenantId,
+        ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY
+      );
+
+    return enabledManager === ORGANIZATION_MANAGER_TYPE.AUTH0;
   }
 
   async isConfigured(tenantId: string): Promise<boolean> {
-    return false;
+    return !!this.getAuth0Client(tenantId);
   }
 
   async getOrganization(
@@ -77,23 +86,68 @@ export class Auth0OrganizationManager
       return this.auth0Clients.get(tenantId);
     }
 
+    const config = sdk.getFeatureJsonValue(
+      tenantId,
+      ORGANIZATION_MANAGER_CONFIGURATION_KEY
+    );
+    const clientSecret = sdk.getSecretValue(
+      tenantId,
+      ORGANIZATION_MANAGER_SECRET_CONFIGURATION_KEY
+    );
+
     const auth0Client = new ManagementClient({
-      domain: this.configurationsService.getValue<string>(
-        tenantId,
-        Auth0OrganizationManager.AUTH0_DOMAIN_CONFIGURATION_KEY
-      ),
-      clientId: this.configurationsService.getValue<string>(
-        tenantId,
-        Auth0OrganizationManager.AUTH0_CLIENT_ID_CONFIGURATION_KEY
-      ),
-      clientSecret: this.configurationsService.getSecretValue(
-        tenantId,
-        Auth0OrganizationManager.AUTH0_CLIENT_SECRET_CONFIGURATION_KEY
-      ),
+      ...config,
+      clientSecret,
     });
 
     this.auth0Clients.set(tenantId, auth0Client);
 
     return auth0Client;
+  }
+
+  static async configure(
+    tenantId: string,
+    input: ConfigureAuth0OrganizationManagerInput
+  ) {
+    const featuresToUpdate = [
+      {
+        key: ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY,
+        value: ORGANIZATION_MANAGER_TYPE.AUTH0,
+      },
+      {
+        key: ORGANIZATION_MANAGER_CONFIGURATION_KEY,
+        value: {
+          clientId: input.clientId,
+          domain: input.domain,
+        },
+      },
+    ];
+    const secretsToUpdate = [
+      {
+        key: ORGANIZATION_MANAGER_SECRET_CONFIGURATION_KEY,
+        value: input.clientSecret,
+      },
+    ];
+    try {
+      await Promise.all([
+        sdk.updateCustomerFeatures(tenantId, ...featuresToUpdate),
+        sdk.updateCustomerSecrets(tenantId, ...secretsToUpdate),
+      ]);
+
+      return true;
+    } catch (error) {
+      this.logger.error(
+        `Failed to configure Auth0 Organization Manager for tenant ${tenantId}.`,
+        error.stack
+      );
+
+      await sdk.updateCustomerFeatures(tenantId, {
+        // fallbak to NONE on error
+        key: ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY,
+        value: ORGANIZATION_MANAGER_TYPE.NONE,
+      });
+
+      throw error;
+    }
   }
 }

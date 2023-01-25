@@ -5,13 +5,21 @@ import { OrganizationCreateInput } from '../../../../organizations/organization-
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { Integration } from '../../integration.interface';
+import {
+  ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY,
+  ORGANIZATION_MANAGER_TYPE,
+  OrganizationManagerType,
+  ORGANIZATION_MANAGER_CONFIGURATION_KEY,
+  ORGANIZATION_MANAGER_SECRET_CONFIGURATION_KEY,
+} from '../constants';
+import { ConfigurePropelauthOrganizationManagerInput } from '../dto';
+import * as sdk from '@enrolla/node-server-sdk';
+import { Logger } from '@nestjs/common';
 
 export class PropelAuthOrganizationManager
   implements OrganizationManager, Integration
 {
-  static readonly PROPEL_AUTH_ENABLED_CONFIGURATION_KEY = 'propel_auth_enabled';
-  static readonly PROPEL_AUTH_API_KEY_CONFIGURATION_KEY = 'propel_auth_api_key';
-  static readonly PROPEL_AUTH_DOMAIN_CONFIGURATION_KEY = 'propel_auth_domain';
+  private static logger = new Logger(PropelAuthOrganizationManager.name);
 
   constructor(
     private configurationsService: ConfigurationsService,
@@ -19,10 +27,13 @@ export class PropelAuthOrganizationManager
   ) {}
 
   async isEnabled(tenantId: string): Promise<boolean> {
-    return await this.configurationsService.getValue(
-      tenantId,
-      PropelAuthOrganizationManager.PROPEL_AUTH_ENABLED_CONFIGURATION_KEY
-    );
+    const enabledManager =
+      await this.configurationsService.getValue<OrganizationManagerType>(
+        tenantId,
+        ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY
+      );
+
+    return enabledManager === ORGANIZATION_MANAGER_TYPE.PROPEL_AUTH;
   }
 
   async isConfigured(tenantId: string): Promise<boolean> {
@@ -110,16 +121,16 @@ export class PropelAuthOrganizationManager
   }
 
   private tenantDomain(tenantId: string): string {
-    return this.configurationsService.getValue<string>(
+    return this.configurationsService.getValue<Record<string, string>>(
       tenantId,
-      PropelAuthOrganizationManager.PROPEL_AUTH_DOMAIN_CONFIGURATION_KEY
-    );
+      ORGANIZATION_MANAGER_CONFIGURATION_KEY
+    ).domain;
   }
 
   private tenantApiKey(tenantId: string): string {
     return this.configurationsService.getSecretValue(
       tenantId,
-      PropelAuthOrganizationManager.PROPEL_AUTH_API_KEY_CONFIGURATION_KEY
+      ORGANIZATION_MANAGER_SECRET_CONFIGURATION_KEY
     );
   }
 
@@ -131,5 +142,49 @@ export class PropelAuthOrganizationManager
 
   private tenantRequestUrl(tenantId: string, path: string) {
     return `${this.tenantDomain(tenantId)}/${path}`;
+  }
+
+  static async configure(
+    tenantId: string,
+    input: ConfigurePropelauthOrganizationManagerInput
+  ) {
+    const featuresToUpdate = [
+      {
+        key: ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY,
+        value: ORGANIZATION_MANAGER_TYPE.PROPEL_AUTH,
+      },
+      {
+        key: ORGANIZATION_MANAGER_CONFIGURATION_KEY,
+        value: {
+          domain: input.domain,
+        },
+      },
+    ];
+    const secretsToUpdate = [
+      {
+        key: ORGANIZATION_MANAGER_SECRET_CONFIGURATION_KEY,
+        value: input.apiKey,
+      },
+    ];
+    try {
+      await Promise.all([
+        sdk.updateCustomerFeatures(tenantId, ...featuresToUpdate),
+        sdk.updateCustomerSecrets(tenantId, ...secretsToUpdate),
+      ]);
+
+      return true;
+    } catch (error) {
+      this.logger.error(
+        `Failed to configure Propelauth Organization Manager for tennat ${tenantId}`,
+        error.stack
+      );
+      await sdk.updateCustomerFeatures(tenantId, {
+        // fallbak to NONE on error
+        key: ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY,
+        value: ORGANIZATION_MANAGER_TYPE.NONE,
+      });
+
+      throw error;
+    }
   }
 }

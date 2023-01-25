@@ -1,8 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { ConfigureOrganizationManagerInput } from '.';
 
 @InputType()
-export class ConfigureAuth0OrganizationManagerInput extends ConfigureOrganizationManagerInput {
+export class ConfigureAuth0OrganizationManagerInput {
   @Field(() => String)
   clientId: string;
 
