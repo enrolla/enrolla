@@ -1,24 +1,23 @@
 import { UseGuards } from '@nestjs/common';
 import { GraphQLAuthGuard } from '../../authz/graphql-auth.guard';
-import { CustomersService } from '../../customers/customers.service';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { TenantId } from '../../authz/tenant.decorator';
 import { MongoDBCustomersService } from './databases/mongodb/mongodb-customers.service';
-import { FeaturesService } from '../../features/features.service';
 import { Integration } from './dto/integration.entity';
 import { DBFeatureMetadata } from './databases/entities/db-feature-metadata.entity';
-import { MongoDBConnectionOptions } from './databases/mongodb/dto/mongodb-connection-options.input';
-import { ImportMongoCustomersInput } from './databases/mongodb/dto/import-mongo-customers.input';
-import { FetchMongoCustomersInput } from './databases/mongodb/dto/fetch-mongo-customers.input';
 import { DBCustomer } from './databases/entities/db-customer.entity';
+import { PostgresQLCustomersService } from './databases/postgresql/postgresql-customers.service';
+import { MongoDBOptions } from './databases/mongodb/dto/mongodb-options.input';
+import { PostgresQLOptions } from './databases/postgresql/dto/postgresql-options.input';
+import { FetchCustomersInput } from './databases/dto/fetch-customers.input';
+import { ImportCustomersInput } from './databases/dto/import-customers.input';
 
 @Resolver()
 @UseGuards(GraphQLAuthGuard)
 export class IntegrationsResolver {
   constructor(
-    private readonly featuresService: FeaturesService,
     private readonly mongodbCustomersService: MongoDBCustomersService,
-    private readonly customersService: CustomersService
+    private readonly postgresqlCustomersService: PostgresQLCustomersService
   ) {}
 
   @Query(() => [Integration])
@@ -33,24 +32,41 @@ export class IntegrationsResolver {
   @Query(() => [DBFeatureMetadata])
   async fetchMongoSchema(
     @TenantId() tenantId: string,
-    @Args('input') connectionOptions: MongoDBConnectionOptions
+    @Args('mongoOptions') mongoOptions: MongoDBOptions
   ) {
-    return await this.mongodbCustomersService.fetchSchema(connectionOptions);
+    return await this.mongodbCustomersService.fetchSchema(mongoOptions);
   }
 
   @Query(() => [DBCustomer])
   async fetchMongoCustomers(
     @TenantId() tenantId: string,
-    @Args('input') input: FetchMongoCustomersInput
+    @Args('mongoOptions') mongoOptions: MongoDBOptions,
+    @Args('input') input: FetchCustomersInput
   ) {
-    return await this.mongodbCustomersService.fetchCustomers(input);
+    return await this.mongodbCustomersService.fetchCustomers(
+      mongoOptions,
+      input
+    );
   }
 
   @Mutation(() => Boolean)
   async importMongoCustomers(
     @TenantId() tenantId: string,
-    @Args('input') input: ImportMongoCustomersInput
+    @Args('mongoOptions') mongoOptions: MongoDBOptions,
+    @Args('input') input: ImportCustomersInput
   ) {
-    return await this.mongodbCustomersService.importCustomers(tenantId, input);
+    return await this.mongodbCustomersService.importCustomers(
+      tenantId,
+      mongoOptions,
+      input
+    );
+  }
+
+  @Query(() => [DBFeatureMetadata])
+  async fetchPostgresSchema(
+    @TenantId() tenantId: string,
+    @Args('input') connectionOptions: PostgresQLOptions
+  ) {
+    return await this.postgresqlCustomersService.fetchSchema(connectionOptions);
   }
 }

@@ -149,8 +149,8 @@ export type FetchMongoCustomersInput = {
 
 export type ImportMongoCustomersInput = {
   connectionOptions: MongoDbConnectionOptions;
+  customerNameField: Scalars['String'];
   features: Array<FeatureMappingInput>;
-  nameField: Scalars['String'];
   organizationIdField: Scalars['String'];
   organizationIds: Array<Scalars['String']>;
 };
@@ -320,6 +320,14 @@ export enum PackageUpdateStrategy {
   MigrateAllChildren = 'MIGRATE_ALL_CHILDREN'
 }
 
+export type PostgresQlConnectionOptions = {
+  database: Scalars['String'];
+  host: Scalars['String'];
+  password?: InputMaybe<Scalars['String']>;
+  port?: InputMaybe<Scalars['Float']>;
+  username?: InputMaybe<Scalars['String']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   apiTokens: Array<ApiToken>;
@@ -331,6 +339,7 @@ export type Query = {
   features: Array<Feature>;
   fetchMongoCustomers: Array<DbCustomer>;
   fetchMongoSchema: Array<DbFeatureMetadata>;
+  fetchPostgresSchema: Array<DbFeatureMetadata>;
   hasSecrets: Scalars['Boolean'];
   integrations: Array<Integration>;
   organization: Organization;
@@ -358,6 +367,11 @@ export type QueryFetchMongoCustomersArgs = {
 
 export type QueryFetchMongoSchemaArgs = {
   input: MongoDbConnectionOptions;
+};
+
+
+export type QueryFetchPostgresSchemaArgs = {
+  input: PostgresQlConnectionOptions;
 };
 
 

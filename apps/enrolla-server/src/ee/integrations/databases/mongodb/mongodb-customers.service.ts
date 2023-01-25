@@ -1,13 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DBFeatureMetadata } from '../entities/db-feature-metadata.entity';
-import { ConnectionOptions } from '../connection-options.interface';
 import * as parseSchema from 'mongodb-schema';
 import { DBCustomer } from '../entities/db-customer.entity';
 import { getFeatureType, useCollection } from './utils';
 import { FeaturesService } from '../../../../features/features.service';
 import { CustomersService } from '../../../../customers/customers.service';
-import { ImportMongoCustomersInput } from './dto/import-mongo-customers.input';
-import { FetchMongoCustomersInput } from './dto/fetch-mongo-customers.input';
+import { DatabaseOptions } from '../dto/connection-options.input';
+import { FetchCustomersInput } from '../dto/fetch-customers.input';
+import { ImportCustomersInput } from '../dto/import-customers.input';
+import { FeatureType } from '@prisma/client';
+import { DBFeature } from '../entities/db-feature.entity';
 
 @Injectable()
 export class MongoDBCustomersService {
@@ -18,7 +20,7 @@ export class MongoDBCustomersService {
     private customersService: CustomersService
   ) {}
 
-  async fetchSchema(options: ConnectionOptions): Promise<DBFeatureMetadata[]> {
+  async fetchSchema(options: DatabaseOptions): Promise<DBFeatureMetadata[]> {
     return await useCollection(
       async (collection) => {
         const schema = await parseSchema(collection.find());
@@ -33,10 +35,10 @@ export class MongoDBCustomersService {
   }
 
   async fetchCustomers(
-    fetchMongoCustomersInput: FetchMongoCustomersInput
+    options: DatabaseOptions,
+    fetchMongoCustomersInput: FetchCustomersInput
   ): Promise<DBCustomer[]> {
-    const { organizationIdField, customerNameField, connectionOptions } =
-      fetchMongoCustomersInput;
+    const { organizationIdField, customerNameField } = fetchMongoCustomersInput;
 
     return await useCollection(
       async (collection) => {
@@ -50,18 +52,22 @@ export class MongoDBCustomersService {
           })
           .toArray();
       },
-      connectionOptions,
+      options,
       this.logger
     );
   }
 
-  async importCustomers(tenantId: string, input: ImportMongoCustomersInput) {
+  async importCustomers(
+    tenantId: string,
+    options: DatabaseOptions,
+    importCustomersInput: ImportCustomersInput
+  ) {
     const {
       organizationIdField,
       customerNameField,
       organizationIds,
       features,
-    } = input;
+    } = importCustomersInput;
 
     await this.featuresService.createMany(
       features.map((feature) => {
@@ -108,7 +114,39 @@ export class MongoDBCustomersService {
           return false;
         }
       },
-      input.connectionOptions,
+      options,
+      this.logger
+    );
+  }
+
+  async fetchCustomersFeatures(
+    options: DatabaseOptions,
+    organizationIdField: string,
+    organizationIds: string[],
+    featureNames: string[]
+  ): Promise<DBCustomer[]> {
+    return await useCollection(
+      async (collection) => {
+        return await collection
+          .find({ [organizationIdField]: { $in: organizationIds } })
+          .map((customer) => {
+            const features = featureNames.map((feature) => {
+              return new DBFeature(
+                feature,
+                customer[feature],
+                FeatureType.JSON
+              );
+            });
+
+            return new DBCustomer(
+              customer.organizationId,
+              customer.name,
+              features
+            );
+          })
+          .toArray();
+      },
+      options,
       this.logger
     );
   }

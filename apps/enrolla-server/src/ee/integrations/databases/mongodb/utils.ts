@@ -1,11 +1,11 @@
 import { FeatureType } from '@prisma/client';
-import { MongoDBConnectionOptions } from './dto/mongodb-connection-options.input';
-import { ConnectionOptions } from '../connection-options.interface';
 import { Collection, MongoClient } from 'mongodb';
 import { Logger } from '@nestjs/common';
+import { MongoDBOptions } from './dto/mongodb-options.input';
+import { DatabaseOptions } from '../dto/connection-options.input';
 
 export function buildConnectionString(
-  connectionOptions: MongoDBConnectionOptions
+  connectionOptions: MongoDBOptions
 ): string {
   let connectionString = 'mongodb';
 
@@ -34,16 +34,16 @@ export function buildConnectionString(
 
 export async function useCollection<T>(
   method: (collection: Collection) => Promise<T>,
-  options: ConnectionOptions,
+  options: DatabaseOptions,
   logger: Logger
 ) {
-  const connectionOptions = options as MongoDBConnectionOptions;
-  const client = new MongoClient(buildConnectionString(connectionOptions));
+  const mongoOptions = options as MongoDBOptions;
+  const client = new MongoClient(buildConnectionString(mongoOptions));
 
   await client.connect();
   const collection = client
-    .db(connectionOptions.database)
-    .collection(connectionOptions.collection);
+    .db(mongoOptions.database)
+    .collection(mongoOptions.collection);
 
   try {
     return await method(collection);

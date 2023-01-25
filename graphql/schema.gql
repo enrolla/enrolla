@@ -136,15 +136,16 @@ type Query {
   integrations: [Integration!]!
   fetchMongoSchema(input: MongoDBConnectionOptions!): [DBFeatureMetadata!]!
   fetchMongoCustomers(input: FetchMongoCustomersInput!): [DBCustomer!]!
+  fetchPostgresSchema(input: PostgresQLConnectionOptions!): [DBFeatureMetadata!]!
 }
 
 input MongoDBConnectionOptions {
   host: String!
   port: Float
-  isSrv: Boolean! = false
   database: String!
   username: String
   password: String
+  isSrv: Boolean! = false
   collection: String
 }
 
@@ -152,6 +153,14 @@ input FetchMongoCustomersInput {
   connectionOptions: MongoDBConnectionOptions!
   organizationIdField: String!
   customerNameField: String!
+}
+
+input PostgresQLConnectionOptions {
+  host: String!
+  port: Float
+  database: String!
+  username: String
+  password: String
 }
 
 type Mutation {
