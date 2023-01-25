@@ -17,22 +17,24 @@ import {
   DbCustomer,
   DbFeatureMetadata,
   FeatureMappingInput,
-  MongoDbConnectionOptions,
+  FeatureType,
+  PostgresQlOptions,
 } from '@enrolla/graphql-codegen';
 import { useDataProvider, useNavigation } from '@pankod/refine-core';
 import { FeaturesMapping } from '../FeaturesMapper';
 
-export const PostgresQLConfigDrawer = (props: IntegrationSetupDrawerProps) => {
+export const PostgresDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
   const [active, setActive] = useState(0);
-  const [connectionOptions, setConnectionOptions] =
-    useState<MongoDbConnectionOptions>({
+  const [connectionOptions, setConnectionOptions] = useState<PostgresQlOptions>(
+    {
       host: '',
-      isSrv: false,
       username: null,
       password: null,
       database: '',
-      collection: '',
-    });
+      schema: '',
+      table: '',
+    }
+  );
   const [schema, setSchema] = useState<DbFeatureMetadata[]>([]);
   const [organizationIdField, setOrganizationIdField] = useState<
     string | undefined
@@ -61,12 +63,12 @@ export const PostgresQLConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       url: '',
       method: 'get',
       metaData: {
-        operation: 'fetchMongoSchema',
+        operation: 'fetchPostgresSchema',
         fields: ['name', 'type'],
         variables: {
-          input: {
+          postgresOptions: {
             value: connectionOptions,
-            type: 'MongoDBConnectionOptions',
+            type: 'PostgresDBOptions',
             required: true,
           },
         },
@@ -81,15 +83,19 @@ export const PostgresQLConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       url: '',
       method: 'get',
       metaData: {
-        operation: 'fetchMongoCustomers',
+        operation: 'fetchPostgresCustomers',
         variables: {
+          postgresOptions: {
+            value: connectionOptions,
+            type: 'PostgresDBOptions',
+            required: true,
+          },
           input: {
             value: {
-              connectionOptions,
               organizationIdField,
               customerNameField,
             },
-            type: 'FetchMongoCustomersInput',
+            type: 'FetchCustomersInput',
             required: true,
           },
         },
@@ -107,7 +113,9 @@ export const PostgresQLConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       features.push({
         sourceName: key,
         destinationName: value,
-        type: schema.find((feature) => feature.name === key)!.type,
+        type:
+          schema.find((feature) => feature.name === key)?.type ||
+          FeatureType.Json,
       });
     });
 
@@ -119,17 +127,21 @@ export const PostgresQLConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       url: '',
       method: 'post',
       metaData: {
-        operation: 'importMongoCustomers',
+        operation: 'importPostgresCustomers',
         variables: {
+          postgresOptions: {
+            value: connectionOptions,
+            type: 'PostgresDBOptions',
+            required: true,
+          },
           input: {
             value: {
-              connectionOptions,
               organizationIdField,
               customerNameField,
               organizationIds: organizationIdsToImport,
               features: getFeaturesMapping(),
             },
-            type: 'ImportMongoCustomersInput',
+            type: 'ImportCustomersInput',
             required: true,
           },
         },
@@ -163,8 +175,8 @@ export const PostgresQLConfigDrawer = (props: IntegrationSetupDrawerProps) => {
 
   return (
     <IntegrationSetupDrawer
-      heading="Set up MongoDB Integration"
-      description="By setting up MongoDB integration, you will be able to import your
+      heading="Set up PostgresDB Integration"
+      description="By setting up PostgresDB integration, you will be able to import your
           customers and their features."
       {...props}
     >
@@ -178,7 +190,7 @@ export const PostgresQLConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       >
         <Stepper.Step
           label="Connect database"
-          description="Connect to your MongoDB, and fetch a collection schema."
+          description="Connect to your PostgresDB, and fetch a collection schema."
           icon={<IconPlug size={18} />}
         >
           <TextInput
@@ -228,15 +240,27 @@ export const PostgresQLConfigDrawer = (props: IntegrationSetupDrawerProps) => {
           />
           <TextInput
             mt={8}
-            label="Collection Name"
-            value={connectionOptions.collection ?? ''}
+            label="Schema Name"
+            value={connectionOptions.schema ?? ''}
             onChange={(event) =>
               setConnectionOptions({
                 ...connectionOptions,
-                collection: event.currentTarget.value,
+                schema: event.currentTarget.value,
               })
             }
           />
+          <TextInput
+            mt={8}
+            label="Table Name"
+            value={connectionOptions.table ?? ''}
+            onChange={(event) =>
+              setConnectionOptions({
+                ...connectionOptions,
+                table: event.currentTarget.value,
+              })
+            }
+          />
+          ;
         </Stepper.Step>
         <Stepper.Step
           label="Identify customers"

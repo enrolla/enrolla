@@ -18,7 +18,7 @@ import {
   DbFeatureMetadata,
   FeatureMappingInput,
   FeatureType,
-  MongoDbConnectionOptions,
+  MongoDbOptions,
 } from '@enrolla/graphql-codegen';
 import { useDataProvider, useNavigation } from '@pankod/refine-core';
 import { FeaturesMapping } from '../FeaturesMapper';
@@ -26,7 +26,7 @@ import { FeaturesMapping } from '../FeaturesMapper';
 export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
   const [active, setActive] = useState(0);
   const [connectionOptions, setConnectionOptions] =
-    useState<MongoDbConnectionOptions>({
+    useState<MongoDbOptions>({
       host: '',
       isSrv: false,
       username: null,
