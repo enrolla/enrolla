@@ -4,12 +4,14 @@ import { MongoDBCustomersService } from './databases/mongodb/mongodb-customers.s
 import { FeaturesModule } from '../../features/features.module';
 import { CustomersModule } from '../../customers/customers.module';
 import { PostgresQLCustomersService } from './databases/postgresql/postgresql-customers.service';
+import { ExternalCustomersService } from './databases/external-customers.service';
 
 @Module({
   providers: [
     IntegrationsResolver,
     MongoDBCustomersService,
     PostgresQLCustomersService,
+    ExternalCustomersService,
   ],
   imports: [FeaturesModule, CustomersModule],
 })

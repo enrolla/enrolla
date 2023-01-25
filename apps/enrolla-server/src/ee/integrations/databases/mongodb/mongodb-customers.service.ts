@@ -7,9 +7,9 @@ import { FeaturesService } from '../../../../features/features.service';
 import { CustomersService } from '../../../../customers/customers.service';
 import { DatabaseOptions } from '../dto/connection-options.input';
 import { FetchCustomersInput } from '../dto/fetch-customers.input';
-import { ImportCustomersInput } from '../dto/import-customers.input';
-import { FeatureType } from '@prisma/client';
 import { DBFeature } from '../entities/db-feature.entity';
+import { DBCustomerFeatures } from '../entities/db-customer-features';
+import { featureTypeOfValue } from '../utils';
 
 @Injectable()
 export class MongoDBCustomersService {
@@ -57,90 +57,28 @@ export class MongoDBCustomersService {
     );
   }
 
-  async importCustomers(
-    tenantId: string,
-    options: DatabaseOptions,
-    importCustomersInput: ImportCustomersInput
-  ) {
-    const {
-      organizationIdField,
-      customerNameField,
-      organizationIds,
-      features,
-    } = importCustomersInput;
-
-    await this.featuresService.createMany(
-      features.map((feature) => {
-        return {
-          key: feature.destinationName,
-          type: feature.type,
-        };
-      }),
-      tenantId
-    );
-
-    const tenantFeatureIds = (
-      await this.featuresService.findAll(tenantId)
-    ).reduce((acc, feature) => {
-      acc[feature.key] = feature.id;
-      return acc;
-    }, {});
-
-    return await useCollection(
-      async (collection) => {
-        try {
-          await collection
-            .find({ [organizationIdField]: { $in: organizationIds } })
-            .forEach((customer) => {
-              this.customersService.create(
-                {
-                  organizationId: customer[organizationIdField],
-                  name: customer[customerNameField],
-                  features: features.map((feature) => {
-                    return {
-                      featureId: tenantFeatureIds[feature.destinationName],
-                      value: customer[feature.sourceName],
-                    };
-                  }),
-                },
-                tenantId
-              );
-            });
-
-          return true;
-        } catch (error) {
-          this.logger.error(error);
-
-          return false;
-        }
-      },
-      options,
-      this.logger
-    );
-  }
-
   async fetchCustomersFeatures(
     options: DatabaseOptions,
     organizationIdField: string,
     customerNameField: string,
     organizationIds: string[],
     featureNames: string[]
-  ): Promise<DBCustomer[]> {
+  ): Promise<DBCustomerFeatures[]> {
     return await useCollection(
       async (collection) => {
         return await collection
           .find({ [organizationIdField]: { $in: organizationIds } })
           .map((customer) => {
-            const features = featureNames.map((feature) => {
+            const features = featureNames.map((featureName) => {
               return new DBFeature(
-                feature,
-                customer[feature],
-                FeatureType.JSON
+                featureName,
+                featureTypeOfValue(customer[featureName]),
+                customer[featureName]
               );
             });
 
-            return new DBCustomer(
-              customer.organizationId,
+            return new DBCustomerFeatures(
+              customer[organizationIdField],
               customer[customerNameField],
               features
             );

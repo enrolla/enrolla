@@ -11,13 +11,16 @@ import { MongoDBOptions } from './databases/mongodb/dto/mongodb-options.input';
 import { PostgresQLOptions } from './databases/postgresql/dto/postgresql-options.input';
 import { FetchCustomersInput } from './databases/dto/fetch-customers.input';
 import { ImportCustomersInput } from './databases/dto/import-customers.input';
+import { ExternalCustomersService } from './databases/external-customers.service';
+import { DatabaseType } from './databases/database-type.enum';
 
 @Resolver()
 @UseGuards(GraphQLAuthGuard)
 export class IntegrationsResolver {
   constructor(
     private readonly mongodbCustomersService: MongoDBCustomersService,
-    private readonly postgresqlCustomersService: PostgresQLCustomersService
+    private readonly postgresqlCustomersService: PostgresQLCustomersService,
+    private readonly externalCustomersService: ExternalCustomersService
   ) {}
 
   @Query(() => [Integration])
@@ -55,8 +58,9 @@ export class IntegrationsResolver {
     @Args('mongoOptions') mongoOptions: MongoDBOptions,
     @Args('input') input: ImportCustomersInput
   ) {
-    return await this.mongodbCustomersService.importCustomers(
+    return await this.externalCustomersService.import(
       tenantId,
+      DatabaseType.MongoDB,
       mongoOptions,
       input
     );
@@ -68,5 +72,31 @@ export class IntegrationsResolver {
     @Args('input') connectionOptions: PostgresQLOptions
   ) {
     return await this.postgresqlCustomersService.fetchSchema(connectionOptions);
+  }
+
+  @Query(() => [DBCustomer])
+  async fetchPostgresCustomers(
+    @TenantId() tenantId: string,
+    @Args('postgresOptions') postgresOptions: PostgresQLOptions,
+    @Args('input') input: FetchCustomersInput
+  ) {
+    return await this.mongodbCustomersService.fetchCustomers(
+      postgresOptions,
+      input
+    );
+  }
+
+  @Mutation(() => Boolean)
+  async importPostgresCustomers(
+    @TenantId() tenantId: string,
+    @Args('postgresOptions') postgresOptions: PostgresQLOptions,
+    @Args('input') input: ImportCustomersInput
+  ) {
+    return await this.externalCustomersService.import(
+      tenantId,
+      DatabaseType.PostgresQL,
+      postgresOptions,
+      input
+    );
   }
 }

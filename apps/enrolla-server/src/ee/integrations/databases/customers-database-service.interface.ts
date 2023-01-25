@@ -1,5 +1,6 @@
 import { DatabaseOptions } from './dto/connection-options.input';
 import { FetchCustomersInput } from './dto/fetch-customers.input';
+import { DBCustomerFeatures } from './entities/db-customer-features';
 import { DBCustomer } from './entities/db-customer.entity';
 import { DBFeatureMetadata } from './entities/db-feature-metadata.entity';
 
@@ -17,5 +18,5 @@ export interface CustomersDatabaseService {
     customerNameField: string,
     organizationIds: string[],
     featureNames: string[]
-  ): Promise<DBCustomer[]>;
+  ): Promise<DBCustomerFeatures[]>;
 }

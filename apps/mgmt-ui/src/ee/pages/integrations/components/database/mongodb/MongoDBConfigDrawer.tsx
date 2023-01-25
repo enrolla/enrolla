@@ -17,6 +17,7 @@ import {
   DbCustomer,
   DbFeatureMetadata,
   FeatureMappingInput,
+  FeatureType,
   MongoDbConnectionOptions,
 } from '@enrolla/graphql-codegen';
 import { useDataProvider, useNavigation } from '@pankod/refine-core';
@@ -64,9 +65,9 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
         operation: 'fetchMongoSchema',
         fields: ['name', 'type'],
         variables: {
-          input: {
+          mongoOptions: {
             value: connectionOptions,
-            type: 'MongoDBConnectionOptions',
+            type: 'MongoDBOptions',
             required: true,
           },
         },
@@ -83,13 +84,17 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       metaData: {
         operation: 'fetchMongoCustomers',
         variables: {
+          mongoOptions: {
+            value: connectionOptions,
+            type: 'MongoDBOptions',
+            required: true,
+          },
           input: {
             value: {
-              connectionOptions,
               organizationIdField,
               customerNameField,
             },
-            type: 'FetchMongoCustomersInput',
+            type: 'FetchCustomersInput',
             required: true,
           },
         },
@@ -107,7 +112,9 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       features.push({
         sourceName: key,
         destinationName: value,
-        type: schema.find((feature) => feature.name === key)!.type,
+        type:
+          schema.find((feature) => feature.name === key)?.type ||
+          FeatureType.Json,
       });
     });
 
@@ -121,15 +128,19 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       metaData: {
         operation: 'importMongoCustomers',
         variables: {
+          mongoOptions: {
+            value: connectionOptions,
+            type: 'MongoDBOptions',
+            required: true,
+          },
           input: {
             value: {
-              connectionOptions,
               organizationIdField,
               customerNameField,
               organizationIds: organizationIdsToImport,
               features: getFeaturesMapping(),
             },
-            type: 'ImportMongoCustomersInput',
+            type: 'ImportCustomersInput',
             required: true,
           },
         },

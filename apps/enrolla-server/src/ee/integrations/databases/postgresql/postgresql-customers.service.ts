@@ -1,6 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { CustomersService } from '../../../../customers/customers.service';
-import { FeaturesService } from '../../../../features/features.service';
 import { DBFeatureMetadata } from '../entities/db-feature-metadata.entity';
 import { useClient } from './utils';
 import { FeatureType } from '@prisma/client';
@@ -9,15 +7,11 @@ import { DatabaseOptions } from '../dto/connection-options.input';
 import { CustomersDatabaseService } from '../customers-database-service.interface';
 import { FetchCustomersInput } from '../dto/fetch-customers.input';
 import { DBCustomer } from '../entities/db-customer.entity';
+import { DBCustomerFeatures } from '../entities/db-customer-features';
 
 @Injectable()
 export class PostgresQLCustomersService implements CustomersDatabaseService {
   private readonly logger = new Logger();
-
-  constructor(
-    private featuresService: FeaturesService,
-    private customersService: CustomersService
-  ) {}
 
   async fetchSchema(options: DatabaseOptions): Promise<DBFeatureMetadata[]> {
     const postgresOptions = options as PostgresQLOptions;
@@ -50,7 +44,7 @@ export class PostgresQLCustomersService implements CustomersDatabaseService {
     customerNameField: string,
     organizationIds: string[],
     featureNames: string[]
-  ): Promise<DBCustomer[]> {
+  ): Promise<DBCustomerFeatures[]> {
     throw new Error('Method not implemented.');
   }
 }

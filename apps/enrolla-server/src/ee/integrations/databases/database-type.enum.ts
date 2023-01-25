@@ -1,5 +1,5 @@
 export enum DatabaseType {
-  Mongo,
+  MongoDB,
   PostgresQL,
   MySQL,
 }

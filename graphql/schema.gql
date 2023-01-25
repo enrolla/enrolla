@@ -134,12 +134,13 @@ type Query {
   secretKeys: [SecretKey!]!
   hasSecrets: Boolean!
   integrations: [Integration!]!
-  fetchMongoSchema(input: MongoDBConnectionOptions!): [DBFeatureMetadata!]!
-  fetchMongoCustomers(input: FetchMongoCustomersInput!): [DBCustomer!]!
-  fetchPostgresSchema(input: PostgresQLConnectionOptions!): [DBFeatureMetadata!]!
+  fetchMongoSchema(mongoOptions: MongoDBOptions!): [DBFeatureMetadata!]!
+  fetchMongoCustomers(mongoOptions: MongoDBOptions!, input: FetchCustomersInput!): [DBCustomer!]!
+  fetchPostgresSchema(input: PostgresQLOptions!): [DBFeatureMetadata!]!
+  fetchPostgresCustomers(postgresOptions: PostgresQLOptions!, input: FetchCustomersInput!): [DBCustomer!]!
 }
 
-input MongoDBConnectionOptions {
+input MongoDBOptions {
   host: String!
   port: Float
   database: String!
@@ -149,18 +150,19 @@ input MongoDBConnectionOptions {
   collection: String
 }
 
-input FetchMongoCustomersInput {
-  connectionOptions: MongoDBConnectionOptions!
+input FetchCustomersInput {
   organizationIdField: String!
   customerNameField: String!
 }
 
-input PostgresQLConnectionOptions {
+input PostgresQLOptions {
   host: String!
   port: Float
   database: String!
   username: String
   password: String
+  schema: String!
+  table: String!
 }
 
 type Mutation {
@@ -183,7 +185,8 @@ type Mutation {
   removeOrganization(id: String!): Organization!
   createSecretKey(input: CreateSecretKeyInput!): SecretKey!
   removeSecretKey(id: String!): SecretKey!
-  importMongoCustomers(input: ImportMongoCustomersInput!): Boolean!
+  importMongoCustomers(mongoOptions: MongoDBOptions!, input: ImportCustomersInput!): Boolean!
+  importPostgresCustomers(postgresOptions: PostgresQLOptions!, input: ImportCustomersInput!): Boolean!
 }
 
 input CreateApiTokenInput {
@@ -281,8 +284,7 @@ input CreateSecretKeyInput {
   key: String!
 }
 
-input ImportMongoCustomersInput {
-  connectionOptions: MongoDBConnectionOptions!
+input ImportCustomersInput {
   organizationIdField: String!
   customerNameField: String!
   organizationIds: [String!]!

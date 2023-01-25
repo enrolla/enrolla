@@ -5,10 +5,8 @@ import { MongoDBCustomersService } from './mongodb/mongodb-customers.service';
 import { PostgresQLCustomersService } from './postgresql/postgresql-customers.service';
 import { DatabaseOptions } from './dto/connection-options.input';
 import { ImportCustomersInput } from './dto/import-customers.input';
-import { MongoDBOptions } from './mongodb/dto/mongodb-options.input';
-import { DBCustomer } from './entities/db-customer.entity';
 import { CustomersDatabaseService } from './customers-database-service.interface';
-import { PostgresQLOptions } from './postgresql/dto/postgresql-options.input';
+import { DatabaseType } from './database-type.enum';
 
 @Injectable()
 export class ExternalCustomersService {
@@ -21,6 +19,7 @@ export class ExternalCustomersService {
 
   async import(
     tenantId: string,
+    databaseType: DatabaseType,
     options: DatabaseOptions,
     importCustomersInput: ImportCustomersInput
   ) {
@@ -50,11 +49,11 @@ export class ExternalCustomersService {
 
     let customersDbService: CustomersDatabaseService;
 
-    switch (options.constructor) {
-      case MongoDBOptions:
+    switch (databaseType) {
+      case DatabaseType.MongoDB:
         customersDbService = this.mongoCustomersService;
         break;
-      case PostgresQLOptions:
+      case DatabaseType.PostgresQL:
         customersDbService = this.postgresCustomersService;
         break;
       default:
