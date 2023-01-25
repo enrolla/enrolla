@@ -3,6 +3,17 @@ import { InputType, Field } from '@nestjs/graphql';
 import { CuidResolver, GraphQLJSON } from 'graphql-scalars';
 
 @InputType()
+export class FeatureInstanceByKeyInput {
+  @ApiProperty()
+  @Field(() => String)
+  key: string;
+
+  @ApiProperty()
+  @Field(() => GraphQLJSON)
+  value: object;
+}
+
+@InputType()
 export class FeatureInstanceInput {
   @ApiProperty()
   @Field(() => CuidResolver)

@@ -260,6 +260,12 @@ input UpdateCustomerByOrgIdInput {
   packageId: String
   features: [FeatureInstanceInput!]
   secrets: [SecretInput!]
+  featuresByKey: [FeatureInstanceByKeyInput!]
+}
+
+input FeatureInstanceByKeyInput {
+  key: String!
+  value: JSON!
 }
 
 input CreateOrganizationInput {

@@ -31,6 +31,17 @@ export type ApiToken = {
   token: Scalars['String'];
 };
 
+export type ConfigureAuth0OrganizationManagerInput = {
+  clientId: Scalars['String'];
+  clientSecret: Scalars['String'];
+  domain: Scalars['String'];
+};
+
+export type ConfigurePropelauthOrganizationManagerInput = {
+  apiKey: Scalars['String'];
+  domain: Scalars['String'];
+};
+
 export type CreateApiTokenInput = {
   name: Scalars['String'];
 };
@@ -115,6 +126,11 @@ export type Feature = {
   type: FeatureType;
 };
 
+export type FeatureInstanceByKeyInput = {
+  key: Scalars['String'];
+  value: Scalars['JSON'];
+};
+
 export type FeatureInstanceInput = {
   featureId: Scalars['Cuid'];
   value: Scalars['JSON'];
@@ -174,6 +190,8 @@ export type MongoDbConnectionOptions = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  configureAuth0OrganizationManager: Scalars['Boolean'];
+  configurePropelauthOrganizationManager: Scalars['Boolean'];
   createApiToken: ApiToken;
   createCustomer: Customer;
   createEncryptionKey: EncryptionKey;
@@ -194,6 +212,16 @@ export type Mutation = {
   updateFeature: Feature;
   updateOrganization: Organization;
   updatePackage: Package;
+};
+
+
+export type MutationConfigureAuth0OrganizationManagerArgs = {
+  input: ConfigureAuth0OrganizationManagerInput;
+};
+
+
+export type MutationConfigurePropelauthOrganizationManagerArgs = {
+  input: ConfigurePropelauthOrganizationManagerInput;
 };
 
 
@@ -399,6 +427,7 @@ export type SecretKey = {
 export type UpdateCustomerByOrgIdInput = {
   createOrganizationName?: InputMaybe<Scalars['String']>;
   features?: InputMaybe<Array<FeatureInstanceInput>>;
+  featuresByKey?: InputMaybe<Array<FeatureInstanceByKeyInput>>;
   name?: InputMaybe<Scalars['String']>;
   organizationId: Scalars['String'];
   packageId?: InputMaybe<Scalars['String']>;
@@ -439,7 +468,7 @@ export type CreateCustomerMutationVariables = Exact<{
 }>;
 
 
-export type CreateCustomerMutation = { __typename?: 'Mutation', createCustomer: { __typename?: 'Customer', id: any, name: string, organizationId?: string | null } };
+export type CreateCustomerMutation = { __typename?: 'Mutation', createCustomer: { __typename?: 'Customer', organizationId?: string | null, effectiveConfiguration: Array<{ __typename?: 'FeatureValue', value: any, feature: { __typename?: 'Feature', key: string, type: FeatureType } }>, secrets: Array<{ __typename?: 'Secret', key: string, value: string, nonce: string, ephemPubKey: string }> } };
 
 export type GetAllCustomerDataQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -456,15 +485,26 @@ export type UpdateCustomerByOrgIdMutationVariables = Exact<{
 }>;
 
 
-export type UpdateCustomerByOrgIdMutation = { __typename?: 'Mutation', updateCustomerByOrgId: { __typename?: 'Customer', id: any, name: string, organizationId?: string | null } };
+export type UpdateCustomerByOrgIdMutation = { __typename?: 'Mutation', updateCustomerByOrgId: { __typename?: 'Customer', organizationId?: string | null, effectiveConfiguration: Array<{ __typename?: 'FeatureValue', value: any, feature: { __typename?: 'Feature', key: string, type: FeatureType } }>, secrets: Array<{ __typename?: 'Secret', key: string, value: string, nonce: string, ephemPubKey: string }> } };
 
 
 export const CreateCustomerDocument = gql`
     mutation createCustomer($input: CreateCustomerInput!) {
   createCustomer(input: $input) {
-    id
-    name
     organizationId
+    effectiveConfiguration {
+      feature {
+        key
+        type
+      }
+      value
+    }
+    secrets {
+      key
+      value
+      nonce
+      ephemPubKey
+    }
   }
 }
     `;
@@ -500,9 +540,20 @@ export const GetAllFeaturesDocument = gql`
 export const UpdateCustomerByOrgIdDocument = gql`
     mutation updateCustomerByOrgId($input: UpdateCustomerByOrgIdInput!) {
   updateCustomerByOrgId(input: $input) {
-    id
-    name
     organizationId
+    effectiveConfiguration {
+      feature {
+        key
+        type
+      }
+      value
+    }
+    secrets {
+      key
+      value
+      nonce
+      ephemPubKey
+    }
   }
 }
     `;

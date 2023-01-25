@@ -17,7 +17,7 @@ export const updateCustomerSecrets = async (
   organizationId: string,
   ...secretInput: Pick<Secret, 'key' | 'value'>[]
 ) => {
-  if (!_configuration.privateKey) {
+  if (!_configuration?.privateKey) {
     throw new PrivateKeyNotSuppliedError();
   }
 
@@ -34,18 +34,18 @@ export const updateCustomerFeatures = async (
   organizationId: string,
   ...featureInput: { key: string; value: FeatureValue }[]
 ) => {
-  const { features } = await api.getAllFeatures();
 
+  console.log(featureInput);
   return await api.updateCustomerByOrgId({
     organizationId,
-    features: featureInput.map(({ key, value }) => {
-      const feature = features.find((f) => f.key === key);
-      if (!feature) {
-        throw new EnrollaError(`Feature with key "${key}" not found.`);
+    featuresByKey: featureInput.map(({ key, value }) => {
+      
+      if (value instanceof Object) { //todo: check if this is the best way to check if it's an object
+        value = JSON.stringify(value);
       }
 
       return {
-        featureId: feature.id,
+        key,
         value: { value },
       };
     }),

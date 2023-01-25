@@ -11,6 +11,8 @@ import {
   getConfigurationFromFeatures,
   mergeConfigurations,
 } from '../utils/configuration.utils';
+import { UpdateCustomerByOrgIdInput, UpdateCustomerInput } from './dto';
+import { FeaturesService } from '../features/features.service';
 
 @Injectable()
 export class CustomersService {
@@ -18,7 +20,8 @@ export class CustomersService {
     private prismaService: PrismaService,
     private organizationsService: OrganizationsService,
     private featureInstancesService: FeatureInstancesService,
-    private packagesService: PackagesService
+    private packagesService: PackagesService,
+    private featuresService: FeaturesService
   ) {}
 
   async create(createCustomerInput: CreateCustomerInput, tenantId: string) {
@@ -88,6 +91,12 @@ export class CustomersService {
   ) {
     const { features, secrets, name, packageId } = customerInput;
 
+    console.log('customerInput')
+    console.log('features')
+    console.log(features)
+    console.log('secrets')
+    console.log(secrets)
+
     return {
       tenantId,
       ...(!!name && { name }),
@@ -125,7 +134,7 @@ export class CustomersService {
 
   async update(
     id: string,
-    customerInput: Partial<CreateCustomerInput>,
+    customerInput: UpdateCustomerInput,
     tenantId: string
   ) {
     return await this.prismaService.customer.update({
@@ -141,9 +150,23 @@ export class CustomersService {
 
   async updateByOrgId(
     organizationId: string,
-    customerInput: Partial<CreateCustomerInput>,
+    customerInput: UpdateCustomerByOrgIdInput,
     tenantId: string
   ) {
+    const availableFeatures = await this.featuresService.findAll(organizationId);
+
+    const features = customerInput.featuresByKey?.map(({ key, value }) => {
+      const feature = availableFeatures?.find((f) => f.key === key);
+      if (!feature) {
+        throw new Error(`Feature with key "${key}" not found.`);
+      }
+
+      return {
+        featureId: feature.id,
+        value,
+      };
+    })
+
     return await this.prismaService.customer.update({
       where: {
         tenantId_organizationId: {
@@ -151,7 +174,7 @@ export class CustomersService {
           tenantId,
         },
       },
-      data: CustomersService.updateCustomerData(tenantId, customerInput),
+      data: CustomersService.updateCustomerData(tenantId, { ...customerInput, features }),
     });
   }
 

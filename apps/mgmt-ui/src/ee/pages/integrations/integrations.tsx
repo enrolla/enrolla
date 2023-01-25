@@ -170,6 +170,7 @@ export const Integrations = () => {
         radius="md"
         className={classes.card}
         onClick={() => setDrawerOpened(integration.title)}
+        key={integration.name}
       >
         <Group position="right">
           {serverIntegration && serverIntegration.isConfigured ? (

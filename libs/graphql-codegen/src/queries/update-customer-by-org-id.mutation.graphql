@@ -1,7 +1,18 @@
 mutation updateCustomerByOrgId($input: UpdateCustomerByOrgIdInput!) {
   updateCustomerByOrgId(input: $input) {
-    id
-    name
     organizationId
+    effectiveConfiguration {
+      feature {
+        key
+        type
+      }
+      value
+    }
+    secrets {
+      key
+      value
+      nonce
+      ephemPubKey
+    }
   }
 }
