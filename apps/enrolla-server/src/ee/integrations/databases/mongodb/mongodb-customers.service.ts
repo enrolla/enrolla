@@ -122,6 +122,7 @@ export class MongoDBCustomersService {
   async fetchCustomersFeatures(
     options: DatabaseOptions,
     organizationIdField: string,
+    customerNameField: string,
     organizationIds: string[],
     featureNames: string[]
   ): Promise<DBCustomer[]> {
@@ -140,7 +141,7 @@ export class MongoDBCustomersService {
 
             return new DBCustomer(
               customer.organizationId,
-              customer.name,
+              customer[customerNameField],
               features
             );
           })

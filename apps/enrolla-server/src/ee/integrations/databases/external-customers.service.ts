@@ -64,8 +64,30 @@ export class ExternalCustomersService {
     const customers = await customersDbService.fetchCustomersFeatures(
       options,
       organizationIdField,
+      customerNameField,
       organizationIds,
       features.map((feature) => feature.sourceName)
     );
+
+    customers.forEach((customer) => {
+      const customerFeatures = features.map((feature) => {
+        return {
+          featureId: tenantFeatureIds[feature.destinationName],
+          value: {
+            value: customer.features.find((f) => f.name === feature.sourceName)
+              .value,
+          },
+        };
+      });
+
+      this.customersService.create(
+        {
+          name: customer.name,
+          organizationId: customer.organizationId,
+          features: customerFeatures,
+        },
+        tenantId
+      );
+    });
   }
 }

@@ -14,6 +14,7 @@ export interface CustomersDatabaseService {
   fetchCustomersFeatures(
     options: DatabaseOptions,
     organizationIdField: string,
+    customerNameField: string,
     organizationIds: string[],
     featureNames: string[]
   ): Promise<DBCustomer[]>;

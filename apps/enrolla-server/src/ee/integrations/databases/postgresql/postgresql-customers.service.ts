@@ -47,6 +47,7 @@ export class PostgresQLCustomersService implements CustomersDatabaseService {
   async fetchCustomersFeatures(
     options: DatabaseOptions,
     organizationIdField: string,
+    customerNameField: string,
     organizationIds: string[],
     featureNames: string[]
   ): Promise<DBCustomer[]> {
