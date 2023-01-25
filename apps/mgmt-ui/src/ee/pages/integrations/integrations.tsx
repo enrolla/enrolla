@@ -127,6 +127,7 @@ const useStyles = createStyles((theme) => ({
 
     '&:hover': {
       boxShadow: theme.shadows.sm,
+      cursor: 'pointer',
     },
   },
 }));
