@@ -1,4 +1,4 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { IntegrationsResolver } from './integrations.resolver';
 import { MongoDBCustomersService } from './databases/mongodb/mongodb-customers.service';
 import { FeaturesModule } from '../../features/features.module';
@@ -7,28 +7,22 @@ import { createIntegrationsProviders } from './integrations.provider';
 import { ConfigurationsModule } from '../../configurations/configurations.module';
 import { HttpModule } from '@nestjs/axios';
 
-const integrationsProviders = createIntegrationsProviders();
-
-@Module({})
-export class IntegrationsModule {
-  static forRoot(): DynamicModule {
-    if (process.env.EE) {
-      return {
-        module: IntegrationsModule,
-        providers: [
-          IntegrationsResolver,
-          MongoDBCustomersService,
-          ...integrationsProviders,
-        ],
-        imports: [
-          FeaturesModule,
-          CustomersModule,
-          ConfigurationsModule,
-          HttpModule,
-        ],
-      };
-    } else {
-      return { module: IntegrationsModule };
-    }
-  }
+const providers = [];
+if (process.env.EE) {
+  providers.push(
+    IntegrationsResolver,
+    MongoDBCustomersService,
+    ...createIntegrationsProviders()
+  );
 }
+
+@Module({
+  providers,
+  imports: [
+    forwardRef(() => FeaturesModule),
+    forwardRef(() => CustomersModule),
+    ConfigurationsModule,
+    HttpModule,
+  ],
+})
+export class IntegrationsModule {}
