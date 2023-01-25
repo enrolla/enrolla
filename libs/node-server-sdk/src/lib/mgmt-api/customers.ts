@@ -1,9 +1,10 @@
-import { Secret } from '@enrolla/graphql-codegen';
+import { Customer, Secret } from '@enrolla/graphql-codegen';
 import * as api from '../api';
 import { _configuration } from '../configuration';
 import { encrypt } from '../encryption';
-import { EnrollaError, PrivateKeyNotSuppliedError } from '../errors';
+import { PrivateKeyNotSuppliedError } from '../errors';
 import { FeatureValue } from '../interfaces';
+import { setCustomerFeatures, setCustomerSecrets } from '../store';
 
 export const createCustomer = async (input: {
   name: string;
@@ -21,33 +22,32 @@ export const updateCustomerSecrets = async (
     throw new PrivateKeyNotSuppliedError();
   }
 
-  return await api.updateCustomerByOrgId({
+  const { updateCustomerByOrgId } = await api.updateCustomerByOrgId({
     organizationId,
     secrets: secretInput.map(({ key, value }) => ({
       key,
       ...encrypt(value, _configuration.privateKey),
     })),
   });
+
+  setCustomerSecrets(updateCustomerByOrgId as Partial<Customer>);
+
+  return updateCustomerByOrgId;
 };
 
 export const updateCustomerFeatures = async (
   organizationId: string,
   ...featureInput: { key: string; value: FeatureValue }[]
 ) => {
-
-  console.log(featureInput);
-  return await api.updateCustomerByOrgId({
+  const { updateCustomerByOrgId } = await api.updateCustomerByOrgId({
     organizationId,
-    featuresByKey: featureInput.map(({ key, value }) => {
-      
-      if (value instanceof Object) { //todo: check if this is the best way to check if it's an object
-        value = JSON.stringify(value);
-      }
-
-      return {
-        key,
-        value: { value },
-      };
-    }),
+    featuresByKey: featureInput.map(({ key, value }) => ({
+      key,
+      value: { value },
+    })),
   });
+
+  setCustomerFeatures(updateCustomerByOrgId as Partial<Customer>);
+
+  return updateCustomerByOrgId;
 };

@@ -3,6 +3,7 @@ import { Feature } from '../interfaces';
 import { decrypt } from '../encryption';
 import { _configuration } from '../configuration';
 import { SecretDecryptError } from '../errors';
+import { Customer } from '@enrolla/graphql-codegen';
 
 const _customerFeatureStore: Record<string, Record<string, Feature>> = {};
 const _customerSecretStore: Record<string, Record<string, string>> = {};
@@ -10,14 +11,13 @@ const _customerSecretStore: Record<string, Record<string, string>> = {};
 export const refreshStore = async () => {
   const { customers } = await fetchAllCustomerData();
 
-  customers.forEach((customer) => {
-    updateCustomerFeatures(customer);
-
-
+  customers.forEach((customer: Customer) => {
+    setCustomerFeatures(customer);
+    setCustomerSecrets(customer);
   });
 };
 
-export const updateCustomerSecrets = (customer) => {
+export const setCustomerSecrets = (customer: Partial<Customer>) => {
   if (_configuration.privateKey) {
     if (!_customerSecretStore[customer.organizationId]) {
       _customerSecretStore[customer.organizationId] = {};
@@ -37,7 +37,7 @@ export const updateCustomerSecrets = (customer) => {
   }
 };
 
-export const updateCustomerFeatures = (customer) => {
+export const setCustomerFeatures = (customer: Partial<Customer>) => {
   if (!_customerFeatureStore[customer.organizationId]) {
     _customerFeatureStore[customer.organizationId] = {};
   }
@@ -49,7 +49,7 @@ export const updateCustomerFeatures = (customer) => {
       featureValue.value.value
     );
   });
-}
+};
 
 export const organizationExists = (organizationId: string): boolean =>
   !!_customerFeatureStore[organizationId];

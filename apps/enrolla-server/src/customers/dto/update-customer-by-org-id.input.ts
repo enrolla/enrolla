@@ -10,7 +10,11 @@ export class UpdateCustomerByOrgIdInput extends PartialType(
   @Field(() => String)
   organizationId: string;
 
-  @ApiProperty({ type: FeatureInstanceByKeyInput, isArray: true, nullable: true })
+  @ApiProperty({
+    type: FeatureInstanceByKeyInput,
+    isArray: true,
+    nullable: true,
+  })
   @Field(() => [FeatureInstanceByKeyInput], { nullable: true })
   featuresByKey?: FeatureInstanceByKeyInput[];
 }

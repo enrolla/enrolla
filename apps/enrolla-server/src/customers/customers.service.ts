@@ -91,11 +91,6 @@ export class CustomersService {
   ) {
     const { features, secrets, name, packageId } = customerInput;
 
-    console.log('customerInput')
-    console.log('features')
-    console.log(features)
-    console.log('secrets')
-    console.log(secrets)
 
     return {
       tenantId,
@@ -153,7 +148,7 @@ export class CustomersService {
     customerInput: UpdateCustomerByOrgIdInput,
     tenantId: string
   ) {
-    const availableFeatures = await this.featuresService.findAll(organizationId);
+    const availableFeatures = await this.featuresService.findAll(tenantId);
 
     const features = customerInput.featuresByKey?.map(({ key, value }) => {
       const feature = availableFeatures?.find((f) => f.key === key);
@@ -165,7 +160,7 @@ export class CustomersService {
         featureId: feature.id,
         value,
       };
-    })
+    });
 
     return await this.prismaService.customer.update({
       where: {
@@ -174,7 +169,10 @@ export class CustomersService {
           tenantId,
         },
       },
-      data: CustomersService.updateCustomerData(tenantId, { ...customerInput, features }),
+      data: CustomersService.updateCustomerData(tenantId, {
+        ...customerInput,
+        features,
+      }),
     });
   }
 

@@ -1,34 +1,42 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateOrganizationInput } from './dto/create-organization.input';
 import { UpdateOrganizationInput } from './dto/update-organization.input';
-import { OrganizationManager} from './organization-managers/organization-manager.interface';
+import { OrganizationManager } from './organization-managers/organization-manager.interface';
 import { ModuleRef } from '@nestjs/core';
 import { NoneOrganizationManager } from './organization-managers/none.organization-manager';
 import { IntegrationType } from '../ee/integrations/integration.interface';
-import { ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY, ORGANIZATION_MANAGER_TYPE, OrganizationManagerType } from './constants';
+import {
+  ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY,
+  ORGANIZATION_MANAGER_TYPE,
+  OrganizationManagerType,
+} from './constants';
 import * as sdk from '@enrolla/node-server-sdk';
 
 @Injectable()
 export class OrganizationsService {
   private readonly logger = new Logger(OrganizationsService.name);
 
-  constructor(
-    private moduleRef: ModuleRef,
-  ) {}
+  constructor(private moduleRef: ModuleRef) {}
 
   async create(
     createOrganizationInput: CreateOrganizationInput,
     tenantId: string
   ) {
-    return await this.organizationManager(tenantId).createOrganization(tenantId, createOrganizationInput);
+    return await this.organizationManager(tenantId).createOrganization(
+      tenantId,
+      createOrganizationInput
+    );
   }
 
   async findAll(tenantId: string) {
-    return await this.organizationManager(tenantId).getOrganizations(tenantId)
+    return await this.organizationManager(tenantId).getOrganizations(tenantId);
   }
 
   async findOne(id: string, tenantId: string) {
-    return await this.organizationManager(tenantId).getOrganization(tenantId, id);
+    return await this.organizationManager(tenantId).getOrganization(
+      tenantId,
+      id
+    );
   }
 
   async update(
@@ -40,17 +48,20 @@ export class OrganizationsService {
   }
 
   async remove(id: string, tenantId: string) {
-    return await this.organizationManager(tenantId).removeOrganization(tenantId, id);
+    return await this.organizationManager(tenantId).removeOrganization(
+      tenantId,
+      id
+    );
   }
 
-  private organizationManager(
-    tenantId: string
-  ): OrganizationManager {
+  private organizationManager(tenantId: string): OrganizationManager {
     let organizationManagerType: OrganizationManagerType;
 
     try {
-      organizationManagerType =
-      sdk.getFeatureStringValue(ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY, tenantId) as OrganizationManagerType;
+      organizationManagerType = sdk.getFeatureStringValue(
+        ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY,
+        tenantId
+      ) as OrganizationManagerType;
     } catch (error) {
       this.logger.log(
         `Organization manager type not configured for tenant ${tenantId}, falling back to None`

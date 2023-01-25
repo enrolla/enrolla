@@ -86,12 +86,6 @@ export class Auth0OrganizationManager
       return this.auth0Clients.get(tenantId);
     }
 
-    console.log('json value from sdk: ')
-    console.log(sdk.getFeatureJsonValue(
-      tenantId,
-      ORGANIZATION_MANAGER_CONFIGURATION_KEY
-    ));
-
     const config = sdk.getFeatureJsonValue(
       tenantId,
       ORGANIZATION_MANAGER_CONFIGURATION_KEY
