@@ -91,7 +91,6 @@ export class CustomersService {
   ) {
     const { features, secrets, name, packageId } = customerInput;
 
-
     return {
       tenantId,
       ...(!!name && { name }),

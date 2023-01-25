@@ -25,7 +25,7 @@ export class Auth0OrganizationManager
 
   async isEnabled(tenantId: string): Promise<boolean> {
     const enabledManager =
-      await this.configurationsService.getValue<OrganizationManagerType>(
+      this.configurationsService.getValue<OrganizationManagerType>(
         tenantId,
         ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY
       );
@@ -86,11 +86,12 @@ export class Auth0OrganizationManager
       return this.auth0Clients.get(tenantId);
     }
 
-    const config = sdk.getFeatureJsonValue(
+    const config = this.configurationsService.getValue<Record<string, string>>(
       tenantId,
       ORGANIZATION_MANAGER_CONFIGURATION_KEY
     );
-    const clientSecret = sdk.getSecretValue(
+
+    const clientSecret = this.configurationsService.getSecretValue(
       tenantId,
       ORGANIZATION_MANAGER_SECRET_CONFIGURATION_KEY
     );

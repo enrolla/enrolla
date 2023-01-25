@@ -28,7 +28,7 @@ export class PropelAuthOrganizationManager
 
   async isEnabled(tenantId: string): Promise<boolean> {
     const enabledManager =
-      await this.configurationsService.getValue<OrganizationManagerType>(
+      this.configurationsService.getValue<OrganizationManagerType>(
         tenantId,
         ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY
       );
