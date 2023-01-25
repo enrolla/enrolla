@@ -41,7 +41,7 @@ import { BackOfficeModule } from './backoffice/backoffice.module';
     PackagesModule,
     FeatureInstancesModule,
     CustomersModule,
-    IntegrationsModule,
+    IntegrationsModule.forRoot(),
     OrganizationsModule,
     ConfigurationsModule,
     TenantsModule,

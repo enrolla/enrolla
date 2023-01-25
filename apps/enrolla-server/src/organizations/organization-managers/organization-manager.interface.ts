@@ -1,5 +1,5 @@
 import { OrganizationCreateInput } from './dto/organization-create.input';
-import { Organization } from './entities/organization.entity';
+import { Organization } from '../../ee/integrations/organization-managers/entities/organization.entity';
 
 export interface OrganizationManager {
   getOrganization(

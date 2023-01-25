@@ -159,6 +159,10 @@ export const Integrations = () => {
       (i) => i.name === integration.name
     );
 
+    if (serverIntegration?.isAvailable) {
+      return null;
+    }
+
     return (
       <Card
         withBorder

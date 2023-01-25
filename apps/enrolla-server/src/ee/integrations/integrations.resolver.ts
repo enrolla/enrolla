@@ -1,10 +1,8 @@
 import { UseGuards } from '@nestjs/common';
 import { GraphQLAuthGuard } from '../../authz/graphql-auth.guard';
-import { CustomersService } from '../../customers/customers.service';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { TenantId } from '../../authz/tenant.decorator';
 import { MongoDBCustomersService } from './databases/mongodb/mongodb-customers.service';
-import { FeaturesService } from '../../features/features.service';
 import { Integration } from './dto/integration.entity';
 import { DBFeatureMetadata } from './databases/entities/db-feature-metadata.entity';
 import { MongoDBConnectionOptions } from './databases/mongodb/dto/mongodb-connection-options.input';
@@ -17,17 +15,15 @@ import { ConfigureAuth0OrganizationManagerInput, ConfigurePropelauthOrganization
 @UseGuards(GraphQLAuthGuard)
 export class IntegrationsResolver {
   constructor(
-    private readonly featuresService: FeaturesService,
-    private readonly mongodbCustomersService: MongoDBCustomersService,
-    private readonly customersService: CustomersService
+    private readonly mongodbCustomersService: MongoDBCustomersService
   ) {}
 
   @Query(() => [Integration])
   integrations(@TenantId() tenantId: string) {
     return [
-      { name: 'auth0', isConfigured: false },
-      { name: 'propelauth', isConfigured: false },
-      { name: 'mongodb', isConfigured: false },
+      { name: 'auth0', isAvailable: false, isConfigured: false },
+      { name: 'propelauth', isAvailable: false, isConfigured: false },
+      { name: 'mongodb', isAvailable: false, isConfigured: false },
     ];
   }
 

@@ -157,6 +157,7 @@ export type ImportMongoCustomersInput = {
 
 export type Integration = {
   __typename?: 'Integration';
+  isAvailable: Scalars['Boolean'];
   isConfigured: Scalars['Boolean'];
   name: Scalars['String'];
 };
