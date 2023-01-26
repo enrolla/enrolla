@@ -6,12 +6,16 @@ import { CustomersModule } from '../../customers/customers.module';
 import { createIntegrationsProviders } from './integrations.provider';
 import { ConfigurationsModule } from '../../configurations/configurations.module';
 import { HttpModule } from '@nestjs/axios';
+import { PostgresQLCustomersService } from './databases/postgresql/postgresql-customers.service';
+import { ExternalCustomersService } from './databases/external-customers.service';
 
 const providers = [];
 if (process.env.EE) {
   providers.push(
     IntegrationsResolver,
     MongoDBCustomersService,
+    PostgresQLCustomersService,
+    ExternalCustomersService,
     ...createIntegrationsProviders()
   );
 }

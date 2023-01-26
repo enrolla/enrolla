@@ -157,14 +157,12 @@ export type FeatureValue = {
   value: Scalars['JSON'];
 };
 
-export type FetchMongoCustomersInput = {
-  connectionOptions: MongoDbConnectionOptions;
+export type FetchCustomersInput = {
   customerNameField: Scalars['String'];
   organizationIdField: Scalars['String'];
 };
 
-export type ImportMongoCustomersInput = {
-  connectionOptions: MongoDbConnectionOptions;
+export type ImportCustomersInput = {
   customerNameField: Scalars['String'];
   features: Array<FeatureMappingInput>;
   organizationIdField: Scalars['String'];
@@ -178,7 +176,7 @@ export type Integration = {
   name: Scalars['String'];
 };
 
-export type MongoDbConnectionOptions = {
+export type MongoDbOptions = {
   collection?: InputMaybe<Scalars['String']>;
   database: Scalars['String'];
   host: Scalars['String'];
@@ -200,6 +198,7 @@ export type Mutation = {
   createPackage: Package;
   createSecretKey: SecretKey;
   importMongoCustomers: Scalars['Boolean'];
+  importPostgresCustomers: Scalars['Boolean'];
   removeApiToken: ApiToken;
   removeCustomer: Customer;
   removeEncryptionKey: EncryptionKey;
@@ -261,7 +260,14 @@ export type MutationCreateSecretKeyArgs = {
 
 
 export type MutationImportMongoCustomersArgs = {
-  input: ImportMongoCustomersInput;
+  input: ImportCustomersInput;
+  mongoOptions: MongoDbOptions;
+};
+
+
+export type MutationImportPostgresCustomersArgs = {
+  input: ImportCustomersInput;
+  postgresOptions: PostgresQlOptions;
 };
 
 
@@ -349,6 +355,16 @@ export enum PackageUpdateStrategy {
   MigrateAllChildren = 'MIGRATE_ALL_CHILDREN'
 }
 
+export type PostgresQlOptions = {
+  database: Scalars['String'];
+  host: Scalars['String'];
+  password?: InputMaybe<Scalars['String']>;
+  port?: InputMaybe<Scalars['Float']>;
+  schema: Scalars['String'];
+  table: Scalars['String'];
+  username?: InputMaybe<Scalars['String']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   apiTokens: Array<ApiToken>;
@@ -360,6 +376,8 @@ export type Query = {
   features: Array<Feature>;
   fetchMongoCustomers: Array<DbCustomer>;
   fetchMongoSchema: Array<DbFeatureMetadata>;
+  fetchPostgresCustomers: Array<DbCustomer>;
+  fetchPostgresSchema: Array<DbFeatureMetadata>;
   hasSecrets: Scalars['Boolean'];
   integrations: Array<Integration>;
   organization: Organization;
@@ -381,12 +399,24 @@ export type QueryFeatureArgs = {
 
 
 export type QueryFetchMongoCustomersArgs = {
-  input: FetchMongoCustomersInput;
+  input: FetchCustomersInput;
+  mongoOptions: MongoDbOptions;
 };
 
 
 export type QueryFetchMongoSchemaArgs = {
-  input: MongoDbConnectionOptions;
+  mongoOptions: MongoDbOptions;
+};
+
+
+export type QueryFetchPostgresCustomersArgs = {
+  input: FetchCustomersInput;
+  postgresOptions: PostgresQlOptions;
+};
+
+
+export type QueryFetchPostgresSchemaArgs = {
+  postgresOptions: PostgresQlOptions;
 };
 
 

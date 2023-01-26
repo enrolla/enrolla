@@ -133,26 +133,37 @@ type Query {
   organizations: [Organization!]!
   organization(id: String!): Organization!
   integrations: [Integration!]!
-  fetchMongoSchema(input: MongoDBConnectionOptions!): [DBFeatureMetadata!]!
-  fetchMongoCustomers(input: FetchMongoCustomersInput!): [DBCustomer!]!
+  fetchMongoSchema(mongoOptions: MongoDBOptions!): [DBFeatureMetadata!]!
+  fetchMongoCustomers(mongoOptions: MongoDBOptions!, input: FetchCustomersInput!): [DBCustomer!]!
+  fetchPostgresSchema(postgresOptions: PostgresQLOptions!): [DBFeatureMetadata!]!
+  fetchPostgresCustomers(postgresOptions: PostgresQLOptions!, input: FetchCustomersInput!): [DBCustomer!]!
   secretKeys: [SecretKey!]!
   hasSecrets: Boolean!
 }
 
-input MongoDBConnectionOptions {
+input MongoDBOptions {
   host: String!
   port: Float
-  isSrv: Boolean! = false
   database: String!
   username: String
   password: String
+  isSrv: Boolean! = false
   collection: String
 }
 
-input FetchMongoCustomersInput {
-  connectionOptions: MongoDBConnectionOptions!
+input FetchCustomersInput {
   organizationIdField: String!
   customerNameField: String!
+}
+
+input PostgresQLOptions {
+  host: String!
+  port: Float
+  database: String!
+  username: String
+  password: String
+  schema: String!
+  table: String!
 }
 
 type Mutation {
@@ -173,7 +184,8 @@ type Mutation {
   createOrganization(input: CreateOrganizationInput!): Organization!
   updateOrganization(input: UpdateOrganizationInput!): Organization!
   removeOrganization(id: String!): Organization!
-  importMongoCustomers(input: ImportMongoCustomersInput!): Boolean!
+  importMongoCustomers(mongoOptions: MongoDBOptions!, input: ImportCustomersInput!): Boolean!
+  importPostgresCustomers(postgresOptions: PostgresQLOptions!, input: ImportCustomersInput!): Boolean!
   configureAuth0OrganizationManager(input: ConfigureAuth0OrganizationManagerInput!): Boolean!
   configurePropelauthOrganizationManager(input: ConfigurePropelauthOrganizationManagerInput!): Boolean!
   createSecretKey(input: CreateSecretKeyInput!): SecretKey!
@@ -277,8 +289,7 @@ input UpdateOrganizationInput {
   id: String!
 }
 
-input ImportMongoCustomersInput {
-  connectionOptions: MongoDBConnectionOptions!
+input ImportCustomersInput {
   organizationIdField: String!
   customerNameField: String!
   organizationIds: [String!]!

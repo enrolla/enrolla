@@ -17,22 +17,23 @@ import {
   DbCustomer,
   DbFeatureMetadata,
   FeatureMappingInput,
-  MongoDbConnectionOptions,
+  FeatureType,
+  MongoDbOptions,
 } from '@enrolla/graphql-codegen';
 import { useDataProvider, useNavigation } from '@pankod/refine-core';
 import { FeaturesMapping } from '../FeaturesMapper';
 
 export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
   const [active, setActive] = useState(0);
-  const [connectionOptions, setConnectionOptions] =
-    useState<MongoDbConnectionOptions>({
-      host: '',
-      isSrv: false,
-      username: null,
-      password: null,
-      database: '',
-      collection: '',
-    });
+  const [connectionOptions, setConnectionOptions] = useState<MongoDbOptions>({
+    host: '',
+    port: null,
+    isSrv: false,
+    username: null,
+    password: null,
+    database: '',
+    collection: '',
+  });
   const [schema, setSchema] = useState<DbFeatureMetadata[]>([]);
   const [organizationIdField, setOrganizationIdField] = useState<
     string | undefined
@@ -64,9 +65,9 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
         operation: 'fetchMongoSchema',
         fields: ['name', 'type'],
         variables: {
-          input: {
+          mongoOptions: {
             value: connectionOptions,
-            type: 'MongoDBConnectionOptions',
+            type: 'MongoDBOptions',
             required: true,
           },
         },
@@ -83,13 +84,17 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       metaData: {
         operation: 'fetchMongoCustomers',
         variables: {
+          mongoOptions: {
+            value: connectionOptions,
+            type: 'MongoDBOptions',
+            required: true,
+          },
           input: {
             value: {
-              connectionOptions,
               organizationIdField,
               customerNameField,
             },
-            type: 'FetchMongoCustomersInput',
+            type: 'FetchCustomersInput',
             required: true,
           },
         },
@@ -107,7 +112,9 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       features.push({
         sourceName: key,
         destinationName: value,
-        type: schema.find((feature) => feature.name === key)!.type,
+        type:
+          schema.find((feature) => feature.name === key)?.type ||
+          FeatureType.Json,
       });
     });
 
@@ -121,15 +128,19 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       metaData: {
         operation: 'importMongoCustomers',
         variables: {
+          mongoOptions: {
+            value: connectionOptions,
+            type: 'MongoDBOptions',
+            required: true,
+          },
           input: {
             value: {
-              connectionOptions,
               organizationIdField,
               customerNameField,
               organizationIds: organizationIdsToImport,
               features: getFeaturesMapping(),
             },
-            type: 'ImportMongoCustomersInput',
+            type: 'ImportCustomersInput',
             required: true,
           },
         },
@@ -185,6 +196,7 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
             mt={8}
             label="Host"
             value={connectionOptions.host}
+            withAsterisk
             onChange={(event) =>
               setConnectionOptions({
                 ...connectionOptions,
@@ -192,7 +204,27 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
               })
             }
           />
-          <Checkbox mt={8} label="SRV" />
+          <TextInput
+            mt={8}
+            label="Port"
+            value={connectionOptions.port?.toString() ?? ''}
+            onChange={(event) =>
+              setConnectionOptions({
+                ...connectionOptions,
+                port: Number(event.currentTarget.value),
+              })
+            }
+          />
+          <Checkbox
+            mt={8}
+            label="SRV"
+            onChange={(event) =>
+              setConnectionOptions({
+                ...connectionOptions,
+                isSrv: event.currentTarget.checked,
+              })
+            }
+          />
           <TextInput
             mt={8}
             label="Username"
@@ -219,6 +251,7 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
             mt={8}
             label="Database Name"
             value={connectionOptions.database}
+            withAsterisk
             onChange={(event) =>
               setConnectionOptions({
                 ...connectionOptions,
@@ -230,6 +263,7 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
             mt={8}
             label="Collection Name"
             value={connectionOptions.collection ?? ''}
+            withAsterisk
             onChange={(event) =>
               setConnectionOptions({
                 ...connectionOptions,

@@ -1,13 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DBFeatureMetadata } from '../entities/db-feature-metadata.entity';
-import { ConnectionOptions } from '../connection-options.interface';
 import * as parseSchema from 'mongodb-schema';
 import { DBCustomer } from '../entities/db-customer.entity';
 import { getFeatureType, useCollection } from './utils';
 import { FeaturesService } from '../../../../features/features.service';
 import { CustomersService } from '../../../../customers/customers.service';
-import { ImportMongoCustomersInput } from './dto/import-mongo-customers.input';
-import { FetchMongoCustomersInput } from './dto/fetch-mongo-customers.input';
+import { DatabaseOptions } from '../dto/connection-options.input';
+import { FetchCustomersInput } from '../dto/fetch-customers.input';
+import { DBFeature } from '../entities/db-feature.entity';
+import { DBCustomerFeatures } from '../entities/db-customer-features';
+import { featureTypeOfValue } from '../utils';
 
 @Injectable()
 export class MongoDBCustomersService {
@@ -18,7 +20,7 @@ export class MongoDBCustomersService {
     private customersService: CustomersService
   ) {}
 
-  async fetchSchema(options: ConnectionOptions): Promise<DBFeatureMetadata[]> {
+  async fetchSchema(options: DatabaseOptions): Promise<DBFeatureMetadata[]> {
     return await useCollection(
       async (collection) => {
         const schema = await parseSchema(collection.find());
@@ -33,10 +35,10 @@ export class MongoDBCustomersService {
   }
 
   async fetchCustomers(
-    fetchMongoCustomersInput: FetchMongoCustomersInput
+    options: DatabaseOptions,
+    fetchMongoCustomersInput: FetchCustomersInput
   ): Promise<DBCustomer[]> {
-    const { organizationIdField, customerNameField, connectionOptions } =
-      fetchMongoCustomersInput;
+    const { organizationIdField, customerNameField } = fetchMongoCustomersInput;
 
     return await useCollection(
       async (collection) => {
@@ -50,65 +52,40 @@ export class MongoDBCustomersService {
           })
           .toArray();
       },
-      connectionOptions,
+      options,
       this.logger
     );
   }
 
-  async importCustomers(tenantId: string, input: ImportMongoCustomersInput) {
-    const {
-      organizationIdField,
-      customerNameField,
-      organizationIds,
-      features,
-    } = input;
-
-    await this.featuresService.createMany(
-      features.map((feature) => {
-        return {
-          key: feature.destinationName,
-          type: feature.type,
-        };
-      }),
-      tenantId
-    );
-
-    const tenantFeatureIds = (
-      await this.featuresService.findAll(tenantId)
-    ).reduce((acc, feature) => {
-      acc[feature.key] = feature.id;
-      return acc;
-    }, {});
-
+  async fetchCustomersFeatures(
+    options: DatabaseOptions,
+    organizationIdField: string,
+    customerNameField: string,
+    organizationIds: string[],
+    featureNames: string[]
+  ): Promise<DBCustomerFeatures[]> {
     return await useCollection(
       async (collection) => {
-        try {
-          await collection
-            .find({ [organizationIdField]: { $in: organizationIds } })
-            .forEach((customer) => {
-              this.customersService.create(
-                {
-                  organizationId: customer[organizationIdField],
-                  name: customer[customerNameField],
-                  features: features.map((feature) => {
-                    return {
-                      featureId: tenantFeatureIds[feature.destinationName],
-                      value: customer[feature.sourceName],
-                    };
-                  }),
-                },
-                tenantId
+        return await collection
+          .find({ [organizationIdField]: { $in: organizationIds } })
+          .map((customer) => {
+            const features = featureNames.map((featureName) => {
+              return new DBFeature(
+                featureName,
+                featureTypeOfValue(customer[featureName]),
+                customer[featureName]
               );
             });
 
-          return true;
-        } catch (error) {
-          this.logger.error(error);
-
-          return false;
-        }
+            return new DBCustomerFeatures(
+              customer[organizationIdField],
+              customer[customerNameField],
+              features
+            );
+          })
+          .toArray();
       },
-      input.connectionOptions,
+      options,
       this.logger
     );
   }

@@ -1,12 +1,8 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { MongoDBConnectionOptions } from './mongodb-connection-options.input';
-import { FeatureMappingInput } from '../../dto/feature-mapping.input';
+import { FeatureMappingInput } from './feature-mapping.input';
 
 @InputType()
-export class ImportMongoCustomersInput {
-  @Field(() => MongoDBConnectionOptions)
-  connectionOptions: MongoDBConnectionOptions;
-
+export class ImportCustomersInput {
   @Field(() => String)
   organizationIdField: string;
 
