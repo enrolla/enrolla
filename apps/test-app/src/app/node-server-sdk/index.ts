@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as sdk from '@enrolla/node-server-sdk';
 import { env } from 'process';
 
