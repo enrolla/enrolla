@@ -3,7 +3,6 @@ import { ConfigurationManager } from '../../configuration-manager.interface';
 import * as sdk from '@enrolla/node-server-sdk';
 import { Injectable, Logger } from '@nestjs/common';
 import { EnrollaError } from '@enrolla/node-server-sdk';
-import axios from 'axios';
 
 @Injectable()
 export class SdkConfigurationManager implements ConfigurationManager {
@@ -29,6 +28,9 @@ export class SdkConfigurationManager implements ConfigurationManager {
           onError: (error) =>
             this.logger.error('onPollingError', error.cause?.stack),
         },
+      })
+      .then(() => {
+        this.logger.log('SDK Initialized Successfully');
       })
       .catch((err: EnrollaError) => {
         this.logger.error('SDK Initiation Failed', err.cause?.stack);

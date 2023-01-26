@@ -6,9 +6,10 @@ import {
   INTEGRATION_TYPE,
 } from './integration.interface';
 import { ConfigurationsService } from '../../configurations/configurations.service';
-import { Auth0OrganizationManager } from './organization-managers/impl/auth0.organization-manager';
-import { PropelAuthOrganizationManager } from './organization-managers/impl/propel-auth.organization-manager';
-import { isNumber } from 'class-validator';
+import {
+  Auth0OrganizationManager,
+  PropelAuthOrganizationManager,
+} from './organization-managers/impl';
 
 function integrationFactory(
   configurationsService: ConfigurationsService,

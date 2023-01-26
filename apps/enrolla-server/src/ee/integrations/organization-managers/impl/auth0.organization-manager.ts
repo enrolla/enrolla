@@ -10,7 +10,7 @@ import {
   OrganizationManagerType,
   ORGANIZATION_MANAGER_CONFIGURATION_KEY,
   ORGANIZATION_MANAGER_SECRET_CONFIGURATION_KEY,
-} from '../constants';
+} from '../../../../organizations/constants';
 import * as sdk from '@enrolla/node-server-sdk';
 import { ConfigureAuth0OrganizationManagerInput } from '../dto';
 import { Logger, BadRequestException } from '@nestjs/common';
