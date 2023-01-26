@@ -8,10 +8,10 @@ export type OrganizationManagerType =
   typeof ORGANIZATION_MANAGER_TYPE[keyof typeof ORGANIZATION_MANAGER_TYPE];
 
 export const ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY =
-  'ORGANIZATION_MANAGER_TYPE';
+  'organization_manager_type';
 
 export const ORGANIZATION_MANAGER_CONFIGURATION_KEY =
-  'ORGANIZATION_MANAGER_CONFIGURATION';
+  'organization_manager_configuration';
 
 export const ORGANIZATION_MANAGER_SECRET_CONFIGURATION_KEY =
-  'ORGANIZATION_MANAGER_SECRET_CONFIGURATION';
+  'organization_manager_secret_configuration';
