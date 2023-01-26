@@ -88,5 +88,7 @@ export class ExternalCustomersService {
         tenantId
       );
     });
+
+    return true;
   }
 }
