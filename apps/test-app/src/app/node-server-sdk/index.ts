@@ -1,12 +1,12 @@
 import * as sdk from '@enrolla/node-server-sdk';
+import { env } from 'process';
 
 export const testNodeServerSdk = async () => {
   try {
     await sdk.initialize({
-      url: 'http://localhost:3000/graphql',
-      privateKey: 'ZnwGI9ObidfIUj3bPhBzdSDM9NoyVfzPRfUCnPHsbIM=',
-      apiToken:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJZCI6IjgxZjZjNzljLTg4ZjQtNDI5YS1iY2VlLWY1NmFjNTE5NGJiYSIsImlhdCI6MTY3NDEzNTU0NX0.Lxyny0O9oX_cCRGLWpTQyDtHTwb1hdM7tydsGVyhIX8',
+      url: env.SDK_ENROLLA_SERVER_GRAPHQL_ENDPOINT,
+      apiToken: env.SDK_API_TOKEN,
+      privateKey: env.SDK_ENROLLA_PRIVATE_ENCRYPTION_KEY,
       evaluationHooks: {
         beforeEvaluation: (feature, organizationId) =>
           console.log('beforeEvaluation', feature, organizationId),
@@ -25,14 +25,15 @@ export const testNodeServerSdk = async () => {
     throw err;
   }
 
-  // console.log('Initiated Successfully');
-  // console.log('value before ', sdk.getSecretValue('tt', 'a'));
+  console.log('Initiated Successfully');
 
-  // await sdk.updateCustomerSecrets('a', {key: 'tt', value: '12366666'});
-  // console.log('value after ', sdk.getSecretValue('tt', 'a'));
+  const orgId = 'local_test_app_org_id;'
+  const secretKey = 'local_test_app_secret';
 
-  await sdk.updateCustomerFeatures('105ce4c9-7674-4482-91a5-7fa2f2453a94', {
-    key: 'ry',
-    value: 'lalalalal',
-  });
+  console.log('Secret value before change', sdk.getSecretValue(secretKey, orgId));
+
+  const newValue = 'new_value';
+  await sdk.updateCustomerSecrets(orgId, {key: secretKey, value: newValue});
+  
+  console.log('Secret value after change ', sdk.getSecretValue(secretKey, orgId));
 };
