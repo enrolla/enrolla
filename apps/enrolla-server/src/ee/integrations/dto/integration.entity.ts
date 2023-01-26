@@ -5,5 +5,8 @@ export class Integration {
   name: string;
 
   @Field(() => Boolean)
+  isAvailable: boolean;
+
+  @Field(() => Boolean)
   isConfigured: boolean;
 }

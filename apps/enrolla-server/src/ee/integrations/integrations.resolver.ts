@@ -13,6 +13,14 @@ import { FetchCustomersInput } from './databases/dto/fetch-customers.input';
 import { ImportCustomersInput } from './databases/dto/import-customers.input';
 import { ExternalCustomersService } from './databases/external-customers.service';
 import { DatabaseType } from './databases/database-type.enum';
+import {
+  ConfigureAuth0OrganizationManagerInput,
+  ConfigurePropelauthOrganizationManagerInput,
+} from './organization-managers/dto';
+import {
+  Auth0OrganizationManager,
+  PropelAuthOrganizationManager,
+} from './organization-managers/impl';
 
 @Resolver()
 @UseGuards(GraphQLAuthGuard)
@@ -26,9 +34,9 @@ export class IntegrationsResolver {
   @Query(() => [Integration])
   integrations(@TenantId() tenantId: string) {
     return [
-      { name: 'auth0', isConfigured: false },
-      { name: 'propelauth', isConfigured: false },
-      { name: 'mongodb', isConfigured: false },
+      { name: 'auth0', isAvailable: false, isConfigured: false },
+      { name: 'propelauth', isAvailable: false, isConfigured: false },
+      { name: 'mongodb', isAvailable: false, isConfigured: false },
     ];
   }
 
@@ -98,5 +106,21 @@ export class IntegrationsResolver {
       postgresOptions,
       input
     );
+  }
+
+  @Mutation(() => Boolean)
+  async configureAuth0OrganizationManager(
+    @TenantId() tenantId: string,
+    @Args('input') input: ConfigureAuth0OrganizationManagerInput
+  ) {
+    return await Auth0OrganizationManager.configure(tenantId, input);
+  }
+
+  @Mutation(() => Boolean)
+  async configurePropelauthOrganizationManager(
+    @TenantId() tenantId: string,
+    @Args('input') input: ConfigurePropelauthOrganizationManagerInput
+  ) {
+    return await PropelAuthOrganizationManager.configure(tenantId, input);
   }
 }

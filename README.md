@@ -31,7 +31,7 @@
     <img src="https://img.shields.io/badge/chat-on%20Slack-blueviolet" alt="Slack community channel" />
   </a>
   <a href="https://twitter.com/enrolla_io">
-    <img src="https://img.shields.io/twitter/follow/enrolla_io?label=Follow" alt="Enrolla Twitter" />
+    <img src="https://img.shields.io/badge/follow-%40enrolla__io-1DA1F2?logo=twitter&style=social" alt="Enrolla Twitter" />
   </a>
 </h4>
 

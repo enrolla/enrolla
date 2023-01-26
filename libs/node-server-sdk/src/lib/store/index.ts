@@ -3,6 +3,7 @@ import { Feature } from '../interfaces';
 import { decrypt } from '../encryption';
 import { _configuration } from '../configuration';
 import { SecretDecryptError } from '../errors';
+import { Customer } from '@enrolla/graphql-codegen';
 
 const _customerFeatureStore: Record<string, Record<string, Feature>> = {};
 const _customerSecretStore: Record<string, Record<string, string>> = {};
@@ -10,36 +11,43 @@ const _customerSecretStore: Record<string, Record<string, string>> = {};
 export const refreshStore = async () => {
   const { customers } = await fetchAllCustomerData();
 
-  customers.forEach((customer) => {
-    if (!_customerFeatureStore[customer.organizationId]) {
-      _customerFeatureStore[customer.organizationId] = {};
+  customers.forEach((customer: Customer) => {
+    setCustomerFeatures(customer);
+    setCustomerSecrets(customer);
+  });
+};
+
+export const setCustomerSecrets = (customer: Partial<Customer>) => {
+  if (_configuration.privateKey) {
+    if (!_customerSecretStore[customer.organizationId]) {
+      _customerSecretStore[customer.organizationId] = {};
     }
 
-    const customerFeatures = _customerFeatureStore[customer.organizationId];
-    customer.effectiveConfiguration.forEach((featureValue) => {
-      customerFeatures[featureValue.feature.key] = new Feature(
-        featureValue.feature.type,
-        featureValue.value.value
-      );
-    });
-
-    if (_configuration.privateKey) {
-      if (!_customerSecretStore[customer.organizationId]) {
-        _customerSecretStore[customer.organizationId] = {};
+    const customerSecrets = _customerSecretStore[customer.organizationId];
+    customer.secrets.forEach((secret) => {
+      try {
+        customerSecrets[secret.key] = decrypt(
+          _configuration.privateKey,
+          secret
+        );
+      } catch (e) {
+        throw new SecretDecryptError(secret.key, e);
       }
+    });
+  }
+};
 
-      const customerSecrets = _customerSecretStore[customer.organizationId];
-      customer.secrets.forEach((secret) => {
-        try {
-          customerSecrets[secret.key] = decrypt(
-            _configuration.privateKey,
-            secret
-          );
-        } catch (e) {
-          throw new SecretDecryptError(secret.key, e);
-        }
-      });
-    }
+export const setCustomerFeatures = (customer: Partial<Customer>) => {
+  if (!_customerFeatureStore[customer.organizationId]) {
+    _customerFeatureStore[customer.organizationId] = {};
+  }
+
+  const customerFeatures = _customerFeatureStore[customer.organizationId];
+  customer.effectiveConfiguration.forEach((featureValue) => {
+    customerFeatures[featureValue.feature.key] = new Feature(
+      featureValue.feature.type,
+      featureValue.value.value
+    );
   });
 };
 

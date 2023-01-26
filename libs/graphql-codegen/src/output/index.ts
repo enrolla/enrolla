@@ -31,6 +31,17 @@ export type ApiToken = {
   token: Scalars['String'];
 };
 
+export type ConfigureAuth0OrganizationManagerInput = {
+  clientId: Scalars['String'];
+  clientSecret: Scalars['String'];
+  domain: Scalars['String'];
+};
+
+export type ConfigurePropelauthOrganizationManagerInput = {
+  apiKey: Scalars['String'];
+  domain: Scalars['String'];
+};
+
 export type CreateApiTokenInput = {
   name: Scalars['String'];
 };
@@ -115,6 +126,11 @@ export type Feature = {
   type: FeatureType;
 };
 
+export type FeatureInstanceByKeyInput = {
+  key: Scalars['String'];
+  value: Scalars['JSON'];
+};
+
 export type FeatureInstanceInput = {
   featureId: Scalars['Cuid'];
   value: Scalars['JSON'];
@@ -155,6 +171,7 @@ export type ImportCustomersInput = {
 
 export type Integration = {
   __typename?: 'Integration';
+  isAvailable: Scalars['Boolean'];
   isConfigured: Scalars['Boolean'];
   name: Scalars['String'];
 };
@@ -171,6 +188,8 @@ export type MongoDbOptions = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  configureAuth0OrganizationManager: Scalars['Boolean'];
+  configurePropelauthOrganizationManager: Scalars['Boolean'];
   createApiToken: ApiToken;
   createCustomer: Customer;
   createEncryptionKey: EncryptionKey;
@@ -192,6 +211,16 @@ export type Mutation = {
   updateFeature: Feature;
   updateOrganization: Organization;
   updatePackage: Package;
+};
+
+
+export type MutationConfigureAuth0OrganizationManagerArgs = {
+  input: ConfigureAuth0OrganizationManagerInput;
+};
+
+
+export type MutationConfigurePropelauthOrganizationManagerArgs = {
+  input: ConfigurePropelauthOrganizationManagerInput;
 };
 
 
@@ -428,6 +457,7 @@ export type SecretKey = {
 export type UpdateCustomerByOrgIdInput = {
   createOrganizationName?: InputMaybe<Scalars['String']>;
   features?: InputMaybe<Array<FeatureInstanceInput>>;
+  featuresByKey?: InputMaybe<Array<FeatureInstanceByKeyInput>>;
   name?: InputMaybe<Scalars['String']>;
   organizationId: Scalars['String'];
   packageId?: InputMaybe<Scalars['String']>;
@@ -468,26 +498,64 @@ export type CreateCustomerMutationVariables = Exact<{
 }>;
 
 
-export type CreateCustomerMutation = { __typename?: 'Mutation', createCustomer: { __typename?: 'Customer', id: any, name: string, organizationId?: string | null } };
+export type CreateCustomerMutation = { __typename?: 'Mutation', createCustomer: { __typename?: 'Customer', organizationId?: string | null, effectiveConfiguration: Array<{ __typename?: 'FeatureValue', value: any, feature: { __typename?: 'Feature', key: string, type: FeatureType } }>, secrets: Array<{ __typename?: 'Secret', key: string, value: string, nonce: string, ephemPubKey: string }> } };
 
 export type GetAllCustomerDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAllCustomerDataQuery = { __typename?: 'Query', customers: Array<{ __typename?: 'Customer', organizationId?: string | null, effectiveConfiguration: Array<{ __typename?: 'FeatureValue', value: any, feature: { __typename?: 'Feature', key: string, type: FeatureType } }>, secrets: Array<{ __typename?: 'Secret', key: string, value: string, nonce: string, ephemPubKey: string }> }> };
 
+export type UpdateCustomerByOrgIdMutationVariables = Exact<{
+  input: UpdateCustomerByOrgIdInput;
+}>;
+
+
+export type UpdateCustomerByOrgIdMutation = { __typename?: 'Mutation', updateCustomerByOrgId: { __typename?: 'Customer', organizationId?: string | null, effectiveConfiguration: Array<{ __typename?: 'FeatureValue', value: any, feature: { __typename?: 'Feature', key: string, type: FeatureType } }>, secrets: Array<{ __typename?: 'Secret', key: string, value: string, nonce: string, ephemPubKey: string }> } };
+
 
 export const CreateCustomerDocument = gql`
     mutation createCustomer($input: CreateCustomerInput!) {
   createCustomer(input: $input) {
-    id
-    name
     organizationId
+    effectiveConfiguration {
+      feature {
+        key
+        type
+      }
+      value
+    }
+    secrets {
+      key
+      value
+      nonce
+      ephemPubKey
+    }
   }
 }
     `;
 export const GetAllCustomerDataDocument = gql`
     query getAllCustomerData {
   customers {
+    organizationId
+    effectiveConfiguration {
+      feature {
+        key
+        type
+      }
+      value
+    }
+    secrets {
+      key
+      value
+      nonce
+      ephemPubKey
+    }
+  }
+}
+    `;
+export const UpdateCustomerByOrgIdDocument = gql`
+    mutation updateCustomerByOrgId($input: UpdateCustomerByOrgIdInput!) {
+  updateCustomerByOrgId(input: $input) {
     organizationId
     effectiveConfiguration {
       feature {
@@ -518,6 +586,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getAllCustomerData(variables?: GetAllCustomerDataQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAllCustomerDataQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetAllCustomerDataQuery>(GetAllCustomerDataDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getAllCustomerData', 'query');
+    },
+    updateCustomerByOrgId(variables: UpdateCustomerByOrgIdMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateCustomerByOrgIdMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateCustomerByOrgIdMutation>(UpdateCustomerByOrgIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateCustomerByOrgId', 'mutation');
     }
   };
 }

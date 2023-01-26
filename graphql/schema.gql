@@ -98,12 +98,6 @@ type Organization {
   name: String!
 }
 
-type SecretKey {
-  id: Cuid!
-  key: String!
-  createdAt: DateTime!
-}
-
 type DBFeatureMetadata {
   name: String!
   type: FeatureType!
@@ -116,7 +110,14 @@ type DBCustomer {
 
 type Integration {
   name: String!
+  isAvailable: Boolean!
   isConfigured: Boolean!
+}
+
+type SecretKey {
+  id: Cuid!
+  key: String!
+  createdAt: DateTime!
 }
 
 type Query {
@@ -131,13 +132,13 @@ type Query {
   customer(id: String!): Customer!
   organizations: [Organization!]!
   organization(id: String!): Organization!
-  secretKeys: [SecretKey!]!
-  hasSecrets: Boolean!
   integrations: [Integration!]!
   fetchMongoSchema(mongoOptions: MongoDBOptions!): [DBFeatureMetadata!]!
   fetchMongoCustomers(mongoOptions: MongoDBOptions!, input: FetchCustomersInput!): [DBCustomer!]!
   fetchPostgresSchema(postgresOptions: PostgresQLOptions!): [DBFeatureMetadata!]!
   fetchPostgresCustomers(postgresOptions: PostgresQLOptions!, input: FetchCustomersInput!): [DBCustomer!]!
+  secretKeys: [SecretKey!]!
+  hasSecrets: Boolean!
 }
 
 input MongoDBOptions {
@@ -183,10 +184,12 @@ type Mutation {
   createOrganization(input: CreateOrganizationInput!): Organization!
   updateOrganization(input: UpdateOrganizationInput!): Organization!
   removeOrganization(id: String!): Organization!
-  createSecretKey(input: CreateSecretKeyInput!): SecretKey!
-  removeSecretKey(id: String!): SecretKey!
   importMongoCustomers(mongoOptions: MongoDBOptions!, input: ImportCustomersInput!): Boolean!
   importPostgresCustomers(postgresOptions: PostgresQLOptions!, input: ImportCustomersInput!): Boolean!
+  configureAuth0OrganizationManager(input: ConfigureAuth0OrganizationManagerInput!): Boolean!
+  configurePropelauthOrganizationManager(input: ConfigurePropelauthOrganizationManagerInput!): Boolean!
+  createSecretKey(input: CreateSecretKeyInput!): SecretKey!
+  removeSecretKey(id: String!): SecretKey!
 }
 
 input CreateApiTokenInput {
@@ -269,6 +272,12 @@ input UpdateCustomerByOrgIdInput {
   packageId: String
   features: [FeatureInstanceInput!]
   secrets: [SecretInput!]
+  featuresByKey: [FeatureInstanceByKeyInput!]
+}
+
+input FeatureInstanceByKeyInput {
+  key: String!
+  value: JSON!
 }
 
 input CreateOrganizationInput {
@@ -278,10 +287,6 @@ input CreateOrganizationInput {
 input UpdateOrganizationInput {
   name: String
   id: String!
-}
-
-input CreateSecretKeyInput {
-  key: String!
 }
 
 input ImportCustomersInput {
@@ -295,4 +300,19 @@ input FeatureMappingInput {
   sourceName: String!
   destinationName: String!
   type: FeatureType!
+}
+
+input ConfigureAuth0OrganizationManagerInput {
+  clientId: String!
+  clientSecret: String!
+  domain: String!
+}
+
+input ConfigurePropelauthOrganizationManagerInput {
+  apiKey: String!
+  domain: String!
+}
+
+input CreateSecretKeyInput {
+  key: String!
 }

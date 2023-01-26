@@ -1,5 +1,10 @@
 import { GraphQLClient } from 'graphql-request';
-import { CreateCustomerInput, getSdk, Sdk } from '@enrolla/graphql-codegen';
+import {
+  CreateCustomerInput,
+  getSdk,
+  Sdk,
+  UpdateCustomerByOrgIdInput,
+} from '@enrolla/graphql-codegen';
 import { InitializeOptions } from '../interfaces';
 import { DEFAULT_URL } from './constants';
 
@@ -19,6 +24,8 @@ export const initializeGraphQLClient = (options: InitializeOptions) => {
 };
 
 export const fetchAllCustomerData = async () => _client.getAllCustomerData();
-export const createCustomer = async (
-  createCustomerInput: CreateCustomerInput
-) => _client.createCustomer({ input: createCustomerInput });
+export const createCustomer = async (input: CreateCustomerInput) =>
+  _client.createCustomer({ input });
+export const updateCustomerByOrgId = async (
+  input: UpdateCustomerByOrgIdInput
+) => _client.updateCustomerByOrgId({ input });

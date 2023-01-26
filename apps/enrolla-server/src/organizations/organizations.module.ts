@@ -1,19 +1,17 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { OrganizationsService } from './organizations.service';
 import { OrganizationsResolver } from './organizations.resolver';
 import { ConfigurationsModule } from '../configurations/configurations.module';
-import { createOrganizationManagerProviders } from './organization-manager.provider';
-import { HttpModule } from '@nestjs/axios';
-
-const organizationManagerProviders = createOrganizationManagerProviders();
+import { NoneOrganizationManager } from './organization-managers/none.organization-manager';
+import { IntegrationsModule } from '../ee/integrations/integrations.module';
 
 @Module({
   providers: [
     OrganizationsResolver,
     OrganizationsService,
-    ...organizationManagerProviders,
+    NoneOrganizationManager,
   ],
-  imports: [ConfigurationsModule, HttpModule],
+  imports: [ConfigurationsModule, forwardRef(() => IntegrationsModule)],
   exports: [OrganizationsService],
 })
 export class OrganizationsModule {}

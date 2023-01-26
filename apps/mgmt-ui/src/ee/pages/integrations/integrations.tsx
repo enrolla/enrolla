@@ -127,6 +127,7 @@ const useStyles = createStyles((theme) => ({
 
     '&:hover': {
       boxShadow: theme.shadows.sm,
+      cursor: 'pointer',
     },
   },
 }));
@@ -159,12 +160,17 @@ export const Integrations = () => {
       (i) => i.name === integration.name
     );
 
+    if (serverIntegration?.isAvailable) {
+      return null;
+    }
+
     return (
       <Card
         withBorder
         radius="md"
         className={classes.card}
         onClick={() => setDrawerOpened(integration.title)}
+        key={integration.name}
       >
         <Group position="right">
           {serverIntegration && serverIntegration.isConfigured ? (
