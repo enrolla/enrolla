@@ -29,4 +29,3 @@ export const createCustomer = async (input: CreateCustomerInput) =>
 export const updateCustomerByOrgId = async (
   input: UpdateCustomerByOrgIdInput
 ) => _client.updateCustomerByOrgId({ input });
-export const getAllFeatures = async () => _client.getAllFeatures();

@@ -14,7 +14,8 @@ import {
 } from '../constants';
 import { ConfigurePropelauthOrganizationManagerInput } from '../dto';
 import * as sdk from '@enrolla/node-server-sdk';
-import { Logger } from '@nestjs/common';
+import { Logger, BadRequestException } from '@nestjs/common';
+import axios from 'axios';
 
 export class PropelAuthOrganizationManager
   implements OrganizationManager, Integration
@@ -148,6 +149,7 @@ export class PropelAuthOrganizationManager
     tenantId: string,
     input: ConfigurePropelauthOrganizationManagerInput
   ) {
+    this.testConfigValidity(input);
     const featuresToUpdate = [
       {
         key: ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY,
@@ -175,7 +177,7 @@ export class PropelAuthOrganizationManager
       return true;
     } catch (error) {
       this.logger.error(
-        `Failed to configure Propelauth Organization Manager for tennat ${tenantId}`,
+        `Failed to configure Propelauth Organization Manager for tennat ${tenantId}. Reverting to NONE configuration.`,
         error.stack
       );
       await sdk.updateCustomerFeatures(tenantId, {
@@ -185,6 +187,29 @@ export class PropelAuthOrganizationManager
       });
 
       throw error;
+    }
+  }
+
+  private static async testConfigValidity(
+    input: ConfigurePropelauthOrganizationManagerInput
+  ) {
+    try {
+      await axios.get(`${input.domain}/api/backend/v1/org/query`, {
+        params: {
+          current_page: 0,
+          page_size: 1,
+        },
+        headers: {
+          Authorization: `Bearer ${input.apiKey}`,
+        },
+      });
+    } catch (error) {
+      this.logger.error(
+        `Invalid configuration PropelAuth Organization manager configuration for tenant: ${tenantId}.`,
+        error.stack
+      );
+
+      throw new BadRequestException('Invalid configuration');
     }
   }
 }

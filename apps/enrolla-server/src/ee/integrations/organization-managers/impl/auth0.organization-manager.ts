@@ -13,7 +13,7 @@ import {
 } from '../constants';
 import * as sdk from '@enrolla/node-server-sdk';
 import { ConfigureAuth0OrganizationManagerInput } from '../dto';
-import { Logger } from '@nestjs/common';
+import { Logger, BadRequestException } from '@nestjs/common';
 
 export class Auth0OrganizationManager
   implements OrganizationManager, Integration
@@ -34,7 +34,7 @@ export class Auth0OrganizationManager
   }
 
   async isConfigured(tenantId: string): Promise<boolean> {
-    return !!this.getAuth0Client(tenantId);
+    return false;
   }
 
   async getOrganization(
@@ -110,6 +110,7 @@ export class Auth0OrganizationManager
     tenantId: string,
     input: ConfigureAuth0OrganizationManagerInput
   ) {
+    await Auth0OrganizationManager.testConfigValidity(input, tenantId);
     const featuresToUpdate = [
       {
         key: ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY,
@@ -149,6 +150,24 @@ export class Auth0OrganizationManager
       });
 
       throw error;
+    }
+  }
+
+  private static async testConfigValidity(
+    input: ConfigureAuth0OrganizationManagerInput,
+    tenantId: string
+  ) {
+    try {
+      const auth0Client = new ManagementClient(input);
+
+      await auth0Client.organizations.getAll();
+    } catch (error) {
+      this.logger.error(
+        `Invalid configuration Auth0 Organization manager configuration for tenant: ${tenantId}. Reverting to NONE configuration.`,
+        error.stack
+      );
+
+      throw new BadRequestException('Invalid configuration');
     }
   }
 }

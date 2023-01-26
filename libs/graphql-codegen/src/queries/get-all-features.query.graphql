@@ -1,7 +1,0 @@
-query getAllFeatures {
-  features {
-    id
-    key
-    type
-  }
-}
