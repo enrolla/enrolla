@@ -13,6 +13,8 @@ import {
 } from '../utils/configuration.utils';
 import { UpdateCustomerByOrgIdInput, UpdateCustomerInput } from './dto';
 import { FeaturesService } from '../features/features.service';
+import { validateFeatureInputType } from '../features/validators';
+import { Feature } from '@enrolla/graphql-codegen';
 
 @Injectable()
 export class CustomersService {
@@ -147,19 +149,10 @@ export class CustomersService {
     customerInput: UpdateCustomerByOrgIdInput,
     tenantId: string
   ) {
-    const availableFeatures = await this.featuresService.findAll(tenantId);
-
-    const features = customerInput.featuresByKey?.map(({ key, value }) => {
-      const feature = availableFeatures?.find((f) => f.key === key);
-      if (!feature) {
-        throw new Error(`Feature with key "${key}" not found.`);
-      }
-
-      return {
-        featureId: feature.id,
-        value,
-      };
-    });
+    const features = await this.validateAndTransformFeatures(
+      customerInput,
+      tenantId
+    );
 
     return await this.prismaService.customer.update({
       where: {
@@ -207,5 +200,29 @@ export class CustomersService {
     );
 
     return mergeConfigurations(customerConfig, packageConfig);
+  }
+
+  async validateAndTransformFeatures(
+    customerInput: UpdateCustomerByOrgIdInput,
+    tenantId: string
+  ) {
+    const availableFeatures = await this.featuresService.findAll(tenantId);
+
+    return customerInput.featuresByKey?.map(({ key, value }) => {
+      const feature = availableFeatures?.find((f) => f.key === key);
+      if (!feature) {
+        throw new Error(`Feature with key "${key}" not found.`);
+      }
+
+      validateFeatureInputType(
+        (value as unknown as any)?.value,
+        feature as Feature
+      );
+
+      return {
+        featureId: feature.id,
+        value,
+      };
+    });
   }
 }
