@@ -149,7 +149,7 @@ export class PropelAuthOrganizationManager
     tenantId: string,
     input: ConfigurePropelauthOrganizationManagerInput
   ) {
-    this.testConfigValidity(input);
+    this.testConfigValidity(input, tenantId);
     const featuresToUpdate = [
       {
         key: ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY,
@@ -191,7 +191,8 @@ export class PropelAuthOrganizationManager
   }
 
   private static async testConfigValidity(
-    input: ConfigurePropelauthOrganizationManagerInput
+    input: ConfigurePropelauthOrganizationManagerInput,
+    tenantId: string
   ) {
     try {
       await axios.get(`${input.domain}/api/backend/v1/org/query`, {

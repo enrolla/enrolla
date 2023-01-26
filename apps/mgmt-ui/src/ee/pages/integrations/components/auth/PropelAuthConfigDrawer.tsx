@@ -1,5 +1,5 @@
 import { ConfigurePropelauthOrganizationManagerInput } from '@enrolla/graphql-codegen';
-import { useDataProvider } from '@pankod/refine-core';
+import { useDataProvider, useNotification } from '@pankod/refine-core';
 import {
   Button,
   Center,
@@ -19,6 +19,8 @@ export const PropelAuthConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       apiKey: '',
     });
 
+  const { open } = useNotification();
+
   const dataProvider = useDataProvider();
   const { custom } = dataProvider();
   const setIntegration = async () =>
@@ -35,7 +37,20 @@ export const PropelAuthConfigDrawer = (props: IntegrationSetupDrawerProps) => {
           },
         },
       },
-    });
+    })
+      .then(() => {
+        open?.({
+          message: 'Successfully configured PropelAuth integration',
+          type: 'success',
+        });
+        props.onClose();
+      })
+      .catch(() => {
+        open?.({
+          message: 'Failed to configure PropelAuth integration',
+          type: 'error',
+        });
+      });
 
   return (
     <IntegrationSetupDrawer
@@ -69,10 +84,7 @@ export const PropelAuthConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       />
       <Center mt={16}>
         <Button
-          onClick={() => {
-            setIntegration();
-            props.onClose();
-          }}
+          onClick={setIntegration}
         >
           Save
         </Button>

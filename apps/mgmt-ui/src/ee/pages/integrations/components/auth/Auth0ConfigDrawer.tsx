@@ -10,7 +10,7 @@ import {
   IntegrationSetupDrawerProps,
 } from '../IntegrationSetupDrawer';
 import { ConfigureAuth0OrganizationManagerInput } from '@enrolla/graphql-codegen';
-import { useDataProvider } from '@pankod/refine-core';
+import { useDataProvider, useNotification } from '@pankod/refine-core';
 
 export const Auth0ConfigDrawer = (props: IntegrationSetupDrawerProps) => {
   const [integrationInput, setIntegrationInput] =
@@ -19,6 +19,8 @@ export const Auth0ConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       clientId: '',
       clientSecret: '',
     });
+
+  const { open } = useNotification();
 
   const dataProvider = useDataProvider();
   const { custom } = dataProvider();
@@ -36,7 +38,20 @@ export const Auth0ConfigDrawer = (props: IntegrationSetupDrawerProps) => {
           },
         },
       },
-    });
+    })
+      .then(() => {
+        open?.({
+          message: 'Successfully configured Auth0 integration',
+          type: 'success',
+        });
+        props.onClose();
+      })
+      .catch(() => {
+        open?.({
+          message: 'Failed to configure Auth0 integration',
+          type: 'error',
+        });
+      });
 
   return (
     <IntegrationSetupDrawer
@@ -82,14 +97,7 @@ export const Auth0ConfigDrawer = (props: IntegrationSetupDrawerProps) => {
       />
 
       <Center mt={16}>
-        <Button
-          onClick={() => {
-            setIntegration();
-            props.onClose();
-          }}
-        >
-          Save
-        </Button>
+        <Button onClick={setIntegration}>Save</Button>
       </Center>
     </IntegrationSetupDrawer>
   );
