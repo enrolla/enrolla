@@ -1,10 +1,15 @@
 import { Provider } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { Integration, IntegrationType } from './integration.interface';
+import {
+  Integration,
+  IntegrationType,
+  INTEGRATION_TYPE,
+} from './integration.interface';
 import { ConfigurationsService } from '../../configurations/configurations.service';
-import { Auth0OrganizationManager } from './organization-managers/impl/auth0.organization-manager';
-import { PropelAuthOrganizationManager } from './organization-managers/impl/propel-auth.organization-manager';
-import { isNumber } from 'class-validator';
+import {
+  Auth0OrganizationManager,
+  PropelAuthOrganizationManager,
+} from './organization-managers/impl';
 
 function integrationFactory(
   configurationsService: ConfigurationsService,
@@ -12,9 +17,9 @@ function integrationFactory(
   type: IntegrationType
 ) {
   switch (type) {
-    case IntegrationType.Auth0:
+    case INTEGRATION_TYPE.Auth0:
       return new Auth0OrganizationManager(configurationsService);
-    case IntegrationType.PropelAuth:
+    case INTEGRATION_TYPE.PropelAuth:
       return new PropelAuthOrganizationManager(
         configurationsService,
         httpService
@@ -29,14 +34,14 @@ function createIntegrationProvider(type: string): Provider<Integration> {
       integrationFactory(
         configurationsService,
         httpService,
-        IntegrationType[type]
+        INTEGRATION_TYPE[type]
       ),
     inject: [ConfigurationsService, HttpService],
   };
 }
 
 export function createIntegrationsProviders(): Array<Provider<Integration>> {
-  return Object.keys(IntegrationType)
-    .filter((k) => !isNumber(k))
-    .map((type) => createIntegrationProvider(type));
+  return Object.values(INTEGRATION_TYPE).map((type) =>
+    createIntegrationProvider(type)
+  );
 }

@@ -1,5 +1,5 @@
-mutation createCustomer($input: CreateCustomerInput!) {
-  createCustomer(input: $input) {
+mutation updateCustomerByOrgId($input: UpdateCustomerByOrgIdInput!) {
+  updateCustomerByOrgId(input: $input) {
     organizationId
     effectiveConfiguration {
       feature {

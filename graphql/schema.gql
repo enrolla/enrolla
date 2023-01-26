@@ -174,6 +174,8 @@ type Mutation {
   updateOrganization(input: UpdateOrganizationInput!): Organization!
   removeOrganization(id: String!): Organization!
   importMongoCustomers(input: ImportMongoCustomersInput!): Boolean!
+  configureAuth0OrganizationManager(input: ConfigureAuth0OrganizationManagerInput!): Boolean!
+  configurePropelauthOrganizationManager(input: ConfigurePropelauthOrganizationManagerInput!): Boolean!
   createSecretKey(input: CreateSecretKeyInput!): SecretKey!
   removeSecretKey(id: String!): SecretKey!
 }
@@ -258,6 +260,12 @@ input UpdateCustomerByOrgIdInput {
   packageId: String
   features: [FeatureInstanceInput!]
   secrets: [SecretInput!]
+  featuresByKey: [FeatureInstanceByKeyInput!]
+}
+
+input FeatureInstanceByKeyInput {
+  key: String!
+  value: JSON!
 }
 
 input CreateOrganizationInput {
@@ -281,6 +289,17 @@ input FeatureMappingInput {
   sourceName: String!
   destinationName: String!
   type: FeatureType!
+}
+
+input ConfigureAuth0OrganizationManagerInput {
+  clientId: String!
+  clientSecret: String!
+  domain: String!
+}
+
+input ConfigurePropelauthOrganizationManagerInput {
+  apiKey: String!
+  domain: String!
 }
 
 input CreateSecretKeyInput {

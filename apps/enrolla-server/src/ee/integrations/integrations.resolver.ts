@@ -9,6 +9,14 @@ import { MongoDBConnectionOptions } from './databases/mongodb/dto/mongodb-connec
 import { ImportMongoCustomersInput } from './databases/mongodb/dto/import-mongo-customers.input';
 import { FetchMongoCustomersInput } from './databases/mongodb/dto/fetch-mongo-customers.input';
 import { DBCustomer } from './databases/entities/db-customer.entity';
+import {
+  ConfigureAuth0OrganizationManagerInput,
+  ConfigurePropelauthOrganizationManagerInput,
+} from './organization-managers/dto';
+import {
+  Auth0OrganizationManager,
+  PropelAuthOrganizationManager,
+} from './organization-managers/impl';
 
 @Resolver()
 @UseGuards(GraphQLAuthGuard)
@@ -48,5 +56,21 @@ export class IntegrationsResolver {
     @Args('input') input: ImportMongoCustomersInput
   ) {
     return await this.mongodbCustomersService.importCustomers(tenantId, input);
+  }
+
+  @Mutation(() => Boolean)
+  async configureAuth0OrganizationManager(
+    @TenantId() tenantId: string,
+    @Args('input') input: ConfigureAuth0OrganizationManagerInput
+  ) {
+    return await Auth0OrganizationManager.configure(tenantId, input);
+  }
+
+  @Mutation(() => Boolean)
+  async configurePropelauthOrganizationManager(
+    @TenantId() tenantId: string,
+    @Args('input') input: ConfigurePropelauthOrganizationManagerInput
+  ) {
+    return await PropelAuthOrganizationManager.configure(tenantId, input);
   }
 }

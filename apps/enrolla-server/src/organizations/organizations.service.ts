@@ -1,46 +1,44 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateOrganizationInput } from './dto/create-organization.input';
 import { UpdateOrganizationInput } from './dto/update-organization.input';
-import { ConfigurationsService } from '../configurations/configurations.service';
-import {
-  OrganizationManager,
-  OrganizationManagerType,
-} from './organization-managers/organization-manager.interface';
+import { OrganizationManager } from './organization-managers/organization-manager.interface';
 import { ModuleRef } from '@nestjs/core';
 import { NoneOrganizationManager } from './organization-managers/none.organization-manager';
-import { IntegrationType } from '../ee/integrations/integration.interface';
+import {
+  INTEGRATION_TYPE,
+  IntegrationType,
+} from '../ee/integrations/integration.interface';
+import {
+  ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY,
+  ORGANIZATION_MANAGER_TYPE,
+  OrganizationManagerType,
+} from './constants';
+import * as sdk from '@enrolla/node-server-sdk';
 
 @Injectable()
 export class OrganizationsService {
-  private static ORGANIZATION_MANAGER_TYPE_CONFIG_KEY =
-    'ORGANIZATION_MANAGER_TYPE';
-
   private readonly logger = new Logger(OrganizationsService.name);
 
-  constructor(
-    private moduleRef: ModuleRef,
-    private configurationsService: ConfigurationsService
-  ) {}
+  constructor(private moduleRef: ModuleRef) {}
 
   async create(
     createOrganizationInput: CreateOrganizationInput,
     tenantId: string
   ) {
-    return await this.organizationManager(tenantId).then(
-      async (manager) =>
-        await manager.createOrganization(tenantId, createOrganizationInput)
+    return await this.organizationManager(tenantId).createOrganization(
+      tenantId,
+      createOrganizationInput
     );
   }
 
   async findAll(tenantId: string) {
-    return await this.organizationManager(tenantId).then(
-      async (manager) => await manager.getOrganizations(tenantId)
-    );
+    return await this.organizationManager(tenantId).getOrganizations(tenantId);
   }
 
   async findOne(id: string, tenantId: string) {
-    return await this.organizationManager(tenantId).then(
-      async (manager) => await manager.getOrganization(tenantId, id)
+    return await this.organizationManager(tenantId).getOrganization(
+      tenantId,
+      id
     );
   }
 
@@ -53,31 +51,29 @@ export class OrganizationsService {
   }
 
   async remove(id: string, tenantId: string) {
-    return await this.organizationManager(tenantId).then(
-      async (manager) => await manager.removeOrganization(tenantId, id)
+    return await this.organizationManager(tenantId).removeOrganization(
+      tenantId,
+      id
     );
   }
 
-  private async organizationManager(
-    tenantId: string
-  ): Promise<OrganizationManager> {
+  private organizationManager(tenantId: string): OrganizationManager {
     let organizationManagerType: OrganizationManagerType;
 
     try {
-      organizationManagerType =
-        await this.configurationsService.getValue<OrganizationManagerType>(
-          tenantId,
-          OrganizationsService.ORGANIZATION_MANAGER_TYPE_CONFIG_KEY
-        );
+      organizationManagerType = sdk.getFeatureStringValue(
+        ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY,
+        tenantId
+      ) as OrganizationManagerType;
     } catch (error) {
       this.logger.log(
         `Organization manager type not configured for tenant ${tenantId}, falling back to None`
       );
 
-      organizationManagerType = OrganizationManagerType.None;
+      organizationManagerType = ORGANIZATION_MANAGER_TYPE.NONE;
     }
 
-    if (organizationManagerType === OrganizationManagerType.None) {
+    if (organizationManagerType === ORGANIZATION_MANAGER_TYPE.NONE) {
       return this.moduleRef.get(NoneOrganizationManager);
     }
 
@@ -88,20 +84,20 @@ export class OrganizationsService {
     }
 
     return this.moduleRef.get(
-      `Integration${
-        IntegrationType[getIntegrationType(organizationManagerType)]
-      }`,
+      `Integration${getIntegrationType(organizationManagerType)}`,
       { strict: false }
     );
   }
 }
 
-function getIntegrationType(organizationManagerType: OrganizationManagerType) {
+function getIntegrationType(
+  organizationManagerType: OrganizationManagerType
+): IntegrationType {
   switch (organizationManagerType) {
-    case OrganizationManagerType.Auth0:
-      return IntegrationType.Auth0;
+    case ORGANIZATION_MANAGER_TYPE.AUTH0:
+      return INTEGRATION_TYPE.Auth0;
 
-    case OrganizationManagerType.PropelAuth:
-      return IntegrationType.PropelAuth;
+    case ORGANIZATION_MANAGER_TYPE.PROPEL_AUTH:
+      return INTEGRATION_TYPE.PropelAuth;
   }
 }
