@@ -11,6 +11,7 @@ import {
   IntegrationSetupDrawer,
   IntegrationSetupDrawerProps,
 } from '../IntegrationSetupDrawer';
+import { errorNotification, responseNotification } from './utils';
 
 export const PropelAuthConfigDrawer = (props: IntegrationSetupDrawerProps) => {
   const [integrationInput, setIntegrationInput] =
@@ -38,18 +39,11 @@ export const PropelAuthConfigDrawer = (props: IntegrationSetupDrawerProps) => {
         },
       },
     })
-      .then(() => {
-        open?.({
-          message: 'Successfully configured PropelAuth integration',
-          type: 'success',
-        });
-        props.onClose();
+      .then(({ data }) => {
+        responseNotification(data as unknown as boolean, open, props.onClose);
       })
       .catch(() => {
-        open?.({
-          message: 'Failed to configure PropelAuth integration',
-          type: 'error',
-        });
+        open?.(errorNotification());
       });
 
   return (

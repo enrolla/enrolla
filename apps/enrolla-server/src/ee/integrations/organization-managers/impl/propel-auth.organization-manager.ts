@@ -149,7 +149,11 @@ export class PropelAuthOrganizationManager
     tenantId: string,
     input: ConfigurePropelauthOrganizationManagerInput
   ) {
-    this.testConfigValidity(input, tenantId);
+    try {
+      await PropelAuthOrganizationManager.testConfigValidity(input, tenantId);
+    } catch (error) {
+      return false;
+    }
     const featuresToUpdate = [
       {
         key: ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY,
@@ -186,7 +190,7 @@ export class PropelAuthOrganizationManager
         value: ORGANIZATION_MANAGER_TYPE.NONE,
       });
 
-      throw error;
+      return false;
     }
   }
 
@@ -210,7 +214,7 @@ export class PropelAuthOrganizationManager
         error.stack
       );
 
-      throw new BadRequestException('Invalid configuration');
+      throw error;
     }
   }
 }
