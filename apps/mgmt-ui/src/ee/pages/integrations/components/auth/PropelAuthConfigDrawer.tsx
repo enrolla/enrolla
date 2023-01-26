@@ -83,11 +83,7 @@ export const PropelAuthConfigDrawer = (props: IntegrationSetupDrawerProps) => {
         }
       />
       <Center mt={16}>
-        <Button
-          onClick={setIntegration}
-        >
-          Save
-        </Button>
+        <Button onClick={setIntegration}>Save</Button>
       </Center>
     </IntegrationSetupDrawer>
   );

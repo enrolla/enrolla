@@ -4,7 +4,10 @@ import { UpdateOrganizationInput } from './dto/update-organization.input';
 import { OrganizationManager } from './organization-managers/organization-manager.interface';
 import { ModuleRef } from '@nestjs/core';
 import { NoneOrganizationManager } from './organization-managers/none.organization-manager';
-import { IntegrationType } from '../ee/integrations/integration.interface';
+import {
+  INTEGRATION_TYPE,
+  IntegrationType,
+} from '../ee/integrations/integration.interface';
 import {
   ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY,
   ORGANIZATION_MANAGER_TYPE,
@@ -81,20 +84,20 @@ export class OrganizationsService {
     }
 
     return this.moduleRef.get(
-      `Integration${
-        IntegrationType[getIntegrationType(organizationManagerType)]
-      }`,
+      `Integration${getIntegrationType(organizationManagerType)}`,
       { strict: false }
     );
   }
 }
 
-function getIntegrationType(organizationManagerType: OrganizationManagerType) {
+function getIntegrationType(
+  organizationManagerType: OrganizationManagerType
+): IntegrationType {
   switch (organizationManagerType) {
     case ORGANIZATION_MANAGER_TYPE.AUTH0:
-      return IntegrationType.Auth0;
+      return INTEGRATION_TYPE.Auth0;
 
     case ORGANIZATION_MANAGER_TYPE.PROPEL_AUTH:
-      return IntegrationType.PropelAuth;
+      return INTEGRATION_TYPE.PropelAuth;
   }
 }
