@@ -387,7 +387,7 @@ export type QueryFetchPostgresCustomersArgs = {
 
 
 export type QueryFetchPostgresSchemaArgs = {
-  input: PostgresQlOptions;
+  postgresOptions: PostgresQlOptions;
 };
 
 

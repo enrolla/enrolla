@@ -27,6 +27,7 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
   const [active, setActive] = useState(0);
   const [connectionOptions, setConnectionOptions] = useState<MongoDbOptions>({
     host: '',
+    port: null,
     isSrv: false,
     username: null,
     password: null,
@@ -195,10 +196,22 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
             mt={8}
             label="Host"
             value={connectionOptions.host}
+            withAsterisk
             onChange={(event) =>
               setConnectionOptions({
                 ...connectionOptions,
                 host: event.currentTarget.value,
+              })
+            }
+          />
+          <TextInput
+            mt={8}
+            label="Port"
+            value={connectionOptions.port?.toString() ?? ''}
+            onChange={(event) =>
+              setConnectionOptions({
+                ...connectionOptions,
+                port: Number(event.currentTarget.value),
               })
             }
           />
@@ -238,6 +251,7 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
             mt={8}
             label="Database Name"
             value={connectionOptions.database}
+            withAsterisk
             onChange={(event) =>
               setConnectionOptions({
                 ...connectionOptions,
@@ -249,6 +263,7 @@ export const MongoDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
             mt={8}
             label="Collection Name"
             value={connectionOptions.collection ?? ''}
+            withAsterisk
             onChange={(event) =>
               setConnectionOptions({
                 ...connectionOptions,

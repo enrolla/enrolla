@@ -1,6 +1,5 @@
 import {
   Button,
-  Checkbox,
   Group,
   PasswordInput,
   Stepper,
@@ -23,11 +22,12 @@ import {
 import { useDataProvider, useNavigation } from '@pankod/refine-core';
 import { FeaturesMapping } from '../FeaturesMapper';
 
-export const PostgresDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
+export const PostgresQLConfigDrawer = (props: IntegrationSetupDrawerProps) => {
   const [active, setActive] = useState(0);
   const [connectionOptions, setConnectionOptions] = useState<PostgresQlOptions>(
     {
       host: '',
+      port: null,
       username: null,
       password: null,
       database: '',
@@ -68,7 +68,7 @@ export const PostgresDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
         variables: {
           postgresOptions: {
             value: connectionOptions,
-            type: 'PostgresDBOptions',
+            type: 'PostgresQLOptions',
             required: true,
           },
         },
@@ -87,7 +87,7 @@ export const PostgresDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
         variables: {
           postgresOptions: {
             value: connectionOptions,
-            type: 'PostgresDBOptions',
+            type: 'PostgresQLOptions',
             required: true,
           },
           input: {
@@ -131,7 +131,7 @@ export const PostgresDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
         variables: {
           postgresOptions: {
             value: connectionOptions,
-            type: 'PostgresDBOptions',
+            type: 'PostgresQLOptions',
             required: true,
           },
           input: {
@@ -197,10 +197,22 @@ export const PostgresDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
             mt={8}
             label="Host"
             value={connectionOptions.host}
+            withAsterisk
             onChange={(event) =>
               setConnectionOptions({
                 ...connectionOptions,
                 host: event.currentTarget.value,
+              })
+            }
+          />
+          <TextInput
+            mt={8}
+            label="Port"
+            value={connectionOptions.port?.toString() ?? ''}
+            onChange={(event) =>
+              setConnectionOptions({
+                ...connectionOptions,
+                port: Number(event.currentTarget.value),
               })
             }
           />
@@ -230,6 +242,7 @@ export const PostgresDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
             mt={8}
             label="Database Name"
             value={connectionOptions.database}
+            withAsterisk
             onChange={(event) =>
               setConnectionOptions({
                 ...connectionOptions,
@@ -241,6 +254,7 @@ export const PostgresDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
             mt={8}
             label="Schema Name"
             value={connectionOptions.schema ?? ''}
+            withAsterisk
             onChange={(event) =>
               setConnectionOptions({
                 ...connectionOptions,
@@ -252,6 +266,7 @@ export const PostgresDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
             mt={8}
             label="Table Name"
             value={connectionOptions.table ?? ''}
+            withAsterisk
             onChange={(event) =>
               setConnectionOptions({
                 ...connectionOptions,
@@ -259,7 +274,6 @@ export const PostgresDBConfigDrawer = (props: IntegrationSetupDrawerProps) => {
               })
             }
           />
-          ;
         </Stepper.Step>
         <Stepper.Step
           label="Identify customers"

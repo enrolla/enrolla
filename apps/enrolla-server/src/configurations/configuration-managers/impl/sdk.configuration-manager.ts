@@ -35,7 +35,6 @@ export class SdkConfigurationManager implements ConfigurationManager {
       );
       SdkConfigurationManager.logger.warn(`datadog host: ${hostname}`);
     } catch (err) {
-      console.log(err);
       SdkConfigurationManager.logger.error('datadog host error', err.stack);
     }
 

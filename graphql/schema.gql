@@ -136,7 +136,7 @@ type Query {
   integrations: [Integration!]!
   fetchMongoSchema(mongoOptions: MongoDBOptions!): [DBFeatureMetadata!]!
   fetchMongoCustomers(mongoOptions: MongoDBOptions!, input: FetchCustomersInput!): [DBCustomer!]!
-  fetchPostgresSchema(input: PostgresQLOptions!): [DBFeatureMetadata!]!
+  fetchPostgresSchema(postgresOptions: PostgresQLOptions!): [DBFeatureMetadata!]!
   fetchPostgresCustomers(postgresOptions: PostgresQLOptions!, input: FetchCustomersInput!): [DBCustomer!]!
 }
 

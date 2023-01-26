@@ -9,7 +9,7 @@ export interface CustomersDatabaseService {
 
   fetchCustomers(
     options: DatabaseOptions,
-    fetchMongoCustomersInput: FetchCustomersInput
+    fetchCustomersInput: FetchCustomersInput
   ): Promise<DBCustomer[]>;
 
   fetchCustomersFeatures(

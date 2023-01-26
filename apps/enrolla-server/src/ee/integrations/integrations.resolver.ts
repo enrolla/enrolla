@@ -69,7 +69,7 @@ export class IntegrationsResolver {
   @Query(() => [DBFeatureMetadata])
   async fetchPostgresSchema(
     @TenantId() tenantId: string,
-    @Args('input') connectionOptions: PostgresQLOptions
+    @Args('postgresOptions') connectionOptions: PostgresQLOptions
   ) {
     return await this.postgresqlCustomersService.fetchSchema(connectionOptions);
   }
@@ -80,7 +80,7 @@ export class IntegrationsResolver {
     @Args('postgresOptions') postgresOptions: PostgresQLOptions,
     @Args('input') input: FetchCustomersInput
   ) {
-    return await this.mongodbCustomersService.fetchCustomers(
+    return await this.postgresqlCustomersService.fetchCustomers(
       postgresOptions,
       input
     );
