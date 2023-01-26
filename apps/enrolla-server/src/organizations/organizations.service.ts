@@ -83,7 +83,8 @@ export class OrganizationsService {
     return this.moduleRef.get(
       `Integration${
         IntegrationType[getIntegrationType(organizationManagerType)]
-      }`
+      }`,
+      { strict: false }
     );
   }
 }
