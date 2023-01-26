@@ -110,11 +110,7 @@ export class Auth0OrganizationManager
     tenantId: string,
     input: ConfigureAuth0OrganizationManagerInput
   ) {
-    try {
-      await Auth0OrganizationManager.testConfigValidity(input, tenantId);
-    } catch (error) {
-      return false;
-    }
+    await Auth0OrganizationManager.testConfigValidity(input, tenantId);
     const featuresToUpdate = [
       {
         key: ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY,
@@ -153,7 +149,7 @@ export class Auth0OrganizationManager
         value: ORGANIZATION_MANAGER_TYPE.NONE,
       });
 
-      return false;
+      throw error;
     }
   }
 
@@ -171,7 +167,7 @@ export class Auth0OrganizationManager
         error.stack
       );
 
-      throw error;
+      throw new BadRequestException('Invalid configuration');
     }
   }
 }

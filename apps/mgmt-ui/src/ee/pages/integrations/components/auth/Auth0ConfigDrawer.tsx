@@ -11,7 +11,6 @@ import {
 } from '../IntegrationSetupDrawer';
 import { ConfigureAuth0OrganizationManagerInput } from '@enrolla/graphql-codegen';
 import { useDataProvider, useNotification } from '@pankod/refine-core';
-import { errorNotification, responseNotification } from './utils';
 
 export const Auth0ConfigDrawer = (props: IntegrationSetupDrawerProps) => {
   const [integrationInput, setIntegrationInput] =
@@ -40,11 +39,18 @@ export const Auth0ConfigDrawer = (props: IntegrationSetupDrawerProps) => {
         },
       },
     })
-      .then(({ data }) => {
-        responseNotification(data as unknown as boolean, open, props.onClose);
+      .then(() => {
+        open?.({
+          message: 'Successfully configured Auth0 integration',
+          type: 'success',
+        });
+        props.onClose();
       })
       .catch(() => {
-        open?.(errorNotification());
+        open?.({
+          message: 'Failed to configure Auth0 integration',
+          type: 'error',
+        });
       });
 
   return (
