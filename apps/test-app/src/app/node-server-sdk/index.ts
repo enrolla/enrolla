@@ -27,13 +27,19 @@ export const testNodeServerSdk = async () => {
 
   console.log('Initiated Successfully');
 
-  const orgId = 'local_test_app_org_id;'
+  const orgId = 'local_test_app_org_id;';
   const secretKey = 'local_test_app_secret';
 
-  console.log('Secret value before change', sdk.getSecretValue(secretKey, orgId));
+  console.log(
+    'Secret value before change',
+    sdk.getSecretValue(secretKey, orgId)
+  );
 
   const newValue = 'new_value';
-  await sdk.updateCustomerSecrets(orgId, {key: secretKey, value: newValue});
-  
-  console.log('Secret value after change ', sdk.getSecretValue(secretKey, orgId));
+  await sdk.updateCustomerSecrets(orgId, { key: secretKey, value: newValue });
+
+  console.log(
+    'Secret value after change ',
+    sdk.getSecretValue(secretKey, orgId)
+  );
 };
