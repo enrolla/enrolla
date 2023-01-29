@@ -3,6 +3,7 @@
   "version": "0.1.3",
   "description": "Auto-generated interfaces and types for use with the Enrolla graphQL API",
   "keywords": [
+    "vecinity",
     "enrolla",
     "node",
     "server",
