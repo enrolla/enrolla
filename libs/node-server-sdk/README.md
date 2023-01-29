@@ -1,11 +1,5 @@
 # node-server-sdk
 
-This library was generated with [Nx](https://nx.dev).
+Enrolla SDK for NodeJS.
 
-## Running unit tests
-
-Run `nx test node-server-sdk` to execute the unit tests via [Jest](https://jestjs.io).
-
-## Running lint
-
-Run `nx lint node-server-sdk` to execute the lint via [ESLint](https://eslint.org/).
+See the (Full Documentation)[https://docs.enrolla.io] for more details.

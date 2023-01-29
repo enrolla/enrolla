@@ -1,5 +1,8 @@
 import { FeatureType } from '@enrolla/graphql-codegen';
 
+/**
+ * The severity of an error.
+ */
 export const SEVERITY = {
   Warning: 'Warning',
   Error: 'Error',
@@ -8,8 +11,17 @@ export const SEVERITY = {
 
 export type Severity = typeof SEVERITY[keyof typeof SEVERITY];
 
+/**
+ * Base class for all Enrolla errors.
+ */
 export class EnrollaError extends Error {
+  /**
+   * The severity of the error.
+   */
   severity: Severity;
+  /**
+   * The underlying cause of the error.
+   */
   cause?: Error;
 
   constructor(message: string) {
