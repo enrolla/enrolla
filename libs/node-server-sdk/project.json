@@ -27,7 +27,8 @@
         "tsConfig": "libs/node-server-sdk/tsconfig.lib.json",
         "packageJson": "libs/node-server-sdk/package.json",
         "main": "libs/node-server-sdk/src/index.ts",
-        "assets": ["libs/node-server-sdk/*.md"]
+        "assets": ["libs/node-server-sdk/*.md"],
+        "buildableProjectDepsInPackageJsonType": "dependencies"
       }
     },
     "publish": {

@@ -1,6 +1,6 @@
 {
   "name": "@enrolla/node-server-sdk",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Enrolla Node Server SDK",
   "license": "MIT",
   "homepage": "https://github.com/enrolla/enrolla",

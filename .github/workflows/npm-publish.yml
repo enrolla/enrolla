@@ -66,4 +66,4 @@ jobs:
           echo "Publishing ${{ matrix.project }}"
           npx nx build ${{ matrix.project }}
           cd dist/libs/${{ matrix.project }}
-          npm publish --access public --tag alpha
+          npm publish --access public
