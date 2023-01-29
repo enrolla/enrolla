@@ -1,24 +1,23 @@
 {
   "name": "@enrolla/node-server-sdk",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Enrolla Node Server SDK",
-  "keywords": [
-    "vecinity",
-    "enrolla",
-    "node",
-    "server",
-    "sdk",
-    "ts",
-    "typescript",
-    "javascript"
-  ],
+  "license": "MIT",
   "homepage": "https://github.com/enrolla/enrolla",
+  "author": {
+    "name": "Enrolla",
+    "url": "https://www.enrolla.io/"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/enrolla/enrolla.git",
     "directory": "libs/node-server-sdk"
   },
-  "source": "./src/index.ts",
-  "types": "./dist/index.d.ts",
-  "license": "MIT Expat"
+  "bugs": "https://github.com/enrolla/enrolla/issues",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "keywords": [
+    "vecinity",
+    "enrolla"
+  ]
 }
