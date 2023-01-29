@@ -8,9 +8,12 @@ import { Customer } from '@enrolla/graphql-codegen';
 const _customerFeatureStore: Record<string, Record<string, Feature>> = {};
 const _customerSecretStore: Record<string, Record<string, string>> = {};
 
-export const refreshStore = async () => {
-  const { customers } = await fetchAllCustomerData();
-
+/**
+ * Refreshes the store (in memory cache) with the customer data provided.
+ *
+ * @param customers - The customer data to refresh the store with.
+ */
+export const refreshStore = (customers: Customer[] = []) => {
   customers.forEach((customer: Customer) => {
     setCustomerFeatures(customer);
     setCustomerSecrets(customer);
