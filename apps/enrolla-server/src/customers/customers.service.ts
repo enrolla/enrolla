@@ -15,6 +15,7 @@ import { UpdateCustomerByOrgIdInput, UpdateCustomerInput } from './dto';
 import { FeaturesService } from '../features/features.service';
 import { validateFeatureInputType } from '../features/validators';
 import { Feature } from '@enrolla/graphql-codegen';
+import { SecretsService } from '../secrets/secrets.service';
 
 @Injectable()
 export class CustomersService {
@@ -23,7 +24,8 @@ export class CustomersService {
     private organizationsService: OrganizationsService,
     private featureInstancesService: FeatureInstancesService,
     private packagesService: PackagesService,
-    private featuresService: FeaturesService
+    private featuresService: FeaturesService,
+    private secretsService: SecretsService
   ) {}
 
   async create(createCustomerInput: CreateCustomerInput, tenantId: string) {
@@ -149,10 +151,11 @@ export class CustomersService {
     customerInput: UpdateCustomerByOrgIdInput,
     tenantId: string
   ) {
-    const features = await this.validateAndTransformFeatures(
-      customerInput,
-      tenantId
-    );
+    const features = customerInput.featuresByKey?.length
+      ? await this.validateAndTransformFeatures(customerInput, tenantId)
+      : [];
+
+    await this.validateSecrets(customerInput, tenantId);
 
     return await this.prismaService.customer.update({
       where: {
@@ -223,6 +226,23 @@ export class CustomersService {
         featureId: feature.id,
         value,
       };
+    });
+  }
+
+  async validateSecrets(
+    customerInput: UpdateCustomerByOrgIdInput,
+    tenantId: string
+  ) {
+    if (!customerInput.secrets) return;
+
+    const availalbeSecretKeys = (
+      await this.secretsService.findAllKeysForTennant(tenantId)
+    ).map((s) => s.key);
+
+    customerInput.secrets.forEach((secret) => {
+      if (!availalbeSecretKeys.includes(secret.key)) {
+        throw new Error(`Secret with key "${secret.key}" not found.`);
+      }
     });
   }
 }
