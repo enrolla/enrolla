@@ -217,10 +217,7 @@ export class CustomersService {
         throw new Error(`Feature with key "${key}" not found.`);
       }
 
-      validateFeatureInputType(
-        (value as unknown as any)?.value,
-        feature as Feature
-      );
+      validateFeatureInputType(value?.['value'], feature as Feature);
 
       return {
         featureId: feature.id,
