@@ -11,11 +11,11 @@ import { resolver, typedResolver, secretResolver } from './utils';
  * @param options
  * @returns The evaluated feature value.
  */
-export const getFeatureValue = (
+export const getFeatureValue = <T extends FeatureType>(
   feature: string,
   organizationId: string,
   options?: Options
-): FeatureValue => resolver(feature, organizationId, options);
+): T => resolver(feature, organizationId, options) as T;
 
 /**
  * Evaluates the feature value for the given organization and returns the result.
