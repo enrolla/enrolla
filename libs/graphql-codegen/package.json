@@ -14,8 +14,8 @@
     "directory": "libs/graphql-codegen"
   },
   "bugs": "https://github.com/enrolla/enrolla/issues",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
   "keywords": [
     "vecinity",
     "enrolla"
