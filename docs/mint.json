@@ -46,7 +46,13 @@
     },
     {
       "group": "Core Concepts",
-      "pages": ["concepts/features", "concepts/packages", "concepts/secrets", "concepts/customers"]
+      "pages": [
+        "concepts/introduction",
+        "concepts/features",
+        "concepts/packages",
+        "concepts/secrets",
+        "concepts/customers"
+      ]
     },
     {
       "group": "SDK Documentation",
@@ -62,10 +68,7 @@
     },
     {
       "group": "Contributing",
-      "pages": [
-        "contributing/overview",
-        "contributing/developing"
-      ]
+      "pages": ["contributing/overview", "contributing/developing"]
     }
   ],
   "footerSocials": {
@@ -75,7 +78,7 @@
   "backgroundImage": "/background.png",
   "analytics": {
     "posthog": {
-        "apiKey": "phc_1YZud7ewUPOiph5LeDOU2ASc0WlbNdlaS57cIwVEglj"
+      "apiKey": "phc_1YZud7ewUPOiph5LeDOU2ASc0WlbNdlaS57cIwVEglj"
     }
   }
 }
