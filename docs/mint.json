@@ -55,6 +55,14 @@
       ]
     },
     {
+      "group": "Integrations",
+      "pages": [
+        "integrations/introduction",
+        "integrations/authentication-providers",
+        "integrations/databases"
+      ]
+    },
+    {
       "group": "SDK Documentation",
       "pages": ["sdk/introduction", "sdk/node", "sdk/python", "sdk/golang"]
     },

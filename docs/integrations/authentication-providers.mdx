@@ -1,0 +1,46 @@
+---
+title: 'Authentication Providers'
+---
+
+Enrolla requires that each of your customers have a unique `organization_id`. This is the identifier that you use internally, in your organization, by which you identify the customer (a unique string, usually some kind of uuid).
+
+While you may define this identifier yourselves, its commonplace to use a dedicated third party service, an authentication provider, to handle this for you.
+If you use an external authentication provider then this guide is meant for you.
+
+### Integration Features
+
+- Import your existing customers into Enrolla.
+- Select from your existing customer base when creating a new customer in the Enrolla Dashboard.
+
+### How to Integrate Your Auth Provider
+
+1. Navigate to the Integrations page in the Enrolla Dashboard. [Take me there now](https://app.enrolla.io/integrations).
+2. Click on the Authentication Provider you wish to integrate with.
+3. Follow the instructions. You may need to provide api keys depending on the integration.
+
+### Supported Providers:
+
+<AccordionGroup>
+
+<Accordion title="Auth0">
+
+Required parameters for integration:
+
+| Parameter     | Description                                   |
+| ------------- | --------------------------------------------- |
+| Domain        | ManagementClient server domain                |
+| Client Id     | Management API Non Interactive Client Id.     |
+| Client Secret | Management API Non Interactive Client Secret. |
+
+</Accordion>
+<Accordion title="PropelAuth">
+
+Required parameters for integration:
+
+| Parameter | Description                    |
+| --------- | ------------------------------ |
+| Domain    | ManagementClient server domain |
+| Api Key   | Secret API Access Key.         |
+
+</Accordion>
+</AccordionGroup>
