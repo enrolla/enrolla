@@ -20,7 +20,9 @@ export const createCustomer = async (input: {
   organizationId?: string;
   createOrganizationName?: string;
 }) => {
-  return await api.createCustomer(input);
+  const { createCustomer } = await api.createCustomer(input);
+
+  return createCustomer as Customer;
 };
 
 /**
@@ -51,7 +53,7 @@ export const updateCustomerSecrets = async (
 
   setCustomerSecrets(updateCustomerByOrgId as Partial<Customer>);
 
-  return updateCustomerByOrgId;
+  return updateCustomerByOrgId as Customer;
 };
 
 /**
@@ -78,5 +80,5 @@ export const updateCustomerFeatures = async (
 
   setCustomerFeatures(updateCustomerByOrgId as Partial<Customer>);
 
-  return updateCustomerByOrgId;
+  return updateCustomerByOrgId as Customer;
 };

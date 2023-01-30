@@ -2,12 +2,19 @@
 title: "NodeJS"
 ---
 
+<Card href="https://www.jsdocs.io/package/@enrolla/node-server-sdk">
+<img src="https://img.shields.io/badge/jsDocs.io-reference-blue" alt="jsDocs.io"/>
+<br/>
+See the full API reference.
+</Card>
+
+
 ## Installation
 
 <Tabs>
   <Tab title="npm">
     ```bash
-        npm install @enrolla/node-server-sdk
+        npm install --save @enrolla/node-server-sdk
     ```
   </Tab>
   <Tab title="yarn">
@@ -19,7 +26,7 @@ title: "NodeJS"
 
 ## Usage
 
-### Initialiation
+### Initialization
 
 The SDK should be initialized (by calling the `initialize` function) once in the lifecycle of your application, prior to using any of the SDK's other functionality.
 
@@ -27,7 +34,7 @@ Initialize the SDK in the entry point of your application before accepting conne
 
 <Warning>Forgetting to initialize the SDK will result in an exception being thrown.</Warning>
 
-#### Examples
+**Example:**
 
 <Tabs>
   <Tab title="Express">
@@ -39,7 +46,14 @@ Initialize the SDK in the entry point of your application before accepting conne
     const port = 3000
 
     try {
-      await enrolla.initialize({ apiToken: <API_TOKEN> });
+      await enrolla.initialize({ 
+        apiToken: <API_TOKEN>, //required
+        privateKey: <PRIVATE_KEY>, // required for using secrets
+        polling: { // enable polling with 60 second interval
+          enabled: true, 
+          intervalSeconds: 60,
+        },  
+      });
     } catch (error) // handle error
 
     app.listen(port, () => {
@@ -98,6 +112,21 @@ const myFunction = (organizationId: string) => {
 }
 ```
 
+You can also use generics to specify the return type, for example:
+
+```ts
+import { getFeatureValue } = from '@enrolla/node-server-sdk'
+
+const myFunction = (organizationId: string) => {
+    try {
+        const featureValue: string = getFeatureValue<string>('my-string-feature', organizationId);
+        // use feature value
+    } catch (err) {
+        // handle error
+    }
+}
+````
+
 #### Typed Feature Evaluation
 
 Use any of the following functions to evaluate a feature and specify the return type:
@@ -122,4 +151,63 @@ const myFunction = (organizationId: string) => {
         // handle error
     }
 }
+```
+
+## Secret Evaluation
+
+<Warning>You must supply your `privateKey` to the `initialize` function in order to use secrets.</Warning>
+
+The SDK can retrieve the value of any secret for a given customer.
+
+**Example:**
+
+```ts
+import { getSecretValue } = from '@enrolla/node-server-sdk'
+
+const myFunction = (organizationId: string) => {
+    try {
+        const secretValue: string = getSecretValue('my-secret', organizationId);
+        // use secret value
+    } catch (err) {
+        // handle error
+    }
+}
+```
+
+## Management API
+
+The SDK exposes a Management API that allows you to programmatically manage customer features and secrets from your application.
+
+Available functions:
+- `createCustomer` - create a new customer
+- `updateCustomerFeatures` - update feature values for an existing customer
+- `updateCustomerSecrets` - update secret values for an existing customer
+
+**Example:**
+
+```ts
+import * as enrolla from '@enrolla/node-server-sdk';
+
+const showcaseMgmtFeatures = async () => {
+  const organizationId = 'unique-organization-id';
+  try {
+    await enrolla.createCustomer({ // create a new customer in Enrolla with the supplied organizationId
+      name: 'Customer Name',
+      organizationId,
+      pack
+    });
+
+    await enrolla.updateCustomerFeatures(organizationId, {
+      key: 'my-integer-feature', // feature must be created in Enrolla prior to updating its value for this customer
+      value: 100, // must match the defined feature type (in this case, an integer)
+    });
+
+    await enrolla.updateCustomerSecrets(organizationId, {
+      key: 'my-secret', // secret must be created in Enrolla prior to updating its value for this customer
+      value: 'my-secret-value',
+    });
+  } catch (err) {
+    // handle error
+  }
+};
 ```
