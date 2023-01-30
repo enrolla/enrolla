@@ -1,0 +1,49 @@
+---
+title: 'Packages'
+description: 'Group together features and functionality into packages.'
+---
+
+Packages allow you to group together sets of features and define their default values.
+
+Packages may also inherit from one another so that when a parent changes, so do all packages which inherit from it.
+
+This concept is best described through an example.
+
+### Example
+Lets say for example that we have 2 features defined: 
+- `number_of_seats` (an `Integer` feature with a default value of `1`)
+- `cool_feature_enabled` (a `Boolean` feature with a default value of `false`)
+
+Now with these features we want to create 2 packages, a *Free Tier Package* and an *Enterprise Tier Package*.
+_____
+
+We can do this by creating a new package and selecting the features we want to include in the package. 
+
+Lets create the *Free Tier Package* and assign **a new default value** of `5` to `number_of_seats`.
+
+This means that any customers assigned to this package will have the `number_of_seats` feature evaluated to `5` and the `cool_feature_enabled` feature evaluated to `false`.
+
+_____
+
+
+Now lets create the *Enterprise Tier Package* have it **inherit from another package** (specifically the Free Tier Package we just created).
+
+<Info>Packages that inherit from one another 'copy' the default values of the base package to themselves.</Info>
+
+Lets also, assign a default value of `true` to the `cool_feature_enabled` feature.
+
+This means that any customers assigned to this package will have the `number_of_seats` feature evaluated to `5` and the `cool_feature_enabled` feature evaluated to `true`.
+
+Now both of our packages have been created and are ready for use.
+
+<Frame>
+  <img src="/images/packages.png" />
+</Frame>
+
+### Using Packages
+
+Using packages is simple. When you create a new customer you can assign them to a package. This will automatically assign the default values of the features in the package to the customer.
+
+At any time you can update either the package itself, which will change the default values for all customer assigned to that package, or you can update the customer directly, which will override the default values of the package.
+
+More on that in the [Customers](concepts/customers) section.

@@ -45,12 +45,16 @@
       "pages": ["introduction", "features"]
     },
     {
+      "group": "Core Concepts",
+      "pages": ["concepts/features", "concepts/packages", "concepts/secrets", "concepts/customers"]
+    },
+    {
       "group": "SDK Documentation",
       "pages": ["sdk/introduction", "sdk/node", "sdk/python", "sdk/golang"]
     },
     {
-      "group": "Management UI",
-      "pages": ["mgmt-ui/introduction"]
+      "group": "Dashboard",
+      "pages": ["dashboard/introduction"]
     },
     {
       "group": "API Documentation",
