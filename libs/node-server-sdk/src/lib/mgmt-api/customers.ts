@@ -20,7 +20,6 @@ export const createCustomer = async (input: {
   organizationId?: string;
   createOrganizationName?: string;
 }) => {
-
   const { createCustomer } = await api.createCustomer(input);
 
   return createCustomer as Customer;
