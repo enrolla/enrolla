@@ -145,7 +145,7 @@ model SecretKey {
   createdAt           DateTime    @default(now()) @map("created_at")
 
   @@unique([id, tenantId])
-  @@unique([key])
+  @@unique([key, tenantId])
   @@map("secret_keys")
 }
 
