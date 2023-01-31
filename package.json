@@ -38,6 +38,7 @@
     "class-validator": "^0.13.2",
     "dataloader": "^2.1.0",
     "dd-trace": "^3.11.0",
+    "firebase-admin": "^11.5.0",
     "gql-query-builder": "^3.8.0",
     "graphql": "^16.6.0",
     "graphql-request": "^5.1.0",

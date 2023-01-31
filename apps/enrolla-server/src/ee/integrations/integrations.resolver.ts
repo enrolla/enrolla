@@ -16,10 +16,12 @@ import { DatabaseType } from './databases/database-type.enum';
 import {
   ConfigureAuth0OrganizationManagerInput,
   ConfigurePropelauthOrganizationManagerInput,
+  ConfigureFirebaseOrganizationManagerInput,
 } from './organization-managers/dto';
 import {
   Auth0OrganizationManager,
   PropelAuthOrganizationManager,
+  FirebaseOrganizationManager,
 } from './organization-managers/impl';
 
 @Resolver()
@@ -122,5 +124,13 @@ export class IntegrationsResolver {
     @Args('input') input: ConfigurePropelauthOrganizationManagerInput
   ) {
     return await PropelAuthOrganizationManager.configure(tenantId, input);
+  }
+
+  @Mutation(() => Boolean)
+  async configureFireBaseOrganizationManager(
+    @TenantId() tenantId: string,
+    @Args('input') input: ConfigureFirebaseOrganizationManagerInput
+  ) {
+    return await FirebaseOrganizationManager.configure(tenantId, input);
   }
 }
