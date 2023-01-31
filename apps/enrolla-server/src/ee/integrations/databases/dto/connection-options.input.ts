@@ -1,15 +1,12 @@
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
-export class MongoDBConnectionOptions {
+export class DatabaseOptions {
   @Field(() => String)
   host: string;
 
   @Field(() => Number, { nullable: true })
   port?: number;
-
-  @Field(() => Boolean, { defaultValue: false })
-  isSrv: boolean;
 
   @Field(() => String)
   database: string;
@@ -19,7 +16,4 @@ export class MongoDBConnectionOptions {
 
   @Field(() => String, { nullable: true })
   password?: string;
-
-  @Field(() => String, { nullable: true })
-  collection: string;
 }

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCustomerInput } from './dto/create-customer.input';
-import { UpdateCustomerInput } from './dto/update-customer.input';
 import { OrganizationsService } from '../organizations/organizations.service';
 import { Organization } from '../organizations/entities/organization.entity';
 import { PrismaService } from '../prisma/prisma.service';
@@ -12,6 +11,10 @@ import {
   getConfigurationFromFeatures,
   mergeConfigurations,
 } from '../utils/configuration.utils';
+import { UpdateCustomerByOrgIdInput, UpdateCustomerInput } from './dto';
+import { FeaturesService } from '../features/features.service';
+import { validateFeatureInputType } from '../features/validators';
+import { Feature } from '@enrolla/graphql-codegen';
 import { SecretsService } from '../secrets/secrets.service';
 
 @Injectable()
@@ -21,6 +24,7 @@ export class CustomersService {
     private organizationsService: OrganizationsService,
     private featureInstancesService: FeatureInstancesService,
     private packagesService: PackagesService,
+    private featuresService: FeaturesService,
     private secretsService: SecretsService
   ) {}
 
@@ -89,40 +93,46 @@ export class CustomersService {
     tenantId: string,
     customerInput: Partial<CreateCustomerInput>
   ) {
+    const { features, secrets, name, packageId } = customerInput;
+
     return {
-      name: customerInput.name,
       tenantId,
-      packageId: customerInput.packageId,
-      features: {
-        deleteMany: {
-          featureId: {
-            in: customerInput.features.map((feature) => feature.featureId),
+      ...(!!name && { name }),
+      ...(!!packageId && { packageId }),
+      ...(!!features && {
+        features: {
+          deleteMany: {
+            featureId: {
+              in: customerInput.features?.map((feature) => feature.featureId),
+            },
           },
+          create: customerInput.features?.map((feature) => ({
+            featureId: feature.featureId,
+            value: feature.value,
+            tenantId,
+          })),
         },
-        create: customerInput.features.map((feature) => ({
-          featureId: feature.featureId,
-          value: feature.value,
-          tenantId,
-        })),
-      },
-      secrets: {
-        deleteMany: {
-          key: { in: customerInput.secrets.map((secret) => secret.key) },
+      }),
+      ...(!!secrets && {
+        secrets: {
+          deleteMany: {
+            key: { in: customerInput.secrets?.map((secret) => secret.key) },
+          },
+          create: customerInput.secrets?.map((secret) => ({
+            tenantId,
+            key: secret.key,
+            value: secret.value,
+            ephemPubKey: secret.ephemPubKey,
+            nonce: secret.nonce,
+          })),
         },
-        create: customerInput.secrets?.map((secret) => ({
-          tenantId,
-          key: secret.key,
-          value: secret.value,
-          ephemPubKey: secret.ephemPubKey,
-          nonce: secret.nonce,
-        })),
-      },
+      }),
     };
   }
 
   async update(
     id: string,
-    customerInput: Partial<CreateCustomerInput>,
+    customerInput: UpdateCustomerInput,
     tenantId: string
   ) {
     return await this.prismaService.customer.update({
@@ -138,9 +148,15 @@ export class CustomersService {
 
   async updateByOrgId(
     organizationId: string,
-    customerInput: Partial<CreateCustomerInput>,
+    customerInput: UpdateCustomerByOrgIdInput,
     tenantId: string
   ) {
+    const features = customerInput.featuresByKey?.length
+      ? await this.validateAndTransformFeatures(customerInput, tenantId)
+      : [];
+
+    await this.validateSecrets(customerInput, tenantId);
+
     return await this.prismaService.customer.update({
       where: {
         tenantId_organizationId: {
@@ -148,7 +164,10 @@ export class CustomersService {
           tenantId,
         },
       },
-      data: CustomersService.updateCustomerData(tenantId, customerInput),
+      data: CustomersService.updateCustomerData(tenantId, {
+        ...customerInput,
+        features,
+      }),
     });
   }
 
@@ -184,5 +203,43 @@ export class CustomersService {
     );
 
     return mergeConfigurations(customerConfig, packageConfig);
+  }
+
+  async validateAndTransformFeatures(
+    customerInput: UpdateCustomerByOrgIdInput,
+    tenantId: string
+  ) {
+    const availableFeatures = await this.featuresService.findAll(tenantId);
+
+    return customerInput.featuresByKey?.map(({ key, value }) => {
+      const feature = availableFeatures?.find((f) => f.key === key);
+      if (!feature) {
+        throw new Error(`Feature with key "${key}" not found.`);
+      }
+
+      validateFeatureInputType(value?.['value'], feature as Feature);
+
+      return {
+        featureId: feature.id,
+        value,
+      };
+    });
+  }
+
+  async validateSecrets(
+    customerInput: UpdateCustomerByOrgIdInput,
+    tenantId: string
+  ) {
+    if (!customerInput.secrets) return;
+
+    const availalbeSecretKeys = (
+      await this.secretsService.findAllKeysForTennant(tenantId)
+    ).map((s) => s.key);
+
+    customerInput.secrets.forEach((secret) => {
+      if (!availalbeSecretKeys.includes(secret.key)) {
+        throw new Error(`Secret with key "${secret.key}" not found.`);
+      }
+    });
   }
 }

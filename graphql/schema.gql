@@ -41,6 +41,7 @@ enum FeatureType {
   STRING
   BOOLEAN
   JSON
+  ARRAY
 }
 
 """
@@ -97,15 +98,26 @@ type Organization {
   name: String!
 }
 
-type SecretKey {
-  id: Cuid!
-  key: String!
-  createdAt: DateTime!
+type DBFeatureMetadata {
+  name: String!
+  type: FeatureType!
+}
+
+type DBCustomer {
+  organizationId: String!
+  name: String!
 }
 
 type Integration {
   name: String!
+  isAvailable: Boolean!
   isConfigured: Boolean!
+}
+
+type SecretKey {
+  id: Cuid!
+  key: String!
+  createdAt: DateTime!
 }
 
 type Query {
@@ -120,9 +132,38 @@ type Query {
   customer(id: String!): Customer!
   organizations: [Organization!]!
   organization(id: String!): Organization!
+  integrations: [Integration!]!
+  fetchMongoSchema(mongoOptions: MongoDBOptions!): [DBFeatureMetadata!]!
+  fetchMongoCustomers(mongoOptions: MongoDBOptions!, input: FetchCustomersInput!): [DBCustomer!]!
+  fetchPostgresSchema(postgresOptions: PostgresQLOptions!): [DBFeatureMetadata!]!
+  fetchPostgresCustomers(postgresOptions: PostgresQLOptions!, input: FetchCustomersInput!): [DBCustomer!]!
   secretKeys: [SecretKey!]!
   hasSecrets: Boolean!
-  integrations: [Integration!]!
+}
+
+input MongoDBOptions {
+  host: String!
+  port: Float
+  database: String!
+  username: String
+  password: String
+  isSrv: Boolean! = false
+  collection: String
+}
+
+input FetchCustomersInput {
+  organizationIdField: String!
+  customerNameField: String!
+}
+
+input PostgresQLOptions {
+  host: String!
+  port: Float
+  database: String!
+  username: String
+  password: String
+  schema: String!
+  table: String!
 }
 
 type Mutation {
@@ -143,9 +184,12 @@ type Mutation {
   createOrganization(input: CreateOrganizationInput!): Organization!
   updateOrganization(input: UpdateOrganizationInput!): Organization!
   removeOrganization(id: String!): Organization!
+  importMongoCustomers(mongoOptions: MongoDBOptions!, input: ImportCustomersInput!): Boolean!
+  importPostgresCustomers(postgresOptions: PostgresQLOptions!, input: ImportCustomersInput!): Boolean!
+  configureAuth0OrganizationManager(input: ConfigureAuth0OrganizationManagerInput!): Boolean!
+  configurePropelauthOrganizationManager(input: ConfigurePropelauthOrganizationManagerInput!): Boolean!
   createSecretKey(input: CreateSecretKeyInput!): SecretKey!
   removeSecretKey(id: String!): SecretKey!
-  importCustomers(input: ImportCustomersInput!): [Customer!]!
 }
 
 input CreateApiTokenInput {
@@ -159,7 +203,7 @@ input CreateEncryptionKeyInput {
 input CreateFeatureInput {
   key: String!
   type: FeatureType!
-  defaultValue: JSON!
+  defaultValue: JSON
   description: String
 }
 
@@ -228,6 +272,12 @@ input UpdateCustomerByOrgIdInput {
   packageId: String
   features: [FeatureInstanceInput!]
   secrets: [SecretInput!]
+  featuresByKey: [FeatureInstanceByKeyInput!]
+}
+
+input FeatureInstanceByKeyInput {
+  key: String!
+  value: JSON!
 }
 
 input CreateOrganizationInput {
@@ -239,23 +289,30 @@ input UpdateOrganizationInput {
   id: String!
 }
 
+input ImportCustomersInput {
+  organizationIdField: String!
+  customerNameField: String!
+  organizationIds: [String!]!
+  features: [FeatureMappingInput!]!
+}
+
+input FeatureMappingInput {
+  sourceName: String!
+  destinationName: String!
+  type: FeatureType!
+}
+
+input ConfigureAuth0OrganizationManagerInput {
+  clientId: String!
+  clientSecret: String!
+  domain: String!
+}
+
+input ConfigurePropelauthOrganizationManagerInput {
+  apiKey: String!
+  domain: String!
+}
+
 input CreateSecretKeyInput {
   key: String!
-}
-
-input ImportCustomersInput {
-  connectionOptions: MongoDBConnectionOptions!
-  idFieldName: String!
-  featureFieldNames: [String!]!
-  schemaExampleId: String
-}
-
-input MongoDBConnectionOptions {
-  host: String!
-  port: Float
-  isSrv: Boolean! = false
-  database: String!
-  username: String
-  password: String
-  collection: String
 }

@@ -1,0 +1,105 @@
+---
+title: 'Customers'
+description: 'The link between your organization and Enrolla.'
+---
+
+## What are customers?
+
+Customers are, as the name suggests, the customers of your organization. Each must have a unique identifier, can be assigned a package, specific feature values, and secrets.
+
+**Each `customer` includes:**
+| Name | Description |
+|--------------- |-----------------------------------------------------------------------------------------------|
+| **Name** | Free text to help you identify the customer. |
+| **Organization Id** | Your organization's unique identifier for this customer. |  
+| **Package** | The package assigned to this customer. (Can be blank, meaning no package is assigned) |  
+| **Configuration** | A list of all features and their values for the customer. |
+| **Secrets** | A list of all secrets and their values defined for the customer. |
+
+In your production environment, you will want to evaluate _feature_ and _secret_ values for a particular customer, by providing the unique `organization_id` that you use to identify the customer.
+
+So lets see how customers are created, updated, and how you can access their data.
+
+### Integrating with your Authentication Provider
+
+Each customer must have a unique `organization_id` that you use to identify the customer.
+
+<Info>
+This is made easier by integrating Enrolla with your authentication provider, so that this identifier is synced between systems.
+
+We highly recommend integrating Enrolla with your authentication provider.
+
+</Info>
+
+See the section on [Authentication Providers](/integrations/authentication-providers/general) under [Integrations](/integrations/general) for more information.
+
+## Creating a Customer
+
+Customers can be created either through the [Enrolla Dashboard](dashboard/introduction), or the [Enrolla SDK](sdk/introduction).
+
+**OrganizationId**:
+
+When creating a customer, you can provide the unique `organization_id` that you use to identify the customer.
+Alternatively, if you have connected your authentication provider, you can choose from a list of your existing customers (UI feature only) and Enrolla will automatically sync the `organization_id` for you.
+
+<Info>
+  This is the same identifier that you must supply the Enrolls SDK to evaluate
+  the feature value for a particular customer.
+</Info>
+
+**Package**:
+
+When creating a new customer can choose a package to which the customer belongs.
+
+The customer will inherit all feature values from that package by default. If no package is chosen then the customer will inherit each feature's default value as you defined them.
+
+---
+
+The following pertains both for customer creation, and updates to existing customers:
+
+## Customer Features
+
+<Info>
+  You have the option to override the default values for any feature, for a
+  particular customer. This is useful if you want to assign a unique value to a
+  particular customer.
+</Info>
+
+Feature evaluation is always performed in the following order:
+
+1. **Customer** - if you defined a value for the specific customer, it takes precedence.
+2. **Package** - If (1) does not apply, and the customer is assigned to a package, then the package default value is used.
+3. **Feature** - If both (1) and (2) do not apply, then the feature default value is used.
+
+In the Customers section of the Enrolla Dashboard, you can see the final configuration for each customer.
+
+See the [Features](concepts/features) section for more information.
+
+#### Evaluating Features
+
+To evaluate a feature for a particular customer, you must provide the customer's `organization_id` as well as the feature `key` to the Enrolla SDK.
+
+This differs slightly language by language. See the [SDK](sdk/introduction) section for more information on its usage.
+
+## Customer Secrets
+
+Secrets have no default values, and must be defined for each customer.
+
+You can define secret values for your customers through the Dashboard or the SDK.
+
+<Note>
+  You cannot view the values of previously defined secrets in the Enrolla
+  Dashboard! This is intentional and due to the fact that without your private
+  key, the secret values remain encrypted and cannot be shown.
+</Note>
+
+See the [Secrets](concepts/secrets) section for more information.
+
+#### Evaluating Secrets
+
+To evaluate a secret you must provide the customer's `organization_id` as well as the secret `key` to the Enrolla SDK.
+In addition, you must provide your `privateKey` to the SDK's `initialize` method.
+
+The SDK will then decrypt the secret value for you and return the decrypted secret.
+
+More on this in the [Secrets](concepts/secrets) section.

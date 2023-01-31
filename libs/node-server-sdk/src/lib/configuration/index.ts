@@ -1,8 +1,9 @@
-import { initializeGraphQLClient } from '../api';
+import { initializeGraphQLClient, fetchAllCustomerData } from '../api';
 import { InitializeOptions } from '../interfaces';
 import { refreshStore } from '../store';
 import { InitializationError, PollingError } from '../errors';
 import { validateConfiguration } from './validation';
+import { Customer } from '@enrolla/graphql-codegen';
 
 export let _configuration: InitializeOptions;
 
@@ -11,18 +12,22 @@ const startPolling = (configuration: InitializeOptions) => {
   const { enabled, intervalSeconds, onError } = configuration.polling;
 
   if (enabled) {
-    setInterval(() => {
-      refreshStore().catch((err) => {
+    setInterval(async () => {
+      try {
+        const { customers } = await fetchAllCustomerData();
+        refreshStore(customers as Customer[]);
+      } catch (err) {
         onError?.(new PollingError(err));
-      });
+      }
     }, intervalSeconds * 1000);
   }
 };
 
 /**
- * Initializes the Enrolla SDK. Must be called once before any other SDK methods.
+ * Initializes the Enrolla SDK.
+ * Must be called once before any other SDK methods.
  *
- * @param options
+ * @param options - The options to initialize the SDK. See the {@link InitializeOptions} for details.
  * @throws {InitializationError} if the configuration is invalid or if failed to fetch feature data.
  */
 export const initialize = async (options: InitializeOptions) => {
@@ -37,7 +42,8 @@ export const initialize = async (options: InitializeOptions) => {
   startPolling(_configuration);
 
   try {
-    await refreshStore();
+    const { customers } = await fetchAllCustomerData();
+    refreshStore(customers as Customer[]);
   } catch (err) {
     throw new InitializationError(err.message, err as Error);
   }

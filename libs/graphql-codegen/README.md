@@ -1,5 +1,5 @@
 # graphql-codegen
 
-All files in the `output` folder are auto generated - DO NOT EDIT
+Auto-generated interfaces and types for use with the Enrolla graphQL API.
 
-To update files after changes to the graphql schema in the `enrolla-server` app, run the build executor: `nx run graphql-codegen:build`.
+See the [Full Documentation](https://docs.enrolla.io) for more details.

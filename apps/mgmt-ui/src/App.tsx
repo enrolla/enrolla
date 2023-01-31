@@ -28,10 +28,10 @@ import {
   IconPackage,
   IconLayoutList,
   IconUsers,
-  IconBuildingStore,
   IconShieldLock,
   IconSettings,
   IconKey,
+  IconBolt,
 } from '@tabler/icons';
 import { Layout } from './components/layout';
 import dataProvider from './providers/backendGraphQLProvider';
@@ -107,7 +107,7 @@ export default function App() {
               routes: [
                 {
                   element: <Integrations />,
-                  path: 'settings/integrations',
+                  path: 'integrations',
                   layout: true,
                 },
               ],
@@ -157,16 +157,15 @@ export default function App() {
                 name: 'secret-keys',
                 key: 'secretKeys',
                 list: SecretKeyList,
-                options: { label: 'Secret Keys' },
+                options: { label: 'Secrets' },
                 icon: <IconKey size="16" />,
               },
-              { name: 'settings', icon: <IconSettings size="16" /> },
               {
                 name: 'integrations',
-                parentName: 'settings',
                 list: () => null,
-                icon: <IconBuildingStore size="16" />,
+                icon: <IconBolt size="16" />,
               },
+              { name: 'settings', icon: <IconSettings size="16" /> },
               {
                 name: 'api-tokens',
                 key: 'apiTokens',

@@ -1,5 +1,5 @@
 import { OrganizationCreateInput } from './dto/organization-create.input';
-import { Organization } from './entities/organization.entity';
+import { Organization } from '../../ee/integrations/organization-managers/entities/organization.entity';
 
 export interface OrganizationManager {
   getOrganization(
@@ -12,10 +12,4 @@ export interface OrganizationManager {
     tenantCreateInput: OrganizationCreateInput
   ): Promise<Organization>;
   removeOrganization(tenantId: string, organizationId: string): Promise<void>;
-}
-
-export enum OrganizationManagerType {
-  None = 'NONE',
-  Auth0 = 'AUTH0',
-  PropelAuth = 'PROPEL_AUTH',
 }

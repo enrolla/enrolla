@@ -65,5 +65,10 @@
         "linter": "eslint"
       }
     }
+  },
+  "pluginsConfig": {
+    "@nrwl/js": {
+      "analyzeSourceFiles": true
+    }
   }
 }

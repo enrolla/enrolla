@@ -1,11 +1,13 @@
+/* eslint-disable no-console */
 import * as sdk from '@enrolla/node-server-sdk';
+import { env } from 'process';
 
 export const testNodeServerSdk = async () => {
   try {
     await sdk.initialize({
-      url: 'http://localhost:3000/graphql',
-      privateKey: '9lieJsqLPcxcgHOnsFP+WPDlZ1JlsdF97WQrkrBFcb4=',
-      apiToken: 'xxx',
+      url: env.SDK_ENROLLA_SERVER_GRAPHQL_ENDPOINT,
+      apiToken: env.SDK_API_TOKEN,
+      privateKey: env.SDK_ENROLLA_PRIVATE_ENCRYPTION_KEY,
       evaluationHooks: {
         beforeEvaluation: (feature, organizationId) =>
           console.log('beforeEvaluation', feature, organizationId),
@@ -25,6 +27,20 @@ export const testNodeServerSdk = async () => {
   }
 
   console.log('Initiated Successfully');
-  console.log('k1', sdk.getSecretValue('k1', '123'));
-  console.log('kk', sdk.getSecretValue('kk', '123'));
+
+  const orgId = 'local_test_app_org_id;';
+  const secretKey = 'local_test_app_secret';
+
+  console.log(
+    'Secret value before change',
+    sdk.getSecretValue(secretKey, orgId)
+  );
+
+  const newValue = 'new_value';
+  await sdk.updateCustomerSecrets(orgId, { key: secretKey, value: newValue });
+
+  console.log(
+    'Secret value after change ',
+    sdk.getSecretValue(secretKey, orgId)
+  );
 };

@@ -5,6 +5,7 @@ import { PackagesModule } from '../packages/packages.module';
 import { OrganizationsModule } from '../organizations/organizations.module';
 import { FeatureInstancesModule } from '../feature-instances/feature-instances.module';
 import { SecretsModule } from '../secrets/secrets.module';
+import { FeaturesModule } from '../features/features.module';
 
 @Module({
   providers: [CustomersResolver, CustomersService],
@@ -13,6 +14,7 @@ import { SecretsModule } from '../secrets/secrets.module';
     OrganizationsModule,
     FeatureInstancesModule,
     SecretsModule,
+    FeaturesModule,
   ],
   exports: [CustomersService],
 })

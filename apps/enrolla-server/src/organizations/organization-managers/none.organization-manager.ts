@@ -1,6 +1,6 @@
-import { OrganizationCreateInput } from '../dto/organization-create.input';
-import { Organization } from '../entities/organization.entity';
-import { OrganizationManager } from '../organization-manager.interface';
+import { OrganizationCreateInput } from './dto/organization-create.input';
+import { Organization } from '../../ee/integrations/organization-managers/entities/organization.entity';
+import { OrganizationManager } from './organization-manager.interface';
 
 export class NoneOrganizationManager implements OrganizationManager {
   async getOrganization(

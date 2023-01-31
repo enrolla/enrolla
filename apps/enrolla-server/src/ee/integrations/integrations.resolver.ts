@@ -1,97 +1,126 @@
 import { UseGuards } from '@nestjs/common';
 import { GraphQLAuthGuard } from '../../authz/graphql-auth.guard';
-import { CustomersService } from '../../customers/customers.service';
-import { Args, Query, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { TenantId } from '../../authz/tenant.decorator';
-import { ImportCustomersInput } from './dto/import-customers.input';
-import { MongoDBService } from './databases/mongodb/mongodb.service';
-import { FeaturesService } from '../../features/features.service';
-import {
-  defaultValueForFeatureType,
-  inferFeatureType,
-} from './databases/mongodb/utils';
-import { Feature } from '@prisma/client';
-import { Customer } from '../../customers/entities/customer.entity';
-import { InferredCustomer } from './databases/customers-source.interface';
+import { MongoDBCustomersService } from './databases/mongodb/mongodb-customers.service';
 import { Integration } from './dto/integration.entity';
+import { DBFeatureMetadata } from './databases/entities/db-feature-metadata.entity';
+import { DBCustomer } from './databases/entities/db-customer.entity';
+import { PostgresQLCustomersService } from './databases/postgresql/postgresql-customers.service';
+import { MongoDBOptions } from './databases/mongodb/dto/mongodb-options.input';
+import { PostgresQLOptions } from './databases/postgresql/dto/postgresql-options.input';
+import { FetchCustomersInput } from './databases/dto/fetch-customers.input';
+import { ImportCustomersInput } from './databases/dto/import-customers.input';
+import { ExternalCustomersService } from './databases/external-customers.service';
+import { DatabaseType } from './databases/database-type.enum';
+import {
+  ConfigureAuth0OrganizationManagerInput,
+  ConfigurePropelauthOrganizationManagerInput,
+} from './organization-managers/dto';
+import {
+  Auth0OrganizationManager,
+  PropelAuthOrganizationManager,
+} from './organization-managers/impl';
 
 @Resolver()
 @UseGuards(GraphQLAuthGuard)
 export class IntegrationsResolver {
   constructor(
-    private readonly featuresService: FeaturesService,
-    private readonly mongodbService: MongoDBService,
-    private readonly customersService: CustomersService
+    private readonly mongodbCustomersService: MongoDBCustomersService,
+    private readonly postgresqlCustomersService: PostgresQLCustomersService,
+    private readonly externalCustomersService: ExternalCustomersService
   ) {}
 
   @Query(() => [Integration])
   integrations(@TenantId() tenantId: string) {
     return [
-      { name: 'auth0', isConfigured: false },
-      { name: 'propelauth', isConfigured: false },
-      { name: 'mongodb', isConfigured: false },
+      { name: 'auth0', isAvailable: false, isConfigured: false },
+      { name: 'propelauth', isAvailable: false, isConfigured: false },
+      { name: 'mongodb', isAvailable: false, isConfigured: false },
     ];
   }
 
-  @Mutation(() => [Customer])
-  async importCustomers(
+  @Query(() => [DBFeatureMetadata])
+  async fetchMongoSchema(
     @TenantId() tenantId: string,
-    @Args('input') importCustomersInput: ImportCustomersInput
+    @Args('mongoOptions') mongoOptions: MongoDBOptions
   ) {
-    const customers = await this.mongodbService.getCustomers(
-      importCustomersInput.connectionOptions,
-      importCustomersInput.idFieldName,
-      importCustomersInput.featureFieldNames
+    return await this.mongodbCustomersService.fetchSchema(mongoOptions);
+  }
+
+  @Query(() => [DBCustomer])
+  async fetchMongoCustomers(
+    @TenantId() tenantId: string,
+    @Args('mongoOptions') mongoOptions: MongoDBOptions,
+    @Args('input') input: FetchCustomersInput
+  ) {
+    return await this.mongodbCustomersService.fetchCustomers(
+      mongoOptions,
+      input
     );
+  }
 
-    const createdFeatures = new Array<Feature>();
-
-    let schemaCustomer: InferredCustomer;
-
-    if (importCustomersInput.schemaExampleId) {
-      schemaCustomer = customers.find(
-        (customer) =>
-          customer.organizationId === importCustomersInput.schemaExampleId
-      );
-    } else {
-      schemaCustomer = customers[0];
-    }
-
-    await Promise.all(
-      schemaCustomer.features.map(async (feature) => {
-        const featureType = inferFeatureType(feature.value);
-        const createdFeature = await this.featuresService.create(
-          {
-            key: feature.key,
-            type: featureType,
-            defaultValue: defaultValueForFeatureType(featureType),
-          },
-          tenantId
-        );
-        createdFeatures.push(createdFeature);
-      })
+  @Mutation(() => Boolean)
+  async importMongoCustomers(
+    @TenantId() tenantId: string,
+    @Args('mongoOptions') mongoOptions: MongoDBOptions,
+    @Args('input') input: ImportCustomersInput
+  ) {
+    return await this.externalCustomersService.import(
+      tenantId,
+      DatabaseType.MongoDB,
+      mongoOptions,
+      input
     );
+  }
 
-    return await Promise.all(
-      customers.map(async (customer) => {
-        return await this.customersService.create(
-          {
-            organizationId: customer.organizationId,
-            name: customer.organizationId,
-            features: customer.features.map((feature) => {
-              const createdFeature = createdFeatures.find(
-                (createdFeature) => createdFeature.key === feature.key
-              );
+  @Query(() => [DBFeatureMetadata])
+  async fetchPostgresSchema(
+    @TenantId() tenantId: string,
+    @Args('postgresOptions') connectionOptions: PostgresQLOptions
+  ) {
+    return await this.postgresqlCustomersService.fetchSchema(connectionOptions);
+  }
 
-              return {
-                featureId: createdFeature.id,
-                value: { value: feature.value },
-              };
-            }),
-          },
-          tenantId
-        );
-      })
+  @Query(() => [DBCustomer])
+  async fetchPostgresCustomers(
+    @TenantId() tenantId: string,
+    @Args('postgresOptions') postgresOptions: PostgresQLOptions,
+    @Args('input') input: FetchCustomersInput
+  ) {
+    return await this.postgresqlCustomersService.fetchCustomers(
+      postgresOptions,
+      input
     );
+  }
+
+  @Mutation(() => Boolean)
+  async importPostgresCustomers(
+    @TenantId() tenantId: string,
+    @Args('postgresOptions') postgresOptions: PostgresQLOptions,
+    @Args('input') input: ImportCustomersInput
+  ) {
+    return await this.externalCustomersService.import(
+      tenantId,
+      DatabaseType.PostgresQL,
+      postgresOptions,
+      input
+    );
+  }
+
+  @Mutation(() => Boolean)
+  async configureAuth0OrganizationManager(
+    @TenantId() tenantId: string,
+    @Args('input') input: ConfigureAuth0OrganizationManagerInput
+  ) {
+    return await Auth0OrganizationManager.configure(tenantId, input);
+  }
+
+  @Mutation(() => Boolean)
+  async configurePropelauthOrganizationManager(
+    @TenantId() tenantId: string,
+    @Args('input') input: ConfigurePropelauthOrganizationManagerInput
+  ) {
+    return await PropelAuthOrganizationManager.configure(tenantId, input);
   }
 }

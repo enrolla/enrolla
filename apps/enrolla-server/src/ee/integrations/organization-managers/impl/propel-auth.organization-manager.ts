@@ -1,23 +1,54 @@
 import { ConfigurationsService } from '../../../../configurations/configurations.service';
 import { Organization } from '../entities/organization.entity';
-import { OrganizationManager } from '../organization-manager.interface';
-import { OrganizationCreateInput } from '../dto/organization-create.input';
+import { OrganizationManager } from '../../../../organizations/organization-managers/organization-manager.interface';
+import { OrganizationCreateInput } from '../../../../organizations/organization-managers/dto/organization-create.input';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
+import { Integration } from '../../integration.interface';
+import {
+  ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY,
+  ORGANIZATION_MANAGER_TYPE,
+  OrganizationManagerType,
+  ORGANIZATION_MANAGER_CONFIGURATION_KEY,
+  ORGANIZATION_MANAGER_SECRET_CONFIGURATION_KEY,
+} from '../../../../organizations/constants';
+import { ConfigurePropelauthOrganizationManagerInput } from '../dto';
+import * as sdk from '@enrolla/node-server-sdk';
+import { Logger, BadRequestException } from '@nestjs/common';
+import axios from 'axios';
 
-export class PropelAuthOrganizationManager implements OrganizationManager {
-  static readonly PROPEL_AUTH_API_KEY_CONGIURATION_KEY = 'propel_auth_api_key';
-  static readonly PROPEL_AUTH_DOMAIN_CONGIURATION_KEY = 'propel_auth_domain';
+export class PropelAuthOrganizationManager
+  implements OrganizationManager, Integration
+{
+  private static logger = new Logger(PropelAuthOrganizationManager.name);
 
   constructor(
     private configurationsService: ConfigurationsService,
     private httpService: HttpService
   ) {}
 
+  async isEnabled(tenantId: string): Promise<boolean> {
+    const enabledManager =
+      this.configurationsService.getValue<OrganizationManagerType>(
+        tenantId,
+        ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY
+      );
+
+    return enabledManager === ORGANIZATION_MANAGER_TYPE.PROPEL_AUTH;
+  }
+
+  async isConfigured(tenantId: string): Promise<boolean> {
+    return false;
+  }
+
   async getOrganization(
     tenantId: string,
     organizationId: string
   ): Promise<Organization> {
+    if (!(await this.isEnabled(tenantId))) {
+      throw new Error('PropelAuth integration is disabled');
+    }
+
     const response = await firstValueFrom(
       this.httpService.get(
         this.tenantRequestUrl(
@@ -35,6 +66,10 @@ export class PropelAuthOrganizationManager implements OrganizationManager {
     let hasMore = true;
     let page = 0;
     const organizations = [];
+
+    if (!(await this.isEnabled(tenantId))) {
+      throw new Error('PropelAuth integration is disabled');
+    }
 
     while (hasMore) {
       const response = await firstValueFrom(
@@ -65,6 +100,10 @@ export class PropelAuthOrganizationManager implements OrganizationManager {
     tenantId: string,
     organizationCreateInput: OrganizationCreateInput
   ): Promise<Organization> {
+    if (!(await this.isEnabled(tenantId))) {
+      throw new Error('PropelAuth is disabled');
+    }
+
     const response = await firstValueFrom(
       this.httpService.post(
         this.tenantRequestUrl(tenantId, '/api/backend/v1/org/'),
@@ -83,16 +122,16 @@ export class PropelAuthOrganizationManager implements OrganizationManager {
   }
 
   private tenantDomain(tenantId: string): string {
-    return this.configurationsService.getValue<string>(
+    return this.configurationsService.getValue<Record<string, string>>(
       tenantId,
-      PropelAuthOrganizationManager.PROPEL_AUTH_DOMAIN_CONGIURATION_KEY
-    );
+      ORGANIZATION_MANAGER_CONFIGURATION_KEY
+    ).domain;
   }
 
   private tenantApiKey(tenantId: string): string {
     return this.configurationsService.getSecretValue(
       tenantId,
-      PropelAuthOrganizationManager.PROPEL_AUTH_API_KEY_CONGIURATION_KEY
+      ORGANIZATION_MANAGER_SECRET_CONFIGURATION_KEY
     );
   }
 
@@ -104,5 +143,78 @@ export class PropelAuthOrganizationManager implements OrganizationManager {
 
   private tenantRequestUrl(tenantId: string, path: string) {
     return `${this.tenantDomain(tenantId)}/${path}`;
+  }
+
+  static async configure(
+    tenantId: string,
+    input: ConfigurePropelauthOrganizationManagerInput
+  ) {
+    try {
+      await PropelAuthOrganizationManager.testConfigValidity(input, tenantId);
+    } catch (error) {
+      return false;
+    }
+    const featuresToUpdate = [
+      {
+        key: ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY,
+        value: ORGANIZATION_MANAGER_TYPE.PROPEL_AUTH,
+      },
+      {
+        key: ORGANIZATION_MANAGER_CONFIGURATION_KEY,
+        value: {
+          domain: input.domain,
+        },
+      },
+    ];
+    const secretsToUpdate = [
+      {
+        key: ORGANIZATION_MANAGER_SECRET_CONFIGURATION_KEY,
+        value: input.apiKey,
+      },
+    ];
+    try {
+      await Promise.all([
+        sdk.updateCustomerFeatures(tenantId, ...featuresToUpdate),
+        sdk.updateCustomerSecrets(tenantId, ...secretsToUpdate),
+      ]);
+
+      return true;
+    } catch (error) {
+      this.logger.error(
+        `Failed to configure Propelauth Organization Manager for tennat ${tenantId}. Reverting to NONE configuration.`,
+        error.stack
+      );
+      await sdk.updateCustomerFeatures(tenantId, {
+        // fallbak to NONE on error
+        key: ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY,
+        value: ORGANIZATION_MANAGER_TYPE.NONE,
+      });
+
+      return false;
+    }
+  }
+
+  private static async testConfigValidity(
+    input: ConfigurePropelauthOrganizationManagerInput,
+    tenantId: string
+  ) {
+    try {
+      await axios.get(`${input.domain}/api/backend/v1/org/query`, {
+        params: {
+          current_page: 0,
+          page_size: 1,
+        },
+        headers: {
+          Authorization: `Bearer ${input.apiKey}`,
+        },
+      });
+    } catch (error) {
+      this.logger.error(
+        `Invalid configuration PropelAuth Organization manager configuration for tenant: ${tenantId}.`,
+        error.stack
+      );
+
+      throw error;
+    }
   }
 }
