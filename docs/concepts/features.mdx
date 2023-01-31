@@ -4,20 +4,21 @@ description: 'The basic building blocks of Enrolla.'
 ---
 
 ## What are features?
+
 A feature can describe any property of a customer you may wish to keep track:
-- An *entitlement*, like which product features are enabled for a customer.
-- A *configuration*, which can be any customer specific setting (e.g. a color scheme, cloud provider. etc.).
+
+- An _entitlement_, like which product features are enabled for a customer.
+- A _configuration_, which can be any customer specific setting (e.g. a color scheme, cloud provider. etc.).
 
 **Each `feature` includes:**
-|           |                                                                                    |
+| | |
 |---------------|-----------------------------------------------------------------------------------------------|
-| __Key__           | The name of the feature. (it must be a unique string, with no whitespace)                                      |
-| __Type__          | One of the following: `string`, `integer` ,  `float` , `boolean` ,  `JSON`. Once set, this value cannot be changed. |  
-| __Default Value__ | The value that this feature will be set to for all customers unless otherwise overridden.                       | 
-| __Description__   | Free text to help you identify the feature.                                                                      |
+| **Key** | The name of the feature. (it must be a unique string, with no whitespace) |
+| **Type** | One of the following: `string`, `integer` , `float` , `boolean` , `JSON`. Once set, this value cannot be changed. |  
+| **Default Value** | The value that this feature will be set to for all customers unless otherwise overridden. |
+| **Description** | Free text to help you identify the feature. |
 
 <Note>An Enrolla feature is, in the simplest terms, a *key value pair*.</Note>
-
 
 ## Creating a Feature
 
@@ -33,7 +34,6 @@ It's type is `integer` and its default value is `5`.
 <Frame>
   <img src="/images/feature-create.png" />
 </Frame>
-
 
 ## Packages
 
@@ -53,4 +53,4 @@ Once you have created a feature, you can use it in your code to evaluate the val
 
 To evaluate a feature for a particular customer, you must provide the customer's `organization_id` as well as the feature `key` to the Enrolla SDK.
 
-This is done using the [Enrolla SDK](/sdk/introduction). 
+This is done using the [Enrolla SDK](/sdk/introduction).

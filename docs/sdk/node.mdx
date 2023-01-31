@@ -1,27 +1,21 @@
 ---
-title: "NodeJS"
+title: 'NodeJS'
 ---
 
 <Card href="https://www.jsdocs.io/package/@enrolla/node-server-sdk">
-<img src="https://img.shields.io/badge/jsDocs.io-reference-blue" alt="jsDocs.io"/>
-<br/>
-See the full API reference.
+  <img
+    src="https://img.shields.io/badge/jsDocs.io-reference-blue"
+    alt="jsDocs.io"
+  />
+  <br />
+  See the full API reference.
 </Card>
-
 
 ## Installation
 
 <Tabs>
-  <Tab title="npm">
-    ```bash
-        npm install --save @enrolla/node-server-sdk
-    ```
-  </Tab>
-  <Tab title="yarn">
-    ```bash
-        yarn add @enrolla/node-server-sdk
-    ```
-  </Tab>
+  <Tab title="npm">```bash npm install --save @enrolla/node-server-sdk ```</Tab>
+  <Tab title="yarn">```bash yarn add @enrolla/node-server-sdk ```</Tab>
 </Tabs>
 
 ## Usage
@@ -32,7 +26,9 @@ The SDK should be initialized (by calling the `initialize` function) once in the
 
 Initialize the SDK in the entry point of your application before accepting connections.
 
-<Warning>Forgetting to initialize the SDK will result in an exception being thrown.</Warning>
+<Warning>
+  Forgetting to initialize the SDK will result in an exception being thrown.
+</Warning>
 
 **Example:**
 
@@ -46,13 +42,13 @@ Initialize the SDK in the entry point of your application before accepting conne
     const port = 3000
 
     try {
-      await enrolla.initialize({ 
+      await enrolla.initialize({
         apiToken: <API_TOKEN>, //required
         privateKey: <PRIVATE_KEY>, // required for using secrets
         polling: { // enable polling with 60 second interval
-          enabled: true, 
+          enabled: true,
           intervalSeconds: 60,
-        },  
+        },
       });
     } catch (error) // handle error
 
@@ -60,6 +56,7 @@ Initialize the SDK in the entry point of your application before accepting conne
       console.log(`Example app listening on port ${port}`)
     })
     ```
+
   </Tab>
   <Tab title="Next.js">
     ```ts
@@ -75,7 +72,7 @@ Initialize the SDK in the entry point of your application before accepting conne
       res: NextApiResponse<Data>
     ) {
       // Unfortunately, Next.js doesn't support server-side initialization
-      // Since the SDK will actually be initialized only once, 
+      // Since the SDK will actually be initialized only once,
       // it's safe to call this function multiple times
       await enrolla.initialize({
         apiToken: process.env.ENROLLA_API_TOKEN!,
@@ -84,12 +81,13 @@ Initialize the SDK in the entry point of your application before accepting conne
       ...
     }
     ```
+
   </Tab>
 </Tabs>
 
 ## Feature Evaluation
 
-The SDK can retrieve the value of any feature for a given customer. 
+The SDK can retrieve the value of any feature for a given customer.
 You must provide it with the `organizationId` of the customer you want to evaluate the feature for.
 
 The SDK supports both typed and untyped feature evaluation.
@@ -125,20 +123,22 @@ const myFunction = (organizationId: string) => {
         // handle error
     }
 }
-````
+```
 
 #### Typed Feature Evaluation
 
 Use any of the following functions to evaluate a feature and specify the return type:
 
-<Warning>The function must match the type defined in the UI, otherwise the SDK will throw an error.</Warning>
+<Warning>
+  The function must match the type defined in the UI, otherwise the SDK will
+  throw an error.
+</Warning>
 
 - `getFeatureStringValue`
 - `getFeatureIntegerValue`
 - `getFeatureFloatValue`
 - `getFeatureBooleanValue`
 - `getFeatureJSONValue`
-
 
 ```ts
 import { getFeatureStringValue } = from '@enrolla/node-server-sdk'
@@ -155,7 +155,10 @@ const myFunction = (organizationId: string) => {
 
 ## Secret Evaluation
 
-<Warning>You must supply your `privateKey` to the `initialize` function in order to use secrets.</Warning>
+<Warning>
+  You must supply your `privateKey` to the `initialize` function in order to use
+  secrets.
+</Warning>
 
 The SDK can retrieve the value of any secret for a given customer.
 
@@ -179,6 +182,7 @@ const myFunction = (organizationId: string) => {
 The SDK exposes a Management API that allows you to programmatically manage customer features and secrets from your application.
 
 Available functions:
+
 - `createCustomer` - create a new customer
 - `updateCustomerFeatures` - update feature values for an existing customer
 - `updateCustomerSecrets` - update secret values for an existing customer
@@ -191,10 +195,11 @@ import * as enrolla from '@enrolla/node-server-sdk';
 const showcaseMgmtFeatures = async () => {
   const organizationId = 'unique-organization-id';
   try {
-    await enrolla.createCustomer({ // create a new customer in Enrolla with the supplied organizationId
+    await enrolla.createCustomer({
+      // create a new customer in Enrolla with the supplied organizationId
       name: 'Customer Name',
       organizationId,
-      pack
+      pack,
     });
 
     await enrolla.updateCustomerFeatures(organizationId, {

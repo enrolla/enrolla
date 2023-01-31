@@ -10,25 +10,30 @@ Packages may also inherit from one another so that when a parent changes, so do 
 This concept is best described through an example.
 
 ### Example
-Lets say for example that we have 2 features defined: 
+
+Lets say for example that we have 2 features defined:
+
 - `number_of_seats` (an `Integer` feature with a default value of `1`)
 - `cool_feature_enabled` (a `Boolean` feature with a default value of `false`)
 
-Now with these features we want to create 2 packages, a *Free Tier Package* and an *Enterprise Tier Package*.
-_____
+Now with these features we want to create 2 packages, a _Free Tier Package_ and an _Enterprise Tier Package_.
 
-We can do this by creating a new package and selecting the features we want to include in the package. 
+---
 
-Lets create the *Free Tier Package* and assign **a new default value** of `5` to `number_of_seats`.
+We can do this by creating a new package and selecting the features we want to include in the package.
+
+Lets create the _Free Tier Package_ and assign **a new default value** of `5` to `number_of_seats`.
 
 This means that any customers assigned to this package will have the `number_of_seats` feature evaluated to `5` and the `cool_feature_enabled` feature evaluated to `false`.
 
-_____
+---
 
+Now lets create the _Enterprise Tier Package_ have it **inherit from another package** (specifically the Free Tier Package we just created).
 
-Now lets create the *Enterprise Tier Package* have it **inherit from another package** (specifically the Free Tier Package we just created).
-
-<Info>Packages that inherit from one another 'copy' the default values of the base package to themselves.</Info>
+<Info>
+  Packages that inherit from one another 'copy' the default values of the base
+  package to themselves.
+</Info>
 
 Lets also, assign a default value of `true` to the `cool_feature_enabled` feature.
 
