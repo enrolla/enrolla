@@ -9,6 +9,7 @@ import { ConfigurationsService } from '../../configurations/configurations.servi
 import {
   Auth0OrganizationManager,
   PropelAuthOrganizationManager,
+  FirebaseOrganizationManager,
 } from './organization-managers/impl';
 
 function integrationFactory(
@@ -17,6 +18,8 @@ function integrationFactory(
   type: IntegrationType
 ) {
   switch (type) {
+    case INTEGRATION_TYPE.Firebase:
+      return new FirebaseOrganizationManager(configurationsService);
     case INTEGRATION_TYPE.Auth0:
       return new Auth0OrganizationManager(configurationsService);
     case INTEGRATION_TYPE.PropelAuth:

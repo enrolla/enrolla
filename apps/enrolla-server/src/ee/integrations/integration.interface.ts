@@ -6,6 +6,7 @@ export interface Integration {
 export const INTEGRATION_TYPE = {
   Auth0: 'Auth0',
   PropelAuth: 'PropelAuth',
+  Firebase: 'Firebase',
 } as const;
 
 export type IntegrationType =

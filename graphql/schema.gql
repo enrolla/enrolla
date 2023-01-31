@@ -188,6 +188,7 @@ type Mutation {
   importPostgresCustomers(postgresOptions: PostgresQLOptions!, input: ImportCustomersInput!): Boolean!
   configureAuth0OrganizationManager(input: ConfigureAuth0OrganizationManagerInput!): Boolean!
   configurePropelauthOrganizationManager(input: ConfigurePropelauthOrganizationManagerInput!): Boolean!
+  configureFirebaseOrganizationManager(input: ConfigureFirebaseOrganizationManagerInput!): Boolean!
   createSecretKey(input: CreateSecretKeyInput!): SecretKey!
   removeSecretKey(id: String!): SecretKey!
 }
@@ -311,6 +312,12 @@ input ConfigureAuth0OrganizationManagerInput {
 input ConfigurePropelauthOrganizationManagerInput {
   apiKey: String!
   domain: String!
+}
+
+input ConfigureFirebaseOrganizationManagerInput {
+  projectId: String!
+  clientEmail: String!
+  privateKey: String!
 }
 
 input CreateSecretKeyInput {

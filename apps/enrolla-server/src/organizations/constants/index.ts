@@ -2,6 +2,7 @@ export const ORGANIZATION_MANAGER_TYPE = {
   NONE: 'NONE',
   AUTH0: 'AUTH0',
   PROPEL_AUTH: 'PROPEL_AUTH',
+  FIREBASE: 'FIREBASE',
 } as const;
 
 export type OrganizationManagerType =

@@ -37,6 +37,12 @@ export type ConfigureAuth0OrganizationManagerInput = {
   domain: Scalars['String'];
 };
 
+export type ConfigureFirebaseOrganizationManagerInput = {
+  clientEmail: Scalars['String'];
+  privateKey: Scalars['String'];
+  projectId: Scalars['String'];
+};
+
 export type ConfigurePropelauthOrganizationManagerInput = {
   apiKey: Scalars['String'];
   domain: Scalars['String'];
@@ -189,6 +195,7 @@ export type MongoDbOptions = {
 export type Mutation = {
   __typename?: 'Mutation';
   configureAuth0OrganizationManager: Scalars['Boolean'];
+  configureFirebaseOrganizationManager: Scalars['Boolean'];
   configurePropelauthOrganizationManager: Scalars['Boolean'];
   createApiToken: ApiToken;
   createCustomer: Customer;
@@ -216,6 +223,11 @@ export type Mutation = {
 
 export type MutationConfigureAuth0OrganizationManagerArgs = {
   input: ConfigureAuth0OrganizationManagerInput;
+};
+
+
+export type MutationConfigureFirebaseOrganizationManagerArgs = {
+  input: ConfigureFirebaseOrganizationManagerInput;
 };
 
 

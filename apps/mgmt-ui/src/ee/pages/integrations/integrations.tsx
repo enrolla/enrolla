@@ -26,6 +26,7 @@ import { Integration } from '@enrolla/graphql-codegen';
 import { MongoDBConfigDrawer } from './components/database/mongodb/MongoDBConfigDrawer';
 import { Auth0ConfigDrawer } from './components/auth/Auth0ConfigDrawer';
 import { PropelAuthConfigDrawer } from './components/auth/PropelAuthConfigDrawer';
+import { FirebaseConfigDrawer } from './components/auth/FirebaseConfigDrawer';
 import { PostgresQLConfigDrawer } from './components/database/postgresql/PostgresQLConfigDrawer';
 
 enum IntegrationType {
@@ -46,6 +47,12 @@ const uiIntegrations: UiIntegration[] = [
     name: 'auth0',
     title: 'Auth0',
     image: auth0,
+    type: IntegrationType.Authentication,
+  },
+  {
+    name: 'firebase',
+    title: 'Firebase',
+    image: firebase,
     type: IntegrationType.Authentication,
   },
   {
@@ -76,12 +83,6 @@ const uiIntegrations: UiIntegration[] = [
     name: 'workos',
     title: 'WorkOS',
     image: workos,
-    type: IntegrationType.Authentication,
-  },
-  {
-    name: 'firebase',
-    title: 'Firebase',
-    image: firebase,
     type: IntegrationType.Authentication,
   },
   {
@@ -203,6 +204,10 @@ export const Integrations = () => {
       />
       <PropelAuthConfigDrawer
         opened={drawerOpened === 'PropelAuth'}
+        onClose={() => setDrawerOpened('')}
+      />
+      <FirebaseConfigDrawer
+        opened={drawerOpened === 'Firebase'}
         onClose={() => setDrawerOpened('')}
       />
       <MongoDBConfigDrawer
