@@ -20,26 +20,27 @@ Follow these instructions to set up a local developement environment.
 
 2. Set up a local Postgres Database. You can use [Postgres.app](https://postgresapp.com/) for Mac for example.
 
-3. Download [doppler](https://www.doppler.com/), our secrets manager. You can access our secrets with the following service tokens:
+3. Set environment variables:
 
    ```bash
-   export DOPPLER_FRONTEND=dp.st.dev.jVAVymS6QD0flaTJf3ZHgDP3WECZdCfE4Zk8gjRR1cq
-   export DOPPLER_BACKEND=dp.st.dev.wApQ3g6vcE2BlkL2mbPSOvxx3jWuCHgbykuTWcdeUFH
+   cp .env.example .env
    ```
+
+   Then, edit the `.env` file and set the `DATABASE_URL` variable to your local database.
 
 4. Apply database migrations:
 
    ```bash
-   doppler run --token=$DOPPLER_BACKEND -- npx nx run prisma-models:prisma-deploy
+   npx nx run prisma-models:prisma-deploy
    ```
 
 5. To start developing, run the `serve` target on both the backend and the frontend:
 
    ```bash
    # This will serve the Backend in development mode
-   doppler run --token=$DOPPLER_BACKEND -- npx nx serve
+   npx nx serve
    # This will serve the Frontend in development mode
-   doppler run --token=$DOPPLER_FRONTEND -- npx nx serve mgmt-ui
+   npx nx serve mgmt-ui
    ```
 
 That's it, you are good to go! Happy hacking! 👾

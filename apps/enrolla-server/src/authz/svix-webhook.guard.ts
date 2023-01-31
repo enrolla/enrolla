@@ -6,12 +6,17 @@ import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class SvixWebhookAuthGuard implements CanActivate {
-  private static readonly wh = new Webhook(env.SVIX_WEBHOOK_SIGNING_SECRET);
+  private static readonly wh = env.SVIX_WEBHOOK_SIGNING_SECRET
+    ? new Webhook(env.SVIX_WEBHOOK_SIGNING_SECRET)
+    : null;
   private static readonly logger = new Logger(SvixWebhookAuthGuard.name);
 
   canActivate(
     context: ExecutionContext
   ): boolean | Promise<boolean> | Observable<boolean> {
+    if (!SvixWebhookAuthGuard.wh) {
+      return false;
+    }
     const request = context.switchToHttp().getRequest();
 
     try {

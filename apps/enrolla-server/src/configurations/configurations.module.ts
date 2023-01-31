@@ -6,9 +6,9 @@ import { EnvConfigurationManager } from './configuration-managers/impl/env.confi
 const configurationManagerProvider = {
   provide: 'ConfigurationManager',
   useClass:
-    process.env.CONFIGURATION_MANAGER_TYPE === 'ENV'
-      ? EnvConfigurationManager
-      : SdkConfigurationManager,
+    process.env.CONFIGURATION_MANAGER_TYPE === 'SDK'
+      ? SdkConfigurationManager
+      : EnvConfigurationManager,
 };
 
 @Module({

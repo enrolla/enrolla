@@ -46,7 +46,9 @@ function createLogger(
 }
 
 const onServerStart = async () => {
-  await SdkConfigurationManager.initialize();
+  if (process.env.CONFIGURATION_MANAGER_TYPE === 'SDK') {
+    await SdkConfigurationManager.initialize();
+  }
 };
 
 async function bootstrap() {
