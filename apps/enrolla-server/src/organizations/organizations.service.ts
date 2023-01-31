@@ -99,5 +99,8 @@ function getIntegrationType(
 
     case ORGANIZATION_MANAGER_TYPE.PROPEL_AUTH:
       return INTEGRATION_TYPE.PropelAuth;
+
+    case ORGANIZATION_MANAGER_TYPE.FIREBASE:
+      return INTEGRATION_TYPE.Firebase;
   }
 }

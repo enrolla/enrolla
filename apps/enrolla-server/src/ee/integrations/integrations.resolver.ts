@@ -39,6 +39,7 @@ export class IntegrationsResolver {
       { name: 'auth0', isAvailable: false, isConfigured: false },
       { name: 'propelauth', isAvailable: false, isConfigured: false },
       { name: 'mongodb', isAvailable: false, isConfigured: false },
+      { name: 'firebase', isAvailable: false, isConfigured: false },
     ];
   }
 
@@ -127,7 +128,7 @@ export class IntegrationsResolver {
   }
 
   @Mutation(() => Boolean)
-  async configureFireBaseOrganizationManager(
+  async configureFirebaseOrganizationManager(
     @TenantId() tenantId: string,
     @Args('input') input: ConfigureFirebaseOrganizationManagerInput
   ) {

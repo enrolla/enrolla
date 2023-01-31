@@ -195,7 +195,7 @@ export type MongoDbOptions = {
 export type Mutation = {
   __typename?: 'Mutation';
   configureAuth0OrganizationManager: Scalars['Boolean'];
-  configureFireBaseOrganizationManager: Scalars['Boolean'];
+  configureFirebaseOrganizationManager: Scalars['Boolean'];
   configurePropelauthOrganizationManager: Scalars['Boolean'];
   createApiToken: ApiToken;
   createCustomer: Customer;
@@ -226,7 +226,7 @@ export type MutationConfigureAuth0OrganizationManagerArgs = {
 };
 
 
-export type MutationConfigureFireBaseOrganizationManagerArgs = {
+export type MutationConfigureFirebaseOrganizationManagerArgs = {
   input: ConfigureFirebaseOrganizationManagerInput;
 };
 

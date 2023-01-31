@@ -1,6 +1,5 @@
 import { ConfigurationsService } from '../../../../configurations/configurations.service';
-import { ManagementClient } from 'auth0';
-import { initializeApp, credential, app } from 'firebase-admin';
+import * as admin from 'firebase-admin';
 import { getAuth, ListUsersResult, UserRecord } from 'firebase-admin/auth';
 import { Organization } from '../entities/organization.entity';
 import { OrganizationManager } from '../../../../organizations/organization-managers/organization-manager.interface';
@@ -20,7 +19,7 @@ import { Logger } from '@nestjs/common';
 export class FirebaseOrganizationManager
   implements OrganizationManager, Integration
 {
-  private firebaseClients: Map<string, ManagementClient> = new Map();
+  private firebaseClients: Map<string, admin.app.App> = new Map();
   private static logger = new Logger(FirebaseOrganizationManager.name);
 
   constructor(private configurationsService: ConfigurationsService) {}
@@ -64,7 +63,7 @@ export class FirebaseOrganizationManager
     ).listUsers();
 
     return res.users.map((user) => {
-      return { id: user.uid, name: user.displayName };
+      return { id: user.uid, name: user.displayName || 'unknown' };
     });
   }
 
@@ -87,7 +86,7 @@ export class FirebaseOrganizationManager
     throw new Error('Method not implemented.');
   }
 
-  private getFirebaseClient(tenantId: string): app.App {
+  private getFirebaseClient(tenantId: string): admin.app.App {
     if (this.firebaseClients.has(tenantId)) {
       return this.firebaseClients.get(tenantId);
     }
@@ -102,11 +101,11 @@ export class FirebaseOrganizationManager
       ORGANIZATION_MANAGER_SECRET_CONFIGURATION_KEY
     );
 
-    const firebaseClient = initializeApp(
+    const firebaseClient = admin.initializeApp(
       {
-        credential: credential.cert({
+        credential: admin.credential.cert({
           ...config,
-          privateKey,
+          privateKey: privateKey.replace(/\\n/gm, '\n'),
         }),
       },
       tenantId
@@ -129,13 +128,13 @@ export class FirebaseOrganizationManager
     const featuresToUpdate = [
       {
         key: ORGANIZATION_MANAGER_TYPE_CONFIGURATION_KEY,
-        value: ORGANIZATION_MANAGER_TYPE.AUTH0,
+        value: ORGANIZATION_MANAGER_TYPE.FIREBASE,
       },
       {
         key: ORGANIZATION_MANAGER_CONFIGURATION_KEY,
         value: {
-          clientId: input.projectId,
-          domain: input.clientEmail,
+          projectId: input.projectId,
+          clientEmail: input.clientEmail,
         },
       },
     ];
@@ -150,6 +149,9 @@ export class FirebaseOrganizationManager
         sdk.updateCustomerFeatures(tenantId, ...featuresToUpdate),
         sdk.updateCustomerSecrets(tenantId, ...secretsToUpdate),
       ]);
+      this.logger.log(
+        `Successfully configured Firebase Organization Manager for tenant ${tenantId}.`
+      );
 
       return true;
     } catch (error) {
@@ -173,14 +175,17 @@ export class FirebaseOrganizationManager
     tenantId: string
   ) {
     try {
-      const firebaseClient = initializeApp(
+      const testFirebaseClient = admin.initializeApp(
         {
-          credential: credential.cert(input),
+          credential: admin.credential.cert({
+            ...input,
+            privateKey: input.privateKey.replace(/\\n/gm, '\n'),
+          }),
         },
         `${tenantId}-test`
       );
 
-      await getAuth(firebaseClient).listUsers(1);
+      await getAuth(testFirebaseClient).listUsers(1);
     } catch (error) {
       this.logger.error(
         `Invalid Firebase Organization manager configuration for tenant: ${tenantId}.`,
