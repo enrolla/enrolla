@@ -44,11 +44,12 @@ import {
 import { Integrations } from './ee/pages/integrations';
 import useAuthProvider from './providers/useAuthProvider';
 import { SecretKeyList } from './pages/secret-keys';
+import { Onboarding } from './pages/onboarding';
 
 export default function App() {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: 'mantine-color-scheme',
-    defaultValue: 'light',
+    defaultValue: 'dark',
     getInitialValueInEffect: true,
   });
 
@@ -71,6 +72,10 @@ export default function App() {
           colorScheme,
           fontFamily: 'Nunito',
           black: '#626262',
+          colors: {
+            enrolla: ['#A892FB', '#6644EC'],
+          },
+          primaryColor: 'enrolla',
           components: {
             Table: {
               styles: (theme) =>
@@ -110,6 +115,7 @@ export default function App() {
                   path: 'integrations',
                   layout: true,
                 },
+                { element: <Onboarding />, path: 'onboarding', layout: true },
               ],
             }}
             authProvider={authProvider}

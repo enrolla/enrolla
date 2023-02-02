@@ -24,9 +24,7 @@ export const Layout: React.FC<RefineLayoutLayoutProps> = ({
           sx={(theme) => ({
             padding: theme.spacing.sm,
             backgroundColor:
-              theme.colorScheme === 'dark'
-                ? theme.colors.dark[8]
-                : theme.colors.gray[0],
+              theme.colorScheme === 'dark' ? theme.colors.dark[8] : '#F7F8FD',
             minHeight: '100vh',
           })}
         >

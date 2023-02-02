@@ -6,6 +6,7 @@ import {
   useIsExistAuthentication,
   useLogout,
   useMenu,
+  useNavigation,
   useRefineContext,
   useRouterContext,
   useTitle,
@@ -26,6 +27,11 @@ import {
   Styles,
   RefineTitle as DefaultTitle,
   useMantineTheme,
+  Paper,
+  Group,
+  Text,
+  RingProgress,
+  createStyles,
 } from '@pankod/refine-mantine';
 import type { RefineLayoutSiderProps } from '@pankod/refine-mantine';
 
@@ -36,10 +42,22 @@ import {
   IconLogout,
   IconDashboard,
   IconBook,
+  IconListCheck,
 } from '@tabler/icons';
 import { UserButton } from './UserButton';
+import { useOnboardingPercentage } from '../../utils/onboarding';
 
 const defaultNavIcon = <IconList size={18} />;
+
+const useStyles = createStyles((theme) => ({
+  onboarding: {
+    transition: 'transform 150ms ease, box-shadow 150ms ease',
+
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
+}));
 
 export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
   const theme = useMantineTheme();
@@ -214,6 +232,10 @@ export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
     );
   };
 
+  const { push } = useNavigation();
+  const { classes } = useStyles();
+  const onboardingPercentage = useOnboardingPercentage();
+
   return (
     <>
       <MediaQuery largerThan="md" styles={{ display: 'none' }}>
@@ -293,6 +315,34 @@ export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
             {renderSider()}
           </Navbar.Section>
           <Navbar.Section>
+            {onboardingPercentage < 100 && (
+              <Group
+                onClick={() => push('/onboarding')}
+                className={classes.onboarding}
+              >
+                <Paper withBorder mb="xl" mx="sm">
+                  <Group my="xs" mx="xs" sx={{ width: 200 }} spacing="xs">
+                    <IconListCheck size={16} color="#6644EC" />
+                    <Text fz="sm">Enrolla Guide</Text>
+                  </Group>
+                </Paper>
+                <RingProgress
+                  pos="absolute"
+                  mt={-25}
+                  left={150}
+                  roundCaps
+                  thickness={10}
+                  label={
+                    <Text size="xs" color="#6644EC" align="center">
+                      {`${onboardingPercentage}%`}
+                    </Text>
+                  }
+                  sections={[{ value: onboardingPercentage, color: '#A892FB' }]}
+                  rootColor="#E8E3FC"
+                  size={80}
+                />
+              </Group>
+            )}
             <UserButton
               sx={{
                 borderTop: `1px solid ${
