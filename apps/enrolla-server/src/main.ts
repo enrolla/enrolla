@@ -1,4 +1,4 @@
-import './tracer';
+//import './tracer';
 import { LoggerService, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -78,7 +78,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger-ui', app, document);
 
-  await app.listen(env.SERVER_PORT);
+  await app.listen(env.PORT);
   await onServerStart();
 }
 bootstrap();

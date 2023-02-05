@@ -21,6 +21,91 @@
           "envVariables": {
             "VITE_BACKEND_URL": "https://api-staging.vecinity.io",
             "VITE_PROPELAUTH_URL": "https://auth.vecinity.io"
+          },
+          "dependsOn": ["enrolla-server"]
+        },
+        {
+          "id": "enrolla-server",
+          "name": "Backend",
+          "type": "fargate",
+          "buildCommand": "npx nx build enrolla-server",
+          "postBuildCommand": "npm prune --production; cp -r ./libs/prisma-models/prisma ./prisma",
+          "startCommand": "npx prisma migrate deploy; node dist/apps/enrolla-server/main.js",
+          "cpu": 0.25,
+          "memory": 1,
+          "domain": "api-staging.vecinity.io",
+          "port": 3000,
+          "minInstances": 2,
+          "maxInstances": 2,
+          "envVariables": {
+            "DATABASE_URL": {
+              "fromService": {
+                "id": "db",
+                "value": "dbConnectionString"
+              }
+            },
+            "ENV_NAME": "staging",
+            "PROPELAUTH_URL": {
+              "fromParameterStore": "/backend/staging/PROPELAUTH_URL"
+            },
+            "PROPELAUTH_API_KEY": {
+              "fromParameterStore": "/backend/staging/PROPELAUTH_API_KEY"
+            },
+            "API_TOKEN_GENERATION_PRIVATE_KEY": {
+              "fromParameterStore": "/backend/staging/API_TOKEN_GENERATION_PRIVATE_KEY"
+            },
+            "SECRET_ENCRYPTION_KEY": {
+              "fromParameterStore": "/backend/staging/SECRET_ENCRYPTION_KEY"
+            },
+            "SDK_API_TOKEN": {
+              "fromParameterStore": "/backend/staging/SDK_API_TOKEN"
+            },
+            "SDK_ENROLLA_SERVER_GRAPHQL_ENDPOINT": {
+              "fromParameterStore": "/backend/staging/SDK_ENROLLA_SERVER_GRAPHQL_ENDPOINT"
+            },
+            "SDK_ENROLLA_PRIVATE_ENCRYPTION_KEY": {
+              "fromParameterStore": "/backend/staging/SDK_ENROLLA_PRIVATE_ENCRYPTION_KEY"
+            },
+            "SVIX_WEBHOOK_SIGNING_SECRET": {
+              "fromParameterStore": "/backend/staging/SVIX_WEBHOOK_SIGNING_SECRET"
+            },
+            "EE": "true",
+            "CONFIGURATION_MANAGER_TYPE": "SDK"
+          }
+        },
+        {
+          "id": "db",
+          "name": "Database",
+          "type": "rds",
+          "engine": "postgres",
+          "engineVersion": "14",
+          "instanceSize": "db.t4g.micro",
+          "storage": 20,
+          "private": true
+        },
+        {
+          "id": "prisma-studio",
+          "name": "Prisma Studio",
+          "type": "fargate",
+          "domain": "admin-staging.vecinity.io",
+          "cpu": 0.25,
+          "memory": 0.5,
+          "buildCommand": "npm i caddy-npm pm2",
+          "startCommand": "pm2 start \"npx prisma studio --schema ./libs/prisma-models/prisma/schema.prisma\" && caddy run",
+          "port": 80,
+          "envVariables": {
+            "PRISMA_STUDIO_USERNAME": {
+              "fromParameterStore": "/prisma-studio/staging/PRISMA_STUDIO_USERNAME"
+            },
+            "PRISMA_STUDIO_PASSWORD_HASH": {
+              "fromParameterStore": "/prisma-studio/staging/PRISMA_STUDIO_PASSWORD_HASH"
+            },
+            "DATABASE_URL": {
+              "fromService": {
+                "id": "db",
+                "value": "dbConnectionString"
+              }
+            }
           }
         }
       ]

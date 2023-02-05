@@ -6,7 +6,8 @@
       "name": "Production",
       "region": "us-east-1",
       "source": {
-        "branch": "main"
+        "branch": "main",
+        "trigger": "manual"
       },
       "services": [
         {
@@ -21,6 +22,93 @@
           "envVariables": {
             "VITE_BACKEND_URL": "https://api.enrolla.io",
             "VITE_PROPELAUTH_URL": "https://auth.enrolla.io"
+          },
+          "dependsOn": ["enrolla-server"]
+        },
+        {
+          "id": "enrolla-server",
+          "name": "Backend",
+          "type": "fargate",
+          "buildCommand": "npx nx build enrolla-server",
+          "postBuildCommand": "npm prune --production; cp -r ./libs/prisma-models/prisma ./prisma",
+          "startCommand": "npx prisma migrate deploy; node dist/apps/enrolla-server/main.js",
+          "cpu": 2,
+          "memory": 4,
+          "domain": "api.enrolla.io",
+          "port": 3000,
+          "minInstances": 2,
+          "maxInstances": 10,
+          "envVariables": {
+            "DATABASE_URL": {
+              "fromService": {
+                "id": "db",
+                "value": "dbConnectionString"
+              }
+            },
+            "ENV_NAME": "prod",
+            "PROPELAUTH_URL": {
+              "fromParameterStore": "/backend/prod/PROPELAUTH_URL"
+            },
+            "PROPELAUTH_API_KEY": {
+              "fromParameterStore": "/backend/prod/PROPELAUTH_API_KEY"
+            },
+            "API_TOKEN_GENERATION_PRIVATE_KEY": {
+              "fromParameterStore": "/backend/prod/API_TOKEN_GENERATION_PRIVATE_KEY"
+            },
+            "SECRET_ENCRYPTION_KEY": {
+              "fromParameterStore": "/backend/prod/SECRET_ENCRYPTION_KEY"
+            },
+            "SDK_API_TOKEN": {
+              "fromParameterStore": "/backend/prod/SDK_API_TOKEN"
+            },
+            "SDK_ENROLLA_SERVER_GRAPHQL_ENDPOINT": {
+              "fromParameterStore": "/backend/prod/SDK_ENROLLA_SERVER_GRAPHQL_ENDPOINT"
+            },
+            "SDK_ENROLLA_PRIVATE_ENCRYPTION_KEY": {
+              "fromParameterStore": "/backend/prod/SDK_ENROLLA_PRIVATE_ENCRYPTION_KEY"
+            },
+            "SVIX_WEBHOOK_SIGNING_SECRET": {
+              "fromParameterStore": "/backend/prod/SVIX_WEBHOOK_SIGNING_SECRET"
+            },
+            "EE": "true",
+            "CONFIGURATION_MANAGER_TYPE": "SDK"
+          }
+        },
+        {
+          "id": "db",
+          "name": "Database",
+          "type": "rds",
+          "engine": "postgres",
+          "engineVersion": "14",
+          "instanceSize": "db.m5.2xlarge",
+          "storage": 4000,
+          "maxStorage": 4000,
+          "deletionProtection": true,
+          "private": true
+        },
+        {
+          "id": "prisma-studio",
+          "name": "Prisma Studio",
+          "type": "fargate",
+          "domain": "admin.enrolla.io",
+          "cpu": 0.25,
+          "memory": 0.5,
+          "buildCommand": "npm i caddy-npm pm2",
+          "startCommand": "pm2 start \"npx prisma studio --schema ./libs/prisma-models/prisma/schema.prisma\" && caddy run",
+          "port": 80,
+          "envVariables": {
+            "PRISMA_STUDIO_USERNAME": {
+              "fromParameterStore": "/prisma-studio/prod/PRISMA_STUDIO_USERNAME"
+            },
+            "PRISMA_STUDIO_PASSWORD_HASH": {
+              "fromParameterStore": "/prisma-studio/prod/PRISMA_STUDIO_PASSWORD_HASH"
+            },
+            "DATABASE_URL": {
+              "fromService": {
+                "id": "db",
+                "value": "dbConnectionString"
+              }
+            }
           }
         }
       ]
