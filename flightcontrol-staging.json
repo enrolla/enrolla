@@ -1,0 +1,29 @@
+{
+  "$schema": "https://app.flightcontrol.dev/schema.json",
+  "environments": [
+    {
+      "id": "staging",
+      "name": "Staging",
+      "region": "us-east-1",
+      "source": {
+        "branch": "main"
+      },
+      "services": [
+        {
+          "id": "mgmt-ui",
+          "name": "Management UI",
+          "type": "static",
+          "domain": "app-staging.vecinity.io",
+          "buildCommand": "npx nx build mgmt-ui --prod",
+          "buildType": "nodejs",
+          "outputDirectory": "dist/apps/mgmt-ui",
+          "singlePageApp": true,
+          "envVariables": {
+            "VITE_BACKEND_URL": "https://api-staging.vecinity.io",
+            "VITE_PROPELAUTH_URL": "https://auth.vecinity.io"
+          }
+        }
+      ]
+    }
+  ]
+}
