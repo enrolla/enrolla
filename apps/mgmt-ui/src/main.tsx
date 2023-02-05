@@ -7,16 +7,6 @@ import { AuthProvider } from '@propelauth/react';
 
 import App from './App';
 
-// Yep, it's ugly, but Vercel doesn't provide an easy way to separate our staging and production environments.
-// Will refactor soon (famous last words).
-const monkeyPatchPropelAuthUrl = () => {
-  if (window.location.href.startsWith('https://app-staging.vecinity.io')) {
-    return 'https://auth.vecinity.io';
-  } else {
-    return import.meta.env.VITE_PROPELAUTH_URL;
-  }
-};
-
 if (
   !window.location.host.includes('127.0.0.1') &&
   !window.location.host.includes('localhost') &&
@@ -34,7 +24,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <StrictMode>
     {import.meta.env.VITE_PROPELAUTH_URL && (
-      <AuthProvider authUrl={monkeyPatchPropelAuthUrl()}>
+      <AuthProvider authUrl={import.meta.env.VITE_PROPELAUTH_URL}>
         <App />
       </AuthProvider>
     )}
