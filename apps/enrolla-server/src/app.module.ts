@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AuthzModule } from './authz/authz.module';
@@ -42,6 +42,7 @@ import { ApiTokenService } from './tenants/api-tokens/service';
       imports: [TenantsModule],
       inject: [ApiTokenService],
       useFactory: (apiTokenService: ApiTokenService) => {
+        const logger = new Logger('GraphQL Subscriptions Auth');
         const validate = async (jwt: string) =>
           await apiTokenService.validate(jwt);
 
@@ -66,7 +67,9 @@ import { ApiTokenService } from './tenants/api-tokens/service';
                   );
 
                   extra.tenantId = tenantId;
-                } catch (error) {}
+                } catch (error) {
+                  logger.error('Failed to validate JWT', error?.stack);
+                }
               },
               'subscriptions-transport-ws': false,
             },
