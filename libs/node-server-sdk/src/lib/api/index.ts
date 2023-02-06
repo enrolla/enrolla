@@ -21,6 +21,8 @@ export const initializeGraphQLClient = (options: InitializeOptions) => {
   });
 
   _client = getSdk(graphQLClient);
+
+  // initializeAndSubscribe();
 };
 
 export const fetchAllCustomerData = async () => _client.getAllCustomerData();

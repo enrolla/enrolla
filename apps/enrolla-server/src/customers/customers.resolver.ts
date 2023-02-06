@@ -4,7 +4,7 @@ import {
   Mutation,
   Args,
   Parent,
-  ResolveField,
+  ResolveField
 } from '@nestjs/graphql';
 import { CustomersService } from './customers.service';
 import { Customer } from './entities/customer.entity';
@@ -15,13 +15,15 @@ import {
 } from './dto';
 import { TenantId } from '../authz/tenant.decorator';
 import { GraphQLAuthGuard } from '../authz/graphql-auth.guard';
-import { UseGuards } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
 import { Package } from '../packages/entities/package.entity';
 import { PackagesService } from '../packages/packages.service';
 import { FeatureInstancesService } from '../feature-instances/feature-instances.service';
 import { FeatureValue } from '../feature-instances/entities/feature-value.entity';
 import { Secret } from '../secrets/entities/secret.entity';
 import { SecretsService } from '../secrets/secrets.service';
+import { PubSub } from 'graphql-subscriptions';
+
 
 @Resolver(() => Customer)
 @UseGuards(GraphQLAuthGuard)
@@ -30,7 +32,8 @@ export class CustomersResolver {
     private readonly customersService: CustomersService,
     private readonly packagesService: PackagesService,
     private readonly featuresInstancesService: FeatureInstancesService,
-    private readonly secretsService: SecretsService
+    private readonly secretsService: SecretsService,
+    @Inject('PUB_SUB') private pubSub: PubSub
   ) {}
 
   @Mutation(() => Customer)
@@ -59,11 +62,16 @@ export class CustomersResolver {
     @TenantId() tenantId: string,
     @Args('input') updateCustomerInput: UpdateCustomerInput
   ) {
-    return await this.customersService.update(
+
+    const updatedCustomer = await this.customersService.update(
       updateCustomerInput.id,
       updateCustomerInput,
       tenantId
     );
+  
+    this.publishUpdatedCustomer(updatedCustomer);
+
+    return updatedCustomer;
   }
 
   @Mutation(() => Customer)
@@ -121,5 +129,13 @@ export class CustomersResolver {
       customer,
       tenantId
     );
+  }
+
+  private async publishUpdatedCustomer(customer: Pick<Customer, 'id' | 'organizationId' | 'tenantId' | 'packageId'>) {
+    const { id, organizationId, tenantId } = customer;
+    const effectiveConfiguration = await this.customersService.getEffectiveConfiguration(customer, tenantId);
+    const secrets = await this.secretsService.findAllSecretsByCustomerId(tenantId, id);
+
+    this.pubSub.publish('customerUpdated', { organizationId, secrets, effectiveConfiguration });
   }
 }

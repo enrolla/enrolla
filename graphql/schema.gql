@@ -120,6 +120,12 @@ type SecretKey {
   createdAt: DateTime!
 }
 
+type CustomerForSubscription {
+  organizationId: String
+  secrets: [Secret!]!
+  effectiveConfiguration: [FeatureValue!]!
+}
+
 type Query {
   apiTokens: [ApiToken!]!
   encryptionKeys: [EncryptionKey!]!
@@ -322,4 +328,8 @@ input ConfigureFirebaseOrganizationManagerInput {
 
 input CreateSecretKeyInput {
   key: String!
+}
+
+type Subscription {
+  customerUpdated: CustomerForSubscription!
 }

@@ -194,7 +194,7 @@ export class CustomersService {
     return getConfigurationFromFeatures(packageFeatures);
   }
 
-  async getEffectiveConfiguration(customer: Customer, tenantId: string) {
+  async getEffectiveConfiguration(customer: Pick<Customer, | 'id' | 'packageId'>, tenantId: string) {
     const customerConfig = await this.getConfiguration(customer.id, tenantId);
 
     const packageConfig = await this.packagesService.getEffectiveConfiguration(
