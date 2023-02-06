@@ -1,8 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
 
-@Controller({ version: '1' })
+@Controller()
 export class AppController {
-  @Get('/ping')
+  @Get('/')
   getPing(): string {
     return 'Pong!';
   }

@@ -1,0 +1,20 @@
+{
+  debug
+  admin off
+}
+
+http://admin-staging.vecinity.io {
+  reverse_proxy 0.0.0.0:5555
+  log
+  basicauth {
+    {$PRISMA_STUDIO_USERNAME} {$PRISMA_STUDIO_PASSWORD_HASH}
+  }
+}
+
+http://admin.enrolla.io {
+  reverse_proxy 0.0.0.0:5555
+  log
+  basicauth {
+    {$PRISMA_STUDIO_USERNAME} {$PRISMA_STUDIO_PASSWORD_HASH}
+  }
+}
