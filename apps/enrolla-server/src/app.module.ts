@@ -18,34 +18,13 @@ import { PrismaModule } from './prisma/prisma.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { SecretsModule } from './secrets/secrets.module';
 import { BackOfficeModule } from './backoffice/backoffice.module';
-import { graphqlWsOnConnect } from './authz/subscription-on-connect';
+import { Context } from 'graphql-ws';
+import { ApiTokenService } from './tenants/api-tokens/service';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     EventEmitterModule.forRoot(),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-
-      // See https://www.apollographql.com/docs/apollo-server/v3/performance/cache-backends#ensuring-a-bounded-cache
-      cache: 'bounded',
-
-      autoSchemaFile: join(process.cwd(), '/graphql/schema.gql'),
-      resolvers: {
-        JSON: GraphQLJSON,
-      },
-      playground: true,
-      debug: true,
-      subscriptions: {
-        'graphql-ws': {
-          onConnect: graphqlWsOnConnect,
-        },
-        'subscriptions-transport-ws': false,
-      },
-      context: ({ extra }) => {
-        return { tenantId: extra?.tenantId };
-      },
-    }),
     AuthzModule,
     PrismaModule,
     FeaturesModule,
@@ -58,6 +37,46 @@ import { graphqlWsOnConnect } from './authz/subscription-on-connect';
     TenantsModule,
     SecretsModule,
     BackOfficeModule,
+    GraphQLModule.forRootAsync<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      imports: [TenantsModule],
+      inject: [ApiTokenService],
+      useFactory: (apiTokenService: ApiTokenService) => {
+        const validate = async (jwt: string) =>
+          await apiTokenService.validate(jwt);
+
+        return {
+          // See https://www.apollographql.com/docs/apollo-server/v3/performance/cache-backends#ensuring-a-bounded-cache
+          cache: 'bounded',
+
+          autoSchemaFile: join(process.cwd(), '/graphql/schema.gql'),
+          resolvers: {
+            JSON: GraphQLJSON,
+          },
+          playground: true,
+          debug: true,
+          subscriptions: {
+            'graphql-ws': {
+              onConnect: async (context: Context<any>) => {
+                const extra = context.extra as any;
+                const authHeader = extra?.request.headers['authorization'];
+                try {
+                  const { tenantId } = await validate(
+                    authHeader?.split(' ')?.[1]
+                  );
+
+                  extra.tenantId = tenantId;
+                } catch (error) {}
+              },
+              'subscriptions-transport-ws': false,
+            },
+            context: ({ extra }) => {
+              return { tenantId: extra?.tenantId };
+            },
+          },
+        };
+      },
+    }),
   ],
   controllers: [AppController],
 })
