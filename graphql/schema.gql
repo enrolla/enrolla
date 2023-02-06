@@ -120,10 +120,21 @@ type SecretKey {
   createdAt: DateTime!
 }
 
+type SDKFeature {
+  key: String!
+  type: FeatureType!
+  defaultValue: JSON!
+}
+
+type SDKFeatureValue {
+  feature: SDKFeature!
+  value: JSON!
+}
+
 type CustomerForSubscription {
   organizationId: String
   secrets: [Secret!]!
-  effectiveConfiguration: [FeatureValue!]!
+  effectiveConfiguration: [SDKFeatureValue!]!
 }
 
 type Query {

@@ -11,10 +11,10 @@ import { CustomerSubscriptionsResolver } from './customers-subscription.resolver
 
 @Module({
   providers: [
-    CustomersResolver, 
+    CustomersResolver,
     CustomersService,
     CustomerSubscriptionsResolver,
-    { provide: 'PUB_SUB', useValue: new PubSub()}
+    { provide: 'PUB_SUB', useValue: new PubSub() },
   ],
   imports: [
     PackagesModule,

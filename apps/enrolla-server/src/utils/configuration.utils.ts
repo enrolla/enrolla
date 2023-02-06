@@ -3,7 +3,6 @@ import { FeatureValue } from '../feature-instances/entities/feature-value.entity
 export function getConfigurationFromFeatures(featureInstances): FeatureValue[] {
   return featureInstances.map((featureInstance) => ({
     featureId: featureInstance.featureId,
-    feature: null,
     value: featureInstance.value,
   }));
 }

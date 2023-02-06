@@ -18,7 +18,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { SecretsModule } from './secrets/secrets.module';
 import { BackOfficeModule } from './backoffice/backoffice.module';
-import { graphqlWsOnConnect, subscriptionsTransportWsOnConnect } from './authz/subscription-on-connect';
+import { graphqlWsOnConnect } from './authz/subscription-on-connect';
 
 @Module({
   imports: [
@@ -36,14 +36,15 @@ import { graphqlWsOnConnect, subscriptionsTransportWsOnConnect } from './authz/s
       },
       playground: true,
       debug: true,
-  //     subscriptions: {
-  //       'graphql-ws': {
-  //         onConnect: graphqlWsOnConnect
-  //       },
-  //       'subscriptions-transport-ws': {
-  //         onConnect: subscriptionsTransportWsOnConnect
-  //     }
-  // },
+      subscriptions: {
+        'graphql-ws': {
+          onConnect: graphqlWsOnConnect,
+        },
+        'subscriptions-transport-ws': false,
+      },
+      context: ({ extra }) => {
+        return { tenantId: extra?.tenantId };
+      },
     }),
     AuthzModule,
     PrismaModule,

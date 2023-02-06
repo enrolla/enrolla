@@ -194,7 +194,10 @@ export class CustomersService {
     return getConfigurationFromFeatures(packageFeatures);
   }
 
-  async getEffectiveConfiguration(customer: Pick<Customer, | 'id' | 'packageId'>, tenantId: string) {
+  async getEffectiveConfiguration(
+    customer: Pick<Customer, 'id' | 'packageId'>,
+    tenantId: string
+  ) {
     const customerConfig = await this.getConfiguration(customer.id, tenantId);
 
     const packageConfig = await this.packagesService.getEffectiveConfiguration(
@@ -202,7 +205,15 @@ export class CustomersService {
       tenantId
     );
 
-    return mergeConfigurations(customerConfig, packageConfig);
+    const enrichedCustomerConfig = customerConfig.map((cc) => {
+      const pc = packageConfig.find((pc) => pc.featureId === cc.featureId);
+      return {
+        ...pc,
+        ...cc,
+      };
+    });
+
+    return mergeConfigurations(enrichedCustomerConfig, packageConfig);
   }
 
   async validateAndTransformFeatures(

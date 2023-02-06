@@ -102,6 +102,13 @@ export type Customer = {
   tenantId: Scalars['String'];
 };
 
+export type CustomerForSubscription = {
+  __typename?: 'CustomerForSubscription';
+  effectiveConfiguration: Array<SdkFeatureValue>;
+  organizationId?: Maybe<Scalars['String']>;
+  secrets: Array<Secret>;
+};
+
 export type DbCustomer = {
   __typename?: 'DBCustomer';
   name: Scalars['String'];
@@ -441,6 +448,19 @@ export type QueryPackageArgs = {
   id: Scalars['String'];
 };
 
+export type SdkFeature = {
+  __typename?: 'SDKFeature';
+  defaultValue: Scalars['JSON'];
+  key: Scalars['String'];
+  type: FeatureType;
+};
+
+export type SdkFeatureValue = {
+  __typename?: 'SDKFeatureValue';
+  feature: SdkFeature;
+  value: Scalars['JSON'];
+};
+
 export type Secret = {
   __typename?: 'Secret';
   createdAt: Scalars['DateTime'];
@@ -464,6 +484,11 @@ export type SecretKey = {
   createdAt: Scalars['DateTime'];
   id: Scalars['Cuid'];
   key: Scalars['String'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  customerUpdated: CustomerForSubscription;
 };
 
 export type UpdateCustomerByOrgIdInput = {

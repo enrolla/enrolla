@@ -1,48 +1,71 @@
 import * as WebSocket from 'ws';
-import { createClient, SubscribePayload } from 'graphql-ws';
+import { createClient } from 'graphql-ws';
 import { _configuration } from '../configuration';
+import { Customer, CustomerForSubscription } from '@enrolla/graphql-codegen';
+import { setCustomerFeatures, setCustomerSecrets } from '../store';
+import { DataPushError } from '../errors';
 
-export const initializeAndSubscribe = async () => {
-    class AuthorizedSocket extends WebSocket {
-        constructor(address, protocols) {
-          super(address, protocols, {
-            headers: {
-              Authorization: `Bearer ${_configuration.apiToken}`,
-            },
-          });
-        }
-      }
-
-    const client = createClient({
-        url: 'ws://localhost:3000/graphql',
-        webSocketImpl: AuthorizedSocket,
-        shouldRetry: () => true,
+export const subscribeToUpdates = async (url: string) => {
+  class AuthorizedSocket extends WebSocket {
+    constructor(address, protocols) {
+      super(address, protocols, {
+        headers: {
+          Authorization: `Bearer ${_configuration.apiToken}`,
+        },
       });
+    }
+  }
 
-    async function execute<T>(payload: SubscribePayload) {
-        return new Promise<T>((resolve, reject) => {
-          let result: T;
-          client.subscribe<T>(payload, {
-            next: (data) => (result = data as T),
-            error: reject,
-            complete: () => resolve(result),
-          });
-        });
+  try {
+    const client = createClient({
+      url: url.replace('http', 'ws').replace('https', 'ws'),
+      webSocketImpl: AuthorizedSocket,
+      shouldRetry: () => true,
+    });
+
+    await client.subscribe<CustomerForSubscription>(
+      {
+        query: `subscription {
+                  customerUpdated {
+                    organizationId
+                    secrets {
+                      key
+                      value
+                    }
+                    effectiveConfiguration {
+                      value
+                      feature {
+                        key
+                        type
+                        defaultValue
+                      }
+                    }
+                  }
+                }`,
+      },
+      {
+        next: (res) => {
+          if (res?.errors) {
+            _configuration.onPushError?.(
+              new DataPushError(res.errors?.[0]?.message)
+            );
+          } else {
+            const updatedCustomer = (res.data as unknown as any)
+              .customerUpdated as Pick<
+              Customer,
+              'organizationId' | 'secrets' | 'effectiveConfiguration'
+            >;
+            setCustomerFeatures(updatedCustomer);
+            setCustomerSecrets(updatedCustomer);
+          }
+        },
+        error: (error: unknown) => {
+          _configuration.onPushError?.(
+            new DataPushError('Unknown Error', error as Error)
+          );
+        },
+        complete: () => {},
       }
-      
-      // use
-      (async () => {
-        try {
-          const result = await execute({
-            query: '{ hello }',
-          });
-
-          console.log(result)
-          // complete
-          // next = result = { data: { hello: 'Hello World!' } }
-        } catch (err) {
-          // error
-        }
-      })();
-
-}
+    );
+  } catch (err) {}
+};

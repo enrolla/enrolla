@@ -7,6 +7,7 @@ import {
 } from '@enrolla/graphql-codegen';
 import { InitializeOptions } from '../interfaces';
 import { DEFAULT_URL } from './constants';
+import { subscribeToUpdates } from './subscription-client';
 
 let _client: Sdk;
 
@@ -22,7 +23,7 @@ export const initializeGraphQLClient = (options: InitializeOptions) => {
 
   _client = getSdk(graphQLClient);
 
-  // initializeAndSubscribe();
+  subscribeToUpdates(_url);
 };
 
 export const fetchAllCustomerData = async () => _client.getAllCustomerData();

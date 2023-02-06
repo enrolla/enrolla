@@ -61,9 +61,9 @@ export class OrganizationIdNotProvidedError extends EnrollaError {
 }
 
 export class OrganizationNotFoundError extends EnrollaError {
-  constructor(feature: string, organizationId: string) {
+  constructor(key: string, organizationId: string) {
     super(
-      `The organizationId "${organizationId}" was not found when attempting to evaluate feature "${feature}".`
+      `The organizationId "${organizationId}" was not found when attempting to evaluate "${key}".`
     );
     this.severity = SEVERITY.Error;
   }
@@ -118,5 +118,13 @@ export class PrivateKeyNotSuppliedError extends EnrollaError {
       'You must supply a "privateKey" to the "initialize" function in order to use secrets. See the documentation for more information.'
     );
     this.severity = SEVERITY.Error;
+  }
+}
+
+export class DataPushError extends EnrollaError {
+  constructor(message: string, error?: Error) {
+    super(`Error getting push data from server: ${message}`);
+    this.severity = SEVERITY.Warning;
+    this.cause = error;
   }
 }
