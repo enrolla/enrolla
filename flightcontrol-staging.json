@@ -44,6 +44,12 @@
                 "value": "dbConnectionString"
               }
             },
+            "REDIS_URL": {
+              "fromService": {
+                "id": "redis",
+                "value": "connectionString"
+              }
+            },
             "ENV_NAME": "staging",
             "PROPELAUTH_URL": {
               "fromParameterStore": "/backend/staging/PROPELAUTH_URL"
@@ -82,6 +88,15 @@
           "instanceSize": "db.t4g.micro",
           "storage": 20,
           "private": true
+        },
+        {
+          "id": "redis",
+          "name": "Redis",
+          "type": "elasticache",
+          "engine": "redis",
+          "engineVersion": "7.0",
+          "instanceSize": "cache.t4g.micro",
+          "connectionStringEnvVarName": "REDIS_URL"
         },
         {
           "id": "prisma-studio",
