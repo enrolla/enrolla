@@ -44,12 +44,6 @@
                 "value": "dbConnectionString"
               }
             },
-            "REDIS_URL": {
-              "fromService": {
-                "id": "redis",
-                "value": "connectionString"
-              }
-            },
             "ENV_NAME": "staging",
             "PROPELAUTH_URL": {
               "fromParameterStore": "/backend/staging/PROPELAUTH_URL"
