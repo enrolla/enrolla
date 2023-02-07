@@ -2,10 +2,10 @@
 <br>
 <p align="center">
 <a href="https://enrolla.io/#gh-light-mode-only">
-<img width="300" src="https://raw.githubusercontent.com/enrolla/enrolla/main/logo-light.png#gh-light-mode-only">
+<img width="300" src="https://raw.githubusercontent.com/enrolla/enrolla/main/img/logo-light.png#gh-light-mode-only">
 </a>
 <a href="https://enrolla.io/#gh-dark-mode-only">
-<img width="300" src="https://raw.githubusercontent.com/enrolla/enrolla/main/logo-dark.png#gh-dark-mode-only">
+<img width="300" src="https://raw.githubusercontent.com/enrolla/enrolla/main/img/logo-dark.png#gh-dark-mode-only">
 </a>
 </p>
 <p align="center">
@@ -35,6 +35,15 @@
     <img src="https://img.shields.io/badge/follow-%40enrolla__io-1DA1F2?logo=twitter&style=social" alt="Enrolla Twitter" />
   </a>
 </h4>
+
+<p align="center">
+<a href="https://enrolla.io/#gh-light-mode-only">
+<img width="700" src="https://raw.githubusercontent.com/enrolla/enrolla/main/img/banner-light.png#gh-light-mode-only">
+</a>
+<a href="https://enrolla.io/#gh-dark-mode-only">
+<img width="700" src="https://raw.githubusercontent.com/enrolla/enrolla/main/img/banner-dark.png#gh-dark-mode-only">
+</a>
+</p>
 
 # ⭐️ Why Enrolla?
 
