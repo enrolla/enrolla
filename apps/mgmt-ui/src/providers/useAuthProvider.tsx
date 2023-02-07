@@ -55,7 +55,6 @@ export default function useAuthProvider():
         import.meta.env.VITE_POSTHOG_TOKEN &&
         import.meta.env.VITE_POSTHOG_TOKEN !== 'disabled'
       ) {
-
         posthog.identify(authInfo.user?.userId, {
           email: authInfo.user?.email,
           org: authInfo.orgHelper?.getOrgs()[0].orgName,
