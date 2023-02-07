@@ -84,3 +84,4 @@ Not sure where to get started? You can:
 - [Slack](https://join.slack.com/t/enrollacommunity/shared_invite/zt-1naxh3lia-wIvFcLyCEXTYzAuO1U688Q) (For live discussion with the community and the Enrolla team)
 - [GitHub Discussions](https://github.com/enrolla/enrolla/discussions) (For help with building and deeper conversations about features)
 - [GitHub Issues](https://github.com/enrolla/enrolla/issues) (For any bugs and errors you encounter using Enrolla)
+- [Twitter](https://twitter.com/enrolla_io) (Get news fast)

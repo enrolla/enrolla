@@ -123,68 +123,69 @@
               }
             }
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": "preview",
+      "name": "Preview",
+      "region": "us-east-1",
+      "source": {
+        "pr": true,
+        "filter": {
+          "toBranches": ["main"],
+          "labels": ["deploy"]
+        }
+      },
+      "services": [
         {
-          "id": "preview",
-          "name": "Preview",
-          "region": "us-east-1",
-          "source": {
-          "pr": true,
-          "filter": {
-            "toBranches": ["main"],
-            "labels": ["deploy"]
-          }},
-          "services": [
-            {
-              "id": "enrolla-server-preview",
-              "name": "Backend",
-              "type": "fargate",
-              "buildCommand": "npx nx build enrolla-server",
-              "postBuildCommand": "npm prune --production; cp -r ./libs/prisma-models/prisma ./prisma",
-              "startCommand": "npx prisma migrate deploy; node dist/apps/enrolla-server/main.js",
-              "cpu": 0.25,
-              "memory": 1,
-              "domain": "api-staging-preview.vecinity.io",
-              "port": 3000,
-              "minInstances": 1,
-              "maxInstances": 1,
-              "envVariables": {
-                "REDIS_URL": {
-                  "fromParameterStore": "/backend/staging/REDIS_URL"
-                },
-                "DATABASE_URL": {
-                  "fromParameterStore": "/backend/staging/DATABASE_URL"
-                },
-                "ENV_NAME": "staging",
-                "PROPELAUTH_URL": {
-                  "fromParameterStore": "/backend/staging/PROPELAUTH_URL"
-                },
-                "PROPELAUTH_API_KEY": {
-                  "fromParameterStore": "/backend/staging/PROPELAUTH_API_KEY"
-                },
-                "API_TOKEN_GENERATION_PRIVATE_KEY": {
-                  "fromParameterStore": "/backend/staging/API_TOKEN_GENERATION_PRIVATE_KEY"
-                },
-                "SECRET_ENCRYPTION_KEY": {
-                  "fromParameterStore": "/backend/staging/SECRET_ENCRYPTION_KEY"
-                },
-                "SDK_API_TOKEN": {
-                  "fromParameterStore": "/backend/staging/SDK_API_TOKEN"
-                },
-                "SDK_ENROLLA_SERVER_GRAPHQL_ENDPOINT": {
-                  "fromParameterStore": "/backend/staging/SDK_ENROLLA_SERVER_GRAPHQL_ENDPOINT"
-                },
-                "SDK_ENROLLA_PRIVATE_ENCRYPTION_KEY": {
-                  "fromParameterStore": "/backend/staging/SDK_ENROLLA_PRIVATE_ENCRYPTION_KEY"
-                },
-                "SVIX_WEBHOOK_SIGNING_SECRET": {
-                  "fromParameterStore": "/backend/staging/SVIX_WEBHOOK_SIGNING_SECRET"
-                },
-                "EE": "true",
-                "CONFIGURATION_MANAGER_TYPE": "SDK"
-              }
-            }
-          ]
+          "id": "enrolla-server-preview",
+          "name": "Backend",
+          "type": "fargate",
+          "buildCommand": "npx nx build enrolla-server",
+          "postBuildCommand": "npm prune --production; cp -r ./libs/prisma-models/prisma ./prisma",
+          "startCommand": "npx prisma migrate deploy; node dist/apps/enrolla-server/main.js",
+          "cpu": 0.25,
+          "memory": 1,
+          "domain": "api-staging-preview.vecinity.io",
+          "port": 3000,
+          "minInstances": 1,
+          "maxInstances": 1,
+          "envVariables": {
+            "REDIS_URL": {
+              "fromParameterStore": "/backend/staging/REDIS_URL"
+            },
+            "DATABASE_URL": {
+              "fromParameterStore": "/backend/staging/DATABASE_URL"
+            },
+            "ENV_NAME": "staging",
+            "PROPELAUTH_URL": {
+              "fromParameterStore": "/backend/staging/PROPELAUTH_URL"
+            },
+            "PROPELAUTH_API_KEY": {
+              "fromParameterStore": "/backend/staging/PROPELAUTH_API_KEY"
+            },
+            "API_TOKEN_GENERATION_PRIVATE_KEY": {
+              "fromParameterStore": "/backend/staging/API_TOKEN_GENERATION_PRIVATE_KEY"
+            },
+            "SECRET_ENCRYPTION_KEY": {
+              "fromParameterStore": "/backend/staging/SECRET_ENCRYPTION_KEY"
+            },
+            "SDK_API_TOKEN": {
+              "fromParameterStore": "/backend/staging/SDK_API_TOKEN"
+            },
+            "SDK_ENROLLA_SERVER_GRAPHQL_ENDPOINT": {
+              "fromParameterStore": "/backend/staging/SDK_ENROLLA_SERVER_GRAPHQL_ENDPOINT"
+            },
+            "SDK_ENROLLA_PRIVATE_ENCRYPTION_KEY": {
+              "fromParameterStore": "/backend/staging/SDK_ENROLLA_PRIVATE_ENCRYPTION_KEY"
+            },
+            "SVIX_WEBHOOK_SIGNING_SECRET": {
+              "fromParameterStore": "/backend/staging/SVIX_WEBHOOK_SIGNING_SECRET"
+            },
+            "EE": "true",
+            "CONFIGURATION_MANAGER_TYPE": "SDK"
+          }
         }
       ]
     }
