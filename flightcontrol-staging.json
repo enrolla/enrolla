@@ -153,10 +153,10 @@
           "maxInstances": 1,
           "envVariables": {
             "REDIS_URL": {
-              "fromParameterStore": "/backend/staging/REDIS_URL"
+              "fromParameterStore": "fc_enrollastg_staging_redis_x64q0oqu_primary_url"
             },
             "DATABASE_URL": {
-              "fromParameterStore": "/backend/staging/DATABASE_URL"
+              "fromParameterStore": "fc_enrollastg_staging_db_xeo002om_dbConnectionString"
             },
             "ENV_NAME": "staging",
             "PROPELAUTH_URL": {
