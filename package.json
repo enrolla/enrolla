@@ -28,7 +28,7 @@
     "@prisma/client": "^4.8.0",
     "@propelauth/node": "^2.0.1",
     "@propelauth/react": "^2.0.2",
-    "@tabler/icons": "^1.118.0",
+    "@tabler/icons": "^2.2.0",
     "ajv": "^8.11.2",
     "apollo-server-express": "^3.11.1",
     "auth0": "^3.1.2",
