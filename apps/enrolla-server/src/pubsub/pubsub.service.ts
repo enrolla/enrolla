@@ -13,9 +13,24 @@ export class PubSubService {
     if (url) {
       this.logger.log('PubSub Redis URL supplied, using RedisPubSub - ', url);
 
+      const ioRedisOptions = {
+        lazyConnect: true,
+        maxRetriesPerRequest: 5,
+      };
+
+      const redis = new Redis(url, ioRedisOptions);
+      redis.connect().catch((error) => {
+        this.logger.error(
+          'Failed to initialize RedisPubSub, reverting to in memory PubSub',
+          error?.stack
+        );
+        redis.disconnect();
+        this._pubSub = new PubSub();
+      });
+
       this._pubSub = new RedisPubSub({
-        publisher: new Redis(url),
-        subscriber: new Redis(url),
+        publisher: redis,
+        subscriber: new Redis(url, ioRedisOptions),
       });
     } else {
       this.logger.log('No PubSub Redis URL supplied, using in memory PubSub');
