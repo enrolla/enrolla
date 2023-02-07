@@ -1,4 +1,3 @@
-import { fetchAllCustomerData } from '../api';
 import { Feature } from '../interfaces';
 import { decrypt } from '../encryption';
 import { _configuration } from '../configuration';

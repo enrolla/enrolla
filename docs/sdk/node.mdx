@@ -59,6 +59,9 @@ Initialize the SDK in the entry point of your application before accepting conne
           enabled: true,
           intervalSeconds: 60,
         },
+        pushUpdates: { // enable push updates from server (via websocket)
+          enabled: true,
+        },
       });
     } catch (error) // handle error
 

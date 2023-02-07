@@ -57,9 +57,9 @@ jobs:
         run: npx nx run-many --target=test --projects=${{ matrix.project }}
 
       # There's currently a bug on nx publish, so we need to revert for npm publish
-      # - name: Publish
-      #   id: publish
-      #   run: npx nx run-many --target=publish --projects=${{ matrix.project }}
+      - name: Publish
+        id: publish
+        run: npx nx run-many --target=publish --projects=${{ matrix.project }}
       # - name: Publish
       #   id: publish
       #   run: |

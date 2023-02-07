@@ -2,6 +2,8 @@
 import * as sdk from '@enrolla/node-server-sdk';
 import { env } from 'process';
 
+const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
 export const testNodeServerSdk = async () => {
   try {
     await sdk.initialize({
@@ -13,6 +15,10 @@ export const testNodeServerSdk = async () => {
           console.log('beforeEvaluation', feature, organizationId),
         afterEvaluation: (feature, organizationId, res) =>
           console.log('afterEvaluation', feature, organizationId, res),
+      },
+      pushUpdates: {
+        enabled: true,
+        onError: (error) => console.log(error),
       },
       polling: {
         enabled: true,
@@ -28,19 +34,14 @@ export const testNodeServerSdk = async () => {
 
   console.log('Initiated Successfully');
 
-  const orgId = 'local_test_app_org_id;';
-  const secretKey = 'local_test_app_secret';
+  const orgId = '201dd371-ffbc-4905-a01c-78c228ef7934';
+  const key = 'maxEventsPerSec';
 
-  console.log(
-    'Secret value before change',
-    sdk.getSecretValue(secretKey, orgId)
-  );
+  console.log('feat value before change', sdk.getFeatureValue(key, orgId));
 
-  const newValue = 'new_value';
-  await sdk.updateCustomerSecrets(orgId, { key: secretKey, value: newValue });
+  // await sdk.updateCustomerFeatures(orgId, { key, value: 1000 });
 
-  console.log(
-    'Secret value after change ',
-    sdk.getSecretValue(secretKey, orgId)
-  );
+  await delay(20000);
+
+  console.log('feat value after change', sdk.getFeatureValue(key, orgId));
 };
