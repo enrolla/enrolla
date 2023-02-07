@@ -72,6 +72,9 @@ export default function App() {
           colorScheme,
           fontFamily: 'Nunito',
           black: '#626262',
+          headings: {
+            fontFamily: 'Inter',
+          },
           components: {
             Table: {
               styles: (theme) =>

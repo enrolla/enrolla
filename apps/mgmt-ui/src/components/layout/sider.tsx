@@ -81,6 +81,7 @@ export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
 
   const commonNavLinkStyles: Styles<NavLinkStylesNames, NavLinkStylesParams> = {
     root: {
+      font: 'Nunito',
       display: 'flex',
       color:
         theme.colorScheme === 'dark'
