@@ -1,6 +1,6 @@
 {
   "name": "@enrolla/graphql-codegen",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Auto-generated interfaces and types for use with the Enrolla graphQL API",
   "license": "MIT",
   "homepage": "https://github.com/enrolla/enrolla",
