@@ -9,7 +9,7 @@
 </a>
 </p>
 <p align="center">
-  <p align="center">Easily control how your product behaves and looks for different customers</p>
+  <p align="center">Much more than feature flags for B2B.</p>
 </p>
 <h4 align="center">
   <a href="https://join.slack.com/t/enrollacommunity/shared_invite/zt-1naxh3lia-wIvFcLyCEXTYzAuO1U688Q">Slack</a> |
@@ -21,7 +21,6 @@
    <a href="https://github.com/enrolla/enrolla/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Enrolla is released under the MIT License">
   </a>
-  <a href="https://www.ycombinator.com/companies/enrolla"><img src="https://img.shields.io/website?color=%23f26522&down_message=Y%20Combinator&label=Backed&logo=ycombinator&style=flat-square&up_message=Y%20Combinator&url=https%3A%2F%2Fwww.ycombinator.com"></a>
   <a href="https://www.ycombinator.com/companies/enrolla"><img src="https://img.shields.io/website?color=%23f26522&down_message=Y%20Combinator&label=Backed&logo=ycombinator&style=flat-square&up_message=Y%20Combinator&url=https%3A%2F%2Fwww.ycombinator.com"></a>
   <a href="https://github.com/enrolla/enrolla/blob/main/CONTRIBUTING.md">
     <img src="https://img.shields.io/badge/PRs-Welcome-brightgreen" alt="PRs welcome!" />
@@ -50,28 +49,26 @@ You get the point.
 
 So we built it as an open source project, and now you can stop doing that and focus instead on delivering your amazing product to your customers.
 
-## 👥 Who is it for?
-
-Any SaaS company out there. Whether you’re sales-led or product-led, you need a way to manage your configurations. You don’t want to waste engineering time on building (and then maintaining) a half-baked home-grown solution.
-
 ## ✨ Features
 
 - 🛂 Manage which features are enabled for which customer (and other configurations)
 - 🔐 Manage customer API Tokens (and other secrets)
-- 🛂 Manage which features are enabled for which customer (and other configurations)
-- 🔐 Manage customer API Tokens (and other secrets)
 - 🧩 Integrations with authentication services
-- 📦 Built-in backoffice for sales and support teams
 - 📦 Built-in backoffice for sales and support teams
 - 👩‍💻 Community driven
 
 Coming soon:
 
 - 🏁 Metering customer usage
-- 🏁 Metering customer usage
 - ⏩ Python and Go SDKs
 - 🧩 Integrations with CRMs and billing systems
 - 😎 Headless UI templates for providing needed knobs for your customers
+
+## 🚀 Getting Started
+
+If you just want to start using Enrolla, [go to the app](https://app.enrolla.io).
+
+If you're looking to self-host Enrolla, see our [documentation](https://docs.enrolla.io/contributing/developing).
 
 ## 🌱 Contributing
 
