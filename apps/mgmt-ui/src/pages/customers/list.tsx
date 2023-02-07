@@ -68,7 +68,7 @@ export const CustomerList: React.FC = () => {
   const {
     getHeaderGroups,
     getRowModel,
-    refineCore: { setCurrent, pageCount, current },
+    refineCore: { setCurrent, pageCount, current, tableQueryResult },
   } = useTable({
     columns,
     refineCoreProps: {
@@ -84,7 +84,7 @@ export const CustomerList: React.FC = () => {
     },
   });
 
-  if (!getRowModel().rows.length) {
+  if (!tableQueryResult.isLoading && !getRowModel().rows.length) {
     return <CustomersEmptyStateComponent />;
   }
 

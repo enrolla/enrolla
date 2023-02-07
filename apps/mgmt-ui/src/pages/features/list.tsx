@@ -83,7 +83,7 @@ export const FeatureList: React.FC = () => {
   const {
     getHeaderGroups,
     getRowModel,
-    refineCore: { setCurrent, pageCount, current },
+    refineCore: { setCurrent, pageCount, current, tableQueryResult },
   } = useTable({
     columns,
     refineCoreProps: {
@@ -102,7 +102,7 @@ export const FeatureList: React.FC = () => {
 
   const { list } = useNavigation();
 
-  if (!getRowModel().rows.length) {
+  if (!tableQueryResult.isLoading && !getRowModel().rows.length) {
     return <FeaturesEmptyStateComponent />;
   }
 
