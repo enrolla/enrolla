@@ -72,10 +72,6 @@ export default function App() {
           colorScheme,
           fontFamily: 'Nunito',
           black: '#626262',
-          colors: {
-            enrolla: ['#A892FB', '#6644EC'],
-          },
-          primaryColor: 'enrolla',
           components: {
             Table: {
               styles: (theme) =>
