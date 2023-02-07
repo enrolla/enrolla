@@ -6,7 +6,12 @@
       "name": "Staging",
       "region": "us-east-1",
       "source": {
-        "branch": "main"
+        "branch": "main",
+        "pr": true,
+        "filter": {
+          "toBranches": ["main"],
+          "labels": ["deploy"]
+        }
       },
       "services": [
         {
