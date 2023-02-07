@@ -28,6 +28,11 @@ export class SdkConfigurationManager implements ConfigurationManager {
           onError: (error) =>
             this.logger.error('onPollingError', error.cause?.stack),
         },
+        pushUpdates: {
+          enabled: true,
+          onError: (error) =>
+            this.logger.error('onPushError', error.cause?.stack),
+        },
       })
       .then(() => {
         this.logger.log('SDK Initialized Successfully');

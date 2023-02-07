@@ -46,7 +46,7 @@ export const subscribeToUpdates = async (url: string) => {
       {
         next: (res) => {
           if (res?.errors) {
-            _configuration.onPushError?.(
+            _configuration.pushUpdates?.onError?.(
               new DataPushError(res.errors?.[0]?.message)
             );
           } else {
@@ -60,7 +60,7 @@ export const subscribeToUpdates = async (url: string) => {
           }
         },
         error: (error: unknown) => {
-          _configuration.onPushError?.(
+          _configuration.pushUpdates?.onError?.(
             new DataPushError('Unknown Error', error as Error)
           );
         },
@@ -68,7 +68,7 @@ export const subscribeToUpdates = async (url: string) => {
       }
     );
   } catch (err) {
-    _configuration.onPushError?.(
+    _configuration.pushUpdates?.onError?.(
       new DataPushError('Unknown Error', err as Error)
     );
   }

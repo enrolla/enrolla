@@ -20,7 +20,7 @@ export interface InitializeOptions {
   url?: string;
 
   /**
-   * Polling configuration. Optional. (if not supplied polling will be disabled, and the sdk will not update data during runntime)
+   * Polling configuration. Optional. (if not supplied polling will be disabled, and the sdk will not update data during runtime)
    */
   polling?: {
     /**
@@ -36,6 +36,19 @@ export interface InitializeOptions {
     /**
      * Function to be called on polling error. Optional.
      * @param error - The error that occurred.
+     */
+    onError?: (error: EnrollaError) => void;
+  };
+
+  pushUpdates: {
+    /**
+     * Whether to listen to push updates (via websocket). Required if `pushUpdates` configuration object is supplied.
+     * NOTE: Using this option alone is not advised, but rather in combination with polling for maximum resiliency.
+     */
+    enabled: boolean;
+    /**
+     * Function to be called on push error. Optional.
+     * @param error
      */
     onError?: (error: EnrollaError) => void;
   };
@@ -63,10 +76,4 @@ export interface InitializeOptions {
       result: any // eslint-disable-line @typescript-eslint/no-explicit-any
     ) => void;
   };
-
-  /**
-   * Function to be called on push error. Optional.
-   * @param error
-   */
-  onPushError?: (error: EnrollaError) => void;
 }
