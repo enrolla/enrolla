@@ -84,6 +84,15 @@
           "private": true
         },
         {
+          "id": "redis",
+          "name": "Redis",
+          "type": "elasticache",
+          "engine": "redis",
+          "engineVersion": "7.0",
+          "instanceSize": "cache.t4g.micro",
+          "connectionStringEnvVarName": "REDIS_URL"
+        },
+        {
           "id": "prisma-studio",
           "name": "Prisma Studio",
           "type": "fargate",

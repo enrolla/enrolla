@@ -9,7 +9,7 @@
 </a>
 </p>
 <p align="center">
-  <p align="center">Much more than feature flags for B2B.</p>
+  <p align="center">Easily control how your product behaves and looks for different customers</p>
 </p>
 <h4 align="center">
   <a href="https://join.slack.com/t/enrollacommunity/shared_invite/zt-1naxh3lia-wIvFcLyCEXTYzAuO1U688Q">Slack</a> |
@@ -21,6 +21,7 @@
    <a href="https://github.com/enrolla/enrolla/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Enrolla is released under the MIT License">
   </a>
+  <a href="https://www.ycombinator.com/companies/enrolla"><img src="https://img.shields.io/website?color=%23f26522&down_message=Y%20Combinator&label=Backed&logo=ycombinator&style=flat-square&up_message=Y%20Combinator&url=https%3A%2F%2Fwww.ycombinator.com"></a>
   <a href="https://github.com/enrolla/enrolla/blob/main/CONTRIBUTING.md">
     <img src="https://img.shields.io/badge/PRs-Welcome-brightgreen" alt="PRs welcome!" />
   </a>
@@ -37,24 +38,35 @@
 
 # ⭐️ Why Enrolla?
 
-Managing customer configurations takes much work. At first, it seems like just creating another SQL database, but in reality, it's just the beginning.
+Every SaaS company reaches this point. It needs a way to manage customers, divide them into tiers, define which features are enabled for whom, set seat limits or measure usage.
+We’ve all been there. And as engineers we just developed this internally. Again. And again.
 
-You need to define different pricing tiers for different customers, but some important ones require extra customization. You need to store lots of different values for them - throttling configurations, secrets, and just plain JSONs. And you need to be able to access these configurations across your system - with 0 latency. You need this data synchronized across many systems - CRMs, authentication services, billing systems, and even sometimes your Databases.
-Enrolla's goal is to simplify customer configuration management and provide developers with the tools to focus on delivering best-in-class products - while providing the needed flexibility for the rest of the company.
+Sure, it looks simple at first. But as the company grows, more requirements keep piling up.
+There needs to be a backoffice UI for sales and support teams to use.
+We want to update the “enterprise” tier to include the new SSO integration. But it only needs to apply to new customers; old customers should have the enterprise tier without SSO. And then it happens 3 more times with 3 other new features.
+We need to synchronize everything with Salesforce; and the billing system.
+You get the point.
+
+So we built it as an open source project, and now you can stop doing that and focus instead on delivering your amazing product to your customers.
+
+## 👥 Who is it for?
+
+Any SaaS company out there. Whether you’re sales-led or product-led, you need a way to manage your configurations. You don’t want to waste engineering time on building (and then maintaining) a half-baked home-grown solution.
 
 ## ✨ Features
 
-- 🔐 Easily manage customer API Tokens and other secrets
-- 🛂 Easily management entitlements and other customer configurations
+- 🛂 Manage which features are enabled for which customer (and other configurations)
+- 🔐 Manage customer API Tokens (and other secrets)
 - 🧩 Integrations with authentication services
-- 📦 Built-in backoffice for non engineers
+- 📦 Built-in backoffice for sales and support teams
 - 👩‍💻 Community driven
 
 Coming soon:
 
-- 😎 Headless UI templates for providing needed knobs for your customers
+- 🏁 Metering customer usage
 - ⏩ Python and Go SDKs
 - 🧩 Integrations with CRMs and billing systems
+- 😎 Headless UI templates for providing needed knobs for your customers
 
 ## 🌱 Contributing
 
