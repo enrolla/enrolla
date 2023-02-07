@@ -99,7 +99,10 @@ export const PackageList: React.FC = () => {
     []
   );
 
-  const { getRowModel } = useTable({
+  const {
+    getRowModel,
+    refineCore: { tableQueryResult },
+  } = useTable({
     columns,
     refineCoreProps: {
       metaData: {
@@ -111,7 +114,7 @@ export const PackageList: React.FC = () => {
   const { classes } = useStyles();
   const { list } = useNavigation();
 
-  if (!getRowModel().rows.length) {
+  if (!tableQueryResult.isLoading && !getRowModel().rows.length) {
     return <PackagesEmptyStateComponent />;
   }
 
