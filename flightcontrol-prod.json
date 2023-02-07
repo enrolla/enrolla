@@ -20,8 +20,15 @@
           "outputDirectory": "dist/apps/mgmt-ui",
           "singlePageApp": true,
           "envVariables": {
-            "VITE_BACKEND_URL": "https://api.enrolla.io",
-            "VITE_PROPELAUTH_URL": "https://auth.enrolla.io"
+            "VITE_BACKEND_URL": {
+              "fromParameterStore": "/frontend/prod/VITE_BACKEND_URL"
+            },
+            "VITE_PROPELAUTH_URL": {
+              "fromParameterStore": "/frontend/prod/VITE_PROPELAUTH_URL"
+            },
+            "VITE_POSTHOG_TOKEN": {
+              "fromParameterStore": "/frontend/prod/VITE_POSTHOG_TOKEN"
+            }
           },
           "dependsOn": ["enrolla-server"]
         },
