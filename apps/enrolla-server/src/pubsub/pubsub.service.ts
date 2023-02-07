@@ -11,7 +11,7 @@ export class PubSubService {
   constructor() {
     const url = process.env.REDIS_URL;
     if (url) {
-      this.logger.log('PubSub Redis URL supplied, using RedisPubSub - ', url);
+      this.logger.log('PubSub Redis URL supplied, using RedisPubSub');
 
       const ioRedisOptions = {
         lazyConnect: true,
