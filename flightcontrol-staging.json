@@ -156,7 +156,7 @@
               "fromParameterStore": "Need to fix this"
             },
             "DATABASE_URL": {
-              "fromParameterStore": "Need to fix this" 
+              "fromParameterStore": "Need to fix this"
             },
             "ENV_NAME": "staging",
             "PROPELAUTH_URL": {
