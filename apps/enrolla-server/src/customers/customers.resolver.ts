@@ -22,7 +22,7 @@ import { FeatureInstancesService } from '../feature-instances/feature-instances.
 import { FeatureValue } from '../feature-instances/entities/feature-value.entity';
 import { Secret } from '../secrets/entities/secret.entity';
 import { SecretsService } from '../secrets/secrets.service';
-import { PubSub } from 'graphql-subscriptions';
+import { PubSubService } from '../pubsub/pubsub.service';
 
 @Resolver(() => Customer)
 @UseGuards(GraphQLAuthGuard)
@@ -32,7 +32,7 @@ export class CustomersResolver {
     private readonly packagesService: PackagesService,
     private readonly featuresInstancesService: FeatureInstancesService,
     private readonly secretsService: SecretsService,
-    @Inject('PUB_SUB') private pubSub: PubSub
+    private readonly pubSubService: PubSubService
   ) {}
 
   @Mutation(() => Customer)
@@ -152,7 +152,7 @@ export class CustomersResolver {
       id
     );
 
-    this.pubSub.publish('customerUpdated', {
+    this.pubSubService.pubSub.publish('customerUpdated', {
       customerUpdated: {
         organizationId,
         secrets,

@@ -8,13 +8,13 @@ import { SecretsModule } from '../secrets/secrets.module';
 import { FeaturesModule } from '../features/features.module';
 import { PubSub } from 'graphql-subscriptions';
 import { CustomerSubscriptionsResolver } from './customers-subscription.resolver';
+import { PubSubModule } from '../pubsub/pubsub.module';
 
 @Module({
   providers: [
     CustomersResolver,
     CustomersService,
     CustomerSubscriptionsResolver,
-    { provide: 'PUB_SUB', useValue: new PubSub() },
   ],
   imports: [
     PackagesModule,
@@ -22,6 +22,7 @@ import { CustomerSubscriptionsResolver } from './customers-subscription.resolver
     FeatureInstancesModule,
     SecretsModule,
     FeaturesModule,
+    PubSubModule,
   ],
   exports: [CustomersService],
 })

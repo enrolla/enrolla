@@ -1,11 +1,10 @@
-import { Inject } from '@nestjs/common';
 import { Resolver, Subscription } from '@nestjs/graphql';
-import { PubSub } from 'graphql-subscriptions';
+import { PubSubService } from '../pubsub/pubsub.service';
 import { CustomerForSubscription } from './entities/customer-for-subscription.entity';
 
 @Resolver(() => CustomerForSubscription)
 export class CustomerSubscriptionsResolver {
-  constructor(@Inject('PUB_SUB') private pubSub: PubSub) {}
+  constructor(private readonly pubSubService: PubSubService) {}
 
   @Subscription(() => CustomerForSubscription, {
     filter: (payload, _variables, context) => {
@@ -16,6 +15,6 @@ export class CustomerSubscriptionsResolver {
     },
   })
   customerUpdated() {
-    return this.pubSub.asyncIterator('customerUpdated');
+    return this.pubSubService.pubSub.asyncIterator('customerUpdated');
   }
 }
