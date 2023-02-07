@@ -8,9 +8,8 @@ import { AuthProvider } from '@propelauth/react';
 import App from './App';
 
 if (
-  !window.location.host.includes('127.0.0.1') &&
-  !window.location.host.includes('localhost') &&
-  !window.location.host.includes('staging')
+  import.meta.env.VITE_POSTHOG_TOKEN &&
+  import.meta.env.VITE_POSTHOG_TOKEN !== 'disabled'
 ) {
   posthog.init(import.meta.env.VITE_POSTHOG_TOKEN, {
     api_host: 'https://app.posthog.com',

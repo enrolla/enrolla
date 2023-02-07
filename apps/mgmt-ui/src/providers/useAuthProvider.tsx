@@ -51,7 +51,10 @@ export default function useAuthProvider():
     if (authInfo.isLoggedIn) {
       gqlClient.setHeader('Authorization', `Bearer ${authInfo.accessToken}`);
 
-      if (import.meta.env.VITE_POSTHOG_TOKEN) {
+      if (
+        import.meta.env.VITE_POSTHOG_TOKEN &&
+        import.meta.env.VITE_POSTHOG_TOKEN !== 'disabled'
+      ) {
         posthog.identify(authInfo.user?.userId, {
           email: authInfo.user?.email,
           org: authInfo.orgHelper?.getOrgs()[0].orgName,
