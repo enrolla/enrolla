@@ -21,22 +21,23 @@ export type StepProps = {
 export const onboardingSteps: StepProps[] = [
   {
     text: 'Define Features',
-    subText:
-      "Create features and define their default values.",
+    subText: 'Create features and define their default values.',
     icon: IconLayoutList,
     time: 2,
     link: '/features',
   },
   {
     text: 'Setup Packages',
-    subText: 'Group features together as packages by assigning them unique default values in each.',
+    subText:
+      'Group features together as packages by assigning them unique default values in each.',
     icon: IconPackage,
     time: 2,
     link: '/packages',
   },
   {
     text: 'Add Customers',
-    subText: 'Create customers and assign them to a package, or override package defaults with custom values.',
+    subText:
+      'Create customers and assign them to a package, or override package defaults with custom values.',
     icon: IconUsers,
     time: 5,
     link: '/customers',
@@ -59,7 +60,7 @@ export const onboardingSteps: StepProps[] = [
   {
     text: 'Integrate with Your Infrastructure',
     subText:
-      "Connect to your existing infrastructure to automatically import data to Enrolla.",
+      'Connect to your existing infrastructure to automatically import data to Enrolla.',
     icon: IconPuzzle,
     time: 10,
     link: '/integrations',
