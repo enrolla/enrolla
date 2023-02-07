@@ -102,10 +102,6 @@ export const SecretKeyList: React.FC = () => {
     },
   });
 
-  // if (!getRowModel().rows.length) {
-  //   return <SecretKeysEmptyStateComponent onCreate={() => show}/>;
-  // }
-
   return (
     <>
       {!publicKey && (
