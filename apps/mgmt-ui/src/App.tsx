@@ -77,6 +77,20 @@ export default function App() {
           },
           primaryColor: 'enrolla',
           components: {
+            Paper: {
+              styles: (theme) =>
+                theme.colorScheme === 'light'
+                  ? {
+                      root: {
+                        backgroundColor: '#F7F8FD',
+                      },
+                    }
+                  : {
+                      root: {
+                        backgroundColor: '#37393F',
+                      },
+                    },
+            },
             Table: {
               styles: (theme) =>
                 theme.colorScheme === 'light'

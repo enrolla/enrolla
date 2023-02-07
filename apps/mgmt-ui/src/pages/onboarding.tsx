@@ -10,6 +10,7 @@ import {
   Progress,
   Box,
   ThemeIcon,
+  useMantineTheme,
 } from '@pankod/refine-mantine';
 import { IconCheck } from '@tabler/icons';
 import { onboardingSteps, StepProps, useOnboarding } from '../utils/onboarding';
@@ -33,6 +34,7 @@ export const OnboardingStep = ({
   link,
 }: StepProps) => {
   const { push } = useNavigation();
+  const theme = useMantineTheme();
   const { classes } = useStyles();
 
   const [onboardingStatus, setOnboardingStatus] = useOnboarding();
@@ -54,11 +56,26 @@ export const OnboardingStep = ({
       <Group position="apart" mb="xs">
         <Group>
           <Box>
-            {icon({ size: 32, color: '#6644EC' })}
+            {icon({
+              size: 32,
+              color: theme.colorScheme === 'dark' ? '#DAE2EC' : '#6644EC',
+            })}
             {complete && (
-              <ThemeIcon color="white" size={23} radius={20} ml={-18}>
-                <ThemeIcon color="#6644EC" size={20} radius={20}>
-                  <IconCheck size={14} />
+              <ThemeIcon
+                color={theme.colorScheme === 'dark' ? 'black' : 'white'}
+                size={23}
+                radius={20}
+                ml={-18}
+              >
+                <ThemeIcon
+                  color={theme.colorScheme === 'dark' ? '#987DFF' : '#6644EC'}
+                  size={20}
+                  radius={20}
+                >
+                  <IconCheck
+                    color={theme.colorScheme === 'dark' ? 'black' : 'white'}
+                    size={14}
+                  />
                 </ThemeIcon>
               </ThemeIcon>
             )}
@@ -69,7 +86,11 @@ export const OnboardingStep = ({
           </Stack>
         </Group>
         {!complete && <Text>about {time} min</Text>}
-        {complete && <Text color="#6644EC">Complete!</Text>}
+        {complete && (
+          <Text color={theme.colorScheme === 'dark' ? '#987DFF' : '#6644EC'}>
+            Complete!
+          </Text>
+        )}
       </Group>
       <Card.Section>
         <Progress

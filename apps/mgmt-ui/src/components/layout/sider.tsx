@@ -322,7 +322,12 @@ export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
               >
                 <Paper withBorder mb="xl" mx="sm">
                   <Group my="xs" mx="xs" sx={{ width: 200 }} spacing="xs">
-                    <IconListCheck size={16} color="#6644EC" />
+                    <IconListCheck
+                      size={16}
+                      color={
+                        theme.colorScheme === 'dark' ? '#C4B5FC' : '#6644EC'
+                      }
+                    />
                     <Text fz="sm">Enrolla Guide</Text>
                   </Group>
                 </Paper>
@@ -333,12 +338,26 @@ export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
                   roundCaps
                   thickness={10}
                   label={
-                    <Text size="xs" color="#6644EC" align="center">
+                    <Text
+                      size="xs"
+                      color={
+                        theme.colorScheme === 'dark' ? '#E3DBFF' : '#6644EC'
+                      }
+                      align="center"
+                    >
                       {`${onboardingPercentage}%`}
                     </Text>
                   }
-                  sections={[{ value: onboardingPercentage, color: '#A892FB' }]}
-                  rootColor="#E8E3FC"
+                  sections={[
+                    {
+                      value: onboardingPercentage,
+                      color:
+                        theme.colorScheme === 'dark' ? '#E2DBFF' : '#A892FB',
+                    },
+                  ]}
+                  rootColor={
+                    theme.colorScheme === 'dark' ? '#9B84F4' : '#E8E3FC'
+                  }
                   size={80}
                 />
               </Group>
