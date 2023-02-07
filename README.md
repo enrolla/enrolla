@@ -22,6 +22,7 @@
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Enrolla is released under the MIT License">
   </a>
   <a href="https://www.ycombinator.com/companies/enrolla"><img src="https://img.shields.io/website?color=%23f26522&down_message=Y%20Combinator&label=Backed&logo=ycombinator&style=flat-square&up_message=Y%20Combinator&url=https%3A%2F%2Fwww.ycombinator.com"></a>
+  <a href="https://www.ycombinator.com/companies/enrolla"><img src="https://img.shields.io/website?color=%23f26522&down_message=Y%20Combinator&label=Backed&logo=ycombinator&style=flat-square&up_message=Y%20Combinator&url=https%3A%2F%2Fwww.ycombinator.com"></a>
   <a href="https://github.com/enrolla/enrolla/blob/main/CONTRIBUTING.md">
     <img src="https://img.shields.io/badge/PRs-Welcome-brightgreen" alt="PRs welcome!" />
   </a>
@@ -57,12 +58,16 @@ Any SaaS company out there. Whether you’re sales-led or product-led, you need 
 
 - 🛂 Manage which features are enabled for which customer (and other configurations)
 - 🔐 Manage customer API Tokens (and other secrets)
+- 🛂 Manage which features are enabled for which customer (and other configurations)
+- 🔐 Manage customer API Tokens (and other secrets)
 - 🧩 Integrations with authentication services
+- 📦 Built-in backoffice for sales and support teams
 - 📦 Built-in backoffice for sales and support teams
 - 👩‍💻 Community driven
 
 Coming soon:
 
+- 🏁 Metering customer usage
 - 🏁 Metering customer usage
 - ⏩ Python and Go SDKs
 - 🧩 Integrations with CRMs and billing systems

@@ -6,6 +6,7 @@ import {
 } from '@propelauth/react';
 import { GraphQLClient } from 'graphql-request';
 import { useEffect, useMemo, useState } from 'react';
+import posthog from 'posthog-js';
 
 /* eslint-disable react-hooks/rules-of-hooks */
 export default function useAuthProvider():
@@ -38,6 +39,9 @@ export default function useAuthProvider():
     }
 
     if (authInfo.orgHelper?.getOrgs().length === 0) {
+      if (import.meta.env.VITE_POSTHOG_TOKEN) {
+        posthog.capture('registration', { email: authInfo.user?.username });
+      }
       redirectToCreateOrgPage();
       return;
     }
@@ -46,6 +50,13 @@ export default function useAuthProvider():
 
     if (authInfo.isLoggedIn) {
       gqlClient.setHeader('Authorization', `Bearer ${authInfo.accessToken}`);
+
+      if (import.meta.env.VITE_POSTHOG_TOKEN) {
+        posthog.identify(authInfo.user?.userId, {
+          email: authInfo.user?.email,
+          org: authInfo.orgHelper?.getOrgs()[0].orgName,
+        });
+      }
     }
   }, [authInfo, redirectToCreateOrgPage, gqlClient]);
 
