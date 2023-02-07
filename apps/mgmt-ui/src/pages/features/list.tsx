@@ -19,6 +19,7 @@ import {
   FEATURE_TYPE_NAMES,
 } from '../../components/features/FeatureViewComponent';
 import { useNavigation } from '@pankod/refine-core';
+import { FeaturesEmptyStateComponent } from '../../components/empty-state/EmptyStateComponent';
 
 export const FeatureList: React.FC = () => {
   const columns = useMemo<ColumnDef<Feature>[]>(
@@ -100,6 +101,10 @@ export const FeatureList: React.FC = () => {
   });
 
   const { list } = useNavigation();
+
+  // if (!getRowModel().rows.length) {
+  return <FeaturesEmptyStateComponent />;
+  // }
 
   return (
     <ScrollArea>

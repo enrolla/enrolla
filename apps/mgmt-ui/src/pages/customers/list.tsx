@@ -15,6 +15,7 @@ import {
 } from '@pankod/refine-mantine';
 import { useMemo } from 'react';
 import { Feature, Package } from '@enrolla/graphql-codegen';
+import { CustomersEmptyStateComponent } from '../../components/empty-state/EmptyStateComponent';
 
 export const CustomerList: React.FC = () => {
   const columns = useMemo<ColumnDef<Feature>[]>(
@@ -82,6 +83,10 @@ export const CustomerList: React.FC = () => {
       },
     },
   });
+
+  if (!getRowModel().rows.length) {
+    return <CustomersEmptyStateComponent />;
+  }
 
   return (
     <ScrollArea>

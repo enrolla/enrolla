@@ -18,6 +18,7 @@ import { Button, Modal, Space } from '@mantine/core';
 import { EncryptionKey, SecretKey } from '@enrolla/graphql-codegen';
 import { useMemo, useState } from 'react';
 import { useList, useNavigation } from '@pankod/refine-core';
+import { SecretKeysEmptyStateComponent } from '../../components/empty-state/EmptyStateComponent';
 
 export const SecretKeyList: React.FC = () => {
   const [publicKey, setPublicKey] = useState<string>('avoid_flash');
@@ -101,6 +102,10 @@ export const SecretKeyList: React.FC = () => {
     },
   });
 
+  // if (!getRowModel().rows.length) {
+  //   return <SecretKeysEmptyStateComponent onCreate={() => show}/>;
+  // }
+
   return (
     <>
       {!publicKey && (
@@ -140,81 +145,85 @@ export const SecretKeyList: React.FC = () => {
               <SaveButton {...saveButtonProps} />
             </Box>
           </Modal>
-          <ScrollArea>
-            <List
-              title={<Title order={3}>Secret Keys</Title>}
-              createButtonProps={{ onClick: () => show() }}
-            >
-              <Text>
-                Create or delete secret keys. Secret 'values' are defined per
-                customer in the{' '}
-                <Text
-                  span
-                  c="blue"
-                  inherit
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => list('customers')}
-                >
-                  Customer Dashboard
+          {getRowModel().rows.length ? (
+            <ScrollArea>
+              <List
+                title={<Title order={3}>Secret Keys</Title>}
+                createButtonProps={{ onClick: () => show() }}
+              >
+                <Text>
+                  Create or delete secret keys. Secret 'values' are defined per
+                  customer in the{' '}
+                  <Text
+                    span
+                    c="blue"
+                    inherit
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => list('customers')}
+                  >
+                    Customer Dashboard
+                  </Text>
+                  .
                 </Text>
-                .
-              </Text>
-              <Text>
-                Secret values are encrypted and can be depcrypted only by using
-                your private key (which is known only to you).
-              </Text>
-              <Space h="md" />
-              <Table highlightOnHover>
-                <thead>
-                  {getHeaderGroups().map((headerGroup) => (
-                    <tr key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => {
-                        return (
-                          <th key={header.id}>
-                            {!header.isPlaceholder && (
-                              <Group spacing="xs" noWrap>
-                                <Box>
-                                  {flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext()
-                                  )}
-                                </Box>
-                              </Group>
-                            )}
-                          </th>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                </thead>
-                <tbody>
-                  {getRowModel().rows.map((row) => {
-                    return (
-                      <tr key={row.id}>
-                        {row.getVisibleCells().map((cell) => {
+                <Text>
+                  Secret values are encrypted and can be decrypted only by using
+                  your private key (which is known only to you).
+                </Text>
+                <Space h="md" />
+                <Table highlightOnHover>
+                  <thead>
+                    {getHeaderGroups().map((headerGroup) => (
+                      <tr key={headerGroup.id}>
+                        {headerGroup.headers.map((header) => {
                           return (
-                            <td key={cell.id}>
-                              {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext()
+                            <th key={header.id}>
+                              {!header.isPlaceholder && (
+                                <Group spacing="xs" noWrap>
+                                  <Box>
+                                    {flexRender(
+                                      header.column.columnDef.header,
+                                      header.getContext()
+                                    )}
+                                  </Box>
+                                </Group>
                               )}
-                            </td>
+                            </th>
                           );
                         })}
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </Table>
-              <br />
-              <Pagination
-                position="right"
-                total={pageCount}
-                page={current}
-                onChange={setCurrent}
-              />
-            </List>
-          </ScrollArea>
+                    ))}
+                  </thead>
+                  <tbody>
+                    {getRowModel().rows.map((row) => {
+                      return (
+                        <tr key={row.id}>
+                          {row.getVisibleCells().map((cell) => {
+                            return (
+                              <td key={cell.id}>
+                                {flexRender(
+                                  cell.column.columnDef.cell,
+                                  cell.getContext()
+                                )}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </Table>
+                <br />
+                <Pagination
+                  position="right"
+                  total={pageCount}
+                  page={current}
+                  onChange={setCurrent}
+                />
+              </List>
+            </ScrollArea>
+          ) : (
+            <SecretKeysEmptyStateComponent onCreate={show} />
+          )}
         </>
       )}
     </>

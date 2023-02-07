@@ -20,6 +20,7 @@ import {
 } from '../../components/packages/PackageIcon';
 import { Package } from '@enrolla/graphql-codegen';
 import { useNavigation } from '@pankod/refine-core';
+import { PackagesEmptyStateComponent } from '../../components/empty-state/EmptyStateComponent';
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -109,6 +110,10 @@ export const PackageList: React.FC = () => {
 
   const { classes } = useStyles();
   const { list } = useNavigation();
+
+  if (!getRowModel().rows.length) {
+    return <PackagesEmptyStateComponent />;
+  }
 
   return (
     <ScrollArea>
