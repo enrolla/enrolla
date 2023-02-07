@@ -67,5 +67,9 @@ export const subscribeToUpdates = async (url: string) => {
         complete: () => {}, // eslint-disable-line
       }
     );
-  } catch (err) {}
+  } catch (err) {
+    _configuration.onPushError?.(
+      new DataPushError('Unknown Error', err as Error)
+    );
+  }
 };
