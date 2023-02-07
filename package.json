@@ -41,9 +41,12 @@
     "firebase-admin": "^11.5.0",
     "gql-query-builder": "^3.8.0",
     "graphql": "^16.6.0",
+    "graphql-redis-subscriptions": "^2.6.0",
     "graphql-request": "^5.1.0",
     "graphql-scalars": "^1.20.1",
+    "graphql-subscriptions": "^2.0.0",
     "graphql-type-json": "^0.3.2",
+    "graphql-ws": "^5.11.3",
     "jsonwebtoken": "^9.0.0",
     "mongodb": "^4.13.0",
     "mongodb-schema": "^9.0.0",
@@ -58,11 +61,13 @@
     "react-dom": "18.2.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.5.7",
+    "subscriptions-transport-ws": "^0.11.0",
     "svix": "^0.74.1",
     "tslib": "^2.4.1",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1",
-    "winston": "^3.8.2"
+    "winston": "^3.8.2",
+    "ws": "^8.12.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.4.2",

@@ -63,4 +63,10 @@ export interface InitializeOptions {
       result: any // eslint-disable-line @typescript-eslint/no-explicit-any
     ) => void;
   };
+
+  /**
+   * Function to be called on push error. Optional.
+   * @param error
+   */
+  onPushError?: (error: EnrollaError) => void;
 }

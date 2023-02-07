@@ -120,6 +120,23 @@ type SecretKey {
   createdAt: DateTime!
 }
 
+type SDKFeature {
+  key: String!
+  type: FeatureType!
+  defaultValue: JSON!
+}
+
+type SDKFeatureValue {
+  feature: SDKFeature!
+  value: JSON!
+}
+
+type CustomerForSubscription {
+  organizationId: String
+  secrets: [Secret!]!
+  effectiveConfiguration: [SDKFeatureValue!]!
+}
+
 type Query {
   apiTokens: [ApiToken!]!
   encryptionKeys: [EncryptionKey!]!
@@ -322,4 +339,8 @@ input ConfigureFirebaseOrganizationManagerInput {
 
 input CreateSecretKeyInput {
   key: String!
+}
+
+type Subscription {
+  customerUpdated: CustomerForSubscription!
 }

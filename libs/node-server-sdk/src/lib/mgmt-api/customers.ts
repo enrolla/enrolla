@@ -51,7 +51,12 @@ export const updateCustomerSecrets = async (
     })),
   });
 
-  setCustomerSecrets(updateCustomerByOrgId as Partial<Customer>);
+  setCustomerSecrets(
+    updateCustomerByOrgId as unknown as Pick<
+      Customer,
+      'organizationId' | 'secrets'
+    >
+  );
 
   return updateCustomerByOrgId as Customer;
 };
@@ -78,7 +83,12 @@ export const updateCustomerFeatures = async (
     })),
   });
 
-  setCustomerFeatures(updateCustomerByOrgId as Partial<Customer>);
+  setCustomerFeatures(
+    updateCustomerByOrgId as unknown as Pick<
+      Customer,
+      'organizationId' | 'effectiveConfiguration'
+    >
+  );
 
   return updateCustomerByOrgId as Customer;
 };

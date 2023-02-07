@@ -20,7 +20,9 @@ export const refreshStore = (customers: Customer[] = []) => {
   });
 };
 
-export const setCustomerSecrets = (customer: Partial<Customer>) => {
+export const setCustomerSecrets = (
+  customer: Pick<Customer, 'organizationId' | 'secrets'>
+) => {
   if (_configuration.privateKey) {
     if (!_customerSecretStore[customer.organizationId]) {
       _customerSecretStore[customer.organizationId] = {};
@@ -40,7 +42,9 @@ export const setCustomerSecrets = (customer: Partial<Customer>) => {
   }
 };
 
-export const setCustomerFeatures = (customer: Partial<Customer>) => {
+export const setCustomerFeatures = (
+  customer: Pick<Customer, 'organizationId' | 'effectiveConfiguration'>
+) => {
   if (!_customerFeatureStore[customer.organizationId]) {
     _customerFeatureStore[customer.organizationId] = {};
   }
