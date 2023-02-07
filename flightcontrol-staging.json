@@ -139,25 +139,6 @@
       },
       "services": [
         {
-          "id": "db",
-          "name": "Database",
-          "type": "rds",
-          "engine": "postgres",
-          "engineVersion": "14",
-          "instanceSize": "db.t4g.micro",
-          "storage": 20,
-          "private": true
-        },
-        {
-          "id": "redis",
-          "name": "Redis",
-          "type": "elasticache",
-          "engine": "redis",
-          "engineVersion": "7.0",
-          "instanceSize": "cache.t4g.micro",
-          "connectionStringEnvVarName": "REDIS_URL"
-        },
-        {
           "id": "enrolla-server-preview",
           "name": "Backend",
           "type": "fargate",
@@ -171,11 +152,11 @@
           "minInstances": 1,
           "maxInstances": 1,
           "envVariables": {
+            "REDIS_URL": {
+              "fromParameterStore": "fc_enrollastg_staging_redis_x64q0oqu_primary_url"
+            },
             "DATABASE_URL": {
-              "fromService": {
-                "id": "db",
-                "value": "dbConnectionString"
-              }
+              "fromParameterStore": "fc_enrollastg_staging_db_xeo002om_dbConnectionString"
             },
             "ENV_NAME": "staging",
             "PROPELAUTH_URL": {
