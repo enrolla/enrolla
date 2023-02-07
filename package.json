@@ -41,6 +41,7 @@
     "firebase-admin": "^11.5.0",
     "gql-query-builder": "^3.8.0",
     "graphql": "^16.6.0",
+    "graphql-redis-subscriptions": "^2.6.0",
     "graphql-request": "^5.1.0",
     "graphql-scalars": "^1.20.1",
     "graphql-subscriptions": "^2.0.0",
