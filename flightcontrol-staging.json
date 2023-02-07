@@ -153,10 +153,10 @@
           "maxInstances": 1,
           "envVariables": {
             "REDIS_URL": {
-              "fromParameterStore": "fc-ec-redis-cldt3e"
+              "fromParameterStore": "Need to fix this"
             },
             "DATABASE_URL": {
-              "fromParameterStore": "database-zumu0ji6"
+              "fromParameterStore": "Need to fix this" 
             },
             "ENV_NAME": "staging",
             "PROPELAUTH_URL": {
