@@ -30,7 +30,7 @@ export class PubSubService {
 
       this._pubSub = new RedisPubSub({
         publisher: redis,
-        subscriber: new Redis(url, ioRedisOptions),
+        subscriber: new Redis(url),
       });
     } else {
       this.logger.log('No PubSub Redis URL supplied, using in memory PubSub');
