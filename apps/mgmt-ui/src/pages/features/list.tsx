@@ -102,9 +102,9 @@ export const FeatureList: React.FC = () => {
 
   const { list } = useNavigation();
 
-  // if (!getRowModel().rows.length) {
-  return <FeaturesEmptyStateComponent />;
-  // }
+  if (!getRowModel().rows.length) {
+    return <FeaturesEmptyStateComponent />;
+  }
 
   return (
     <ScrollArea>
