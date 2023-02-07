@@ -328,7 +328,7 @@ export const Sider: React.FC<RefineLayoutSiderProps> = ({ render }) => {
                         theme.colorScheme === 'dark' ? '#C4B5FC' : '#6644EC'
                       }
                     />
-                    <Text fz="sm">Enrolla Guide</Text>
+                    <Text fz="sm">Getting Started</Text>
                   </Group>
                 </Paper>
                 <RingProgress
