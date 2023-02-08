@@ -13,7 +13,13 @@ import {
   useMantineTheme,
 } from '@pankod/refine-mantine';
 import { IconCheck } from '@tabler/icons';
-import { onboardingSteps, StepProps, useOnboarding } from '../utils/onboarding';
+import { useEffect } from 'react';
+import {
+  onboardingSteps,
+  StepProps,
+  useOnboarding,
+  useOnboardingPercentage,
+} from '../utils/onboarding';
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -38,7 +44,14 @@ export const OnboardingStep = ({
   const { classes } = useStyles();
 
   const [onboardingStatus, setOnboardingStatus] = useOnboarding();
+  const onboardingPercentage = useOnboardingPercentage();
   const complete = onboardingStatus.stepsDone.includes(text);
+
+  useEffect(() => {
+    if (onboardingPercentage === 100) {
+      push('/');
+    }
+  });
 
   return (
     <Card
