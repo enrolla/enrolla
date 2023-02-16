@@ -5,15 +5,21 @@
 const process = require('process');
 const opentelemetry = require('@opentelemetry/sdk-node');
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
-const { ConsoleSpanExporter } = require('@opentelemetry/sdk-trace-base');
 const { Resource } = require('@opentelemetry/resources');
 const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
 const { httpInstrumentationConfig } = require('./otel-custom/http');
 const { expressInstrumentationConfig } = require('./otel-custom/express');
+const {
+    OTLPTraceExporter,
+  } = require("@opentelemetry/exporter-trace-otlp-http");
+const { ConsoleSpanExporter } = require('@opentelemetry/sdk-trace-base');
 
-// configure the SDK to export telemetry data to the console
-// enable all auto-instrumentations from the meta package
-const traceExporter = new ConsoleSpanExporter();
+// Console exporter
+const traceExporter = new ConsoleSpanExporter(); // uncomment to use console HTTP exporter
+
+// OTEL HTTP exporter
+// const traceExporter = new OTLPTraceExporter(); // uncomment to use OTEL HTTP exporter
+
 const sdk = new opentelemetry.NodeSDK({
   resource: new Resource({
     [SemanticResourceAttributes.SERVICE_NAME]: 'enrolla-server',
