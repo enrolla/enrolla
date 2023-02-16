@@ -40,14 +40,11 @@ export function getFeatureTypeForTypeId(typeId: number): FeatureType {
     case types.builtins.INT8:
       return FeatureType.INTEGER;
     case types.builtins.BOOL:
-    case types.builtins.BOOLEAN:
       return FeatureType.BOOLEAN;
     case types.builtins.TEXT:
     case types.builtins.VARCHAR:
     case types.builtins.CHAR:
       return FeatureType.STRING;
-    case types.builtins.ARRAY:
-      return FeatureType.ARRAY;
     case types.builtins.JSON:
     case types.builtins.JSONB:
     default:
