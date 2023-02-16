@@ -4,30 +4,30 @@
 const MIN_COLLECTED_BODY_LENGTH = 524288;
 
 class StreamChunks {
-    chunks;
-    length;
+  chunks;
+  length;
 
-    constructor() {
-        this.chunks = [];
-        this.length = 0;
-    }
+  constructor() {
+    this.chunks = [];
+    this.length = 0;
+  }
 
-    addChunk(chunk) {
-        if (this.length >= MIN_COLLECTED_BODY_LENGTH) return;
+  addChunk(chunk) {
+    if (this.length >= MIN_COLLECTED_BODY_LENGTH) return;
 
-        const chunkLength = chunk?.length;
-        if (!chunkLength) return;
+    const chunkLength = chunk?.length;
+    if (!chunkLength) return;
 
-        this.chunks.push(chunk);
-        this.length += chunkLength;
-    }
+    this.chunks.push(chunk);
+    this.length += chunkLength;
+  }
 
-    getBody() {
-        return this.chunks.join('');
-    }
+  getBody() {
+    return this.chunks.join('');
+  }
 }
 
 module.exports = {
-    StreamChunks,
-    MIN_COLLECTED_BODY_LENGTH,
+  StreamChunks,
+  MIN_COLLECTED_BODY_LENGTH,
 };

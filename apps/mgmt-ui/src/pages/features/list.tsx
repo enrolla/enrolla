@@ -29,8 +29,12 @@ import {
 } from '../../components/features/FeatureViewComponent';
 import { useNavigation, useList } from '@pankod/refine-core';
 import { FeaturesEmptyStateComponent } from '../../components/empty-state/EmptyStateComponent';
-import { IconSelector, IconChevronDown, IconChevronUp, IconSearch } from '@tabler/icons';
-
+import {
+  IconSelector,
+  IconChevronDown,
+  IconChevronUp,
+  IconSearch,
+} from '@tabler/icons';
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -80,7 +84,10 @@ const useStyles = createStyles((theme) => ({
     padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
 
     '&:hover': {
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+      backgroundColor:
+        theme.colorScheme === 'dark'
+          ? theme.colors.dark[6]
+          : theme.colors.gray[0],
     },
   },
 
@@ -90,12 +97,9 @@ const useStyles = createStyles((theme) => ({
     borderRadius: 21,
   },
 }));
-  
+
 // Define a default UI for filtering
-function GlobalFilter({
-  globalFilter,
-  setGlobalFilter,
-}) {
+function GlobalFilter({ globalFilter, setGlobalFilter }) {
   const { classes } = useStyles();
 
   const [value, setValue] = useState(globalFilter);
@@ -104,16 +108,16 @@ function GlobalFilter({
   }, 200);
 
   return (
-      <TextInput
+    <TextInput
       className={classes.searchBar}
-        value={value || ''}
-        onChange={(e) => {
-          setValue(e.target.value);
-          onChange(e.target.value);
-        }}
-        icon={<IconSearch size={14} stroke={1.5} />}
-        placeholder="Search Features"
-      />
+      value={value || ''}
+      onChange={(e) => {
+        setValue(e.target.value);
+        onChange(e.target.value);
+      }}
+      icon={<IconSearch size={14} stroke={1.5} />}
+      placeholder="Search Features"
+    />
   );
 }
 
@@ -201,8 +205,7 @@ export const FeatureList: React.FC = () => {
       data,
     },
     useGlobalFilter,
-    useSortBy,
-
+    useSortBy
   );
 
   const { list } = useNavigation();
@@ -215,7 +218,7 @@ export const FeatureList: React.FC = () => {
 
   return (
     <ScrollArea>
-      <List title='lala'>
+      <List title="lala">
         <Text className={classes.description}>
           Manage all of your features by assigning them types and default
           values. Group together sets of features with specific defaults into{' '}
@@ -250,7 +253,11 @@ export const FeatureList: React.FC = () => {
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
                 {headerGroup.headers.map((column) => {
-                    const Icon = column.isSorted ? (column.isSortedDesc ? IconChevronUp : IconChevronDown) : IconSelector;
+                  const Icon = column.isSorted
+                    ? column.isSortedDesc
+                      ? IconChevronUp
+                      : IconChevronDown
+                    : IconSelector;
 
                   return (
                     <th
@@ -260,7 +267,7 @@ export const FeatureList: React.FC = () => {
                       <Group spacing="xs" noWrap>
                         <Box>{column.render('Header')}</Box>
                         <Center className={classes.icon}>
-                        <Icon size={14} stroke={1.5} />
+                          <Icon size={14} stroke={1.5} />
                         </Center>
                       </Group>
                     </th>
