@@ -59,7 +59,7 @@
     "passport-custom": "^1.1.1",
     "pg": "^8.8.0",
     "pluralize": "^8.0.0",
-    "posthog-js": "^1.40.0",
+    "posthog-js": "^1.67.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-table": "^7.8.0",
